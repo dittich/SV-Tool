@@ -3,9 +3,11 @@ package gui;
 import java.awt.EventQueue;
 import java.io.IOException;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.Vector;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
@@ -22,6 +24,7 @@ import java.awt.Font;
 
 import javax.swing.JTextField;
 import javax.swing.border.BevelBorder;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.SwingConstants;
 
 import svt.Einstellungen;
@@ -30,6 +33,10 @@ import svt.SVTool;
 import java.awt.Color;
 
 import javax.swing.JComboBox;
+import javax.swing.JTable;
+
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 public class Main {
 
@@ -51,6 +58,8 @@ public class Main {
 	private JButton btnBilder;
 	private JButton btnDisk;
 	private JButton btnPDF;
+	private JTextField txtSuche;
+	private JTable tblListSuS;
 	
 
 	/**
@@ -91,6 +100,76 @@ public class Main {
 		frmSvausweise.setBounds(100, 100, 800, 590);
 		frmSvausweise.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frmSvausweise.getContentPane().setLayout(null);
+		
+		JPanel pnlListe = new JPanel();
+		pnlListe.setBounds(10, 45, 764, 495);
+		frmSvausweise.getContentPane().add(pnlListe);
+		pnlListe.setLayout(null);
+		pnlListe.setVisible(false);
+		allMenuePanels.add(pnlListe);
+		
+		JPanel pnlListMenue = new JPanel();
+		pnlListMenue.setBounds(0, 0, 764, 34);
+		pnlListe.add(pnlListMenue);
+		pnlListMenue.setLayout(null);
+		
+		JButton btnListAlle = new JButton("A");
+		btnListAlle.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				ResultSet rs = svtool.sqlQuery("SELECT * FROM sv_schueler");
+				try {
+					tblListSuS = new JTable(buildTableModel(rs));
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					System.out.println(e1.toString());
+				}
+				DefaultTableModel defTabMod = (DefaultTableModel)tblListSuS.getModel();
+				tblListSuS.validate();
+				tblListSuS.repaint();
+				System.out.println("Liste alle in der Table auf");
+			}
+		});
+		btnListAlle.setBounds(100, 0, 69, 34);
+		pnlListMenue.add(btnListAlle);
+		
+		JButton btnListSelektiert = new JButton("S");
+		btnListSelektiert.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				System.out.println("Liste alle selektierten SuS auf");
+			}
+		});
+		btnListSelektiert.setBounds(0, 0, 69, 34);
+		pnlListMenue.add(btnListSelektiert);
+		
+		JComboBox cboListKlasse = new JComboBox();
+		cboListKlasse.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				System.out.println("Liste alle SuS der gewählten Klasse auf");
+			}
+		});
+		cboListKlasse.setBounds(175, 0, 69, 34);
+		pnlListMenue.add(cboListKlasse);
+		
+		txtSuche = new JTextField();
+		txtSuche.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent arg0) {
+				System.out.println("Die Taste "+arg0.getKeyChar()+" wurde gedrückt");
+			}
+		});
+		txtSuche.setText("Suche...");
+		txtSuche.setBounds(250, 0, 139, 34);
+		pnlListMenue.add(txtSuche);
+		txtSuche.setColumns(10);
+		
+		JPanel pnlListTable = new JPanel();
+		pnlListTable.setBounds(10, 44, 744, 440);
+		pnlListe.add(pnlListTable);
+		pnlListTable.setLayout(null);
+		
+		tblListSuS = new JTable();
+		pnlListTable.add(tblListSuS);
+		tblListSuS.setBounds(0, 0, 744, 440);
 		
 		JPanel pnlDB = new JPanel();
 		pnlDB.setBounds(10, 45, 764, 495);
@@ -246,12 +325,6 @@ public class Main {
 		
 		allMenuePanels.add(pnlEinstellungen);
 		
-		JPanel pnlListe = new JPanel();
-		pnlListe.setBounds(10, 45, 764, 495);
-		frmSvausweise.getContentPane().add(pnlListe);
-		pnlListe.setLayout(null);
-		pnlListe.setVisible(false);
-		
 		JPanel pnlBilder = new JPanel();
 		pnlBilder.setBounds(10, 45, 764, 495);
 		frmSvausweise.getContentPane().add(pnlBilder);
@@ -350,7 +423,6 @@ public class Main {
 				System.out.println("Rahel");
 			}
 		});
-		allMenuePanels.add(pnlListe);
 		allMenuePanels.add(pnlBilder);
 		allMenuePanels.add(pnlDisk);
 		allMenuePanels.add(pnlPDF);
@@ -412,5 +484,30 @@ public class Main {
 			menuePanel.setVisible(false);
 		}
 		activatePanel.setVisible(true);
+	}
+	
+	public static DefaultTableModel buildTableModel(ResultSet rs) throws SQLException{
+
+	    ResultSetMetaData metaData = rs.getMetaData();
+
+	    // names of columns
+	    Vector<String> columnNames = new Vector<String>();
+	    int columnCount = metaData.getColumnCount();
+	    for (int column = 1; column <= columnCount; column++) {
+	        columnNames.add(metaData.getColumnName(column));
+	    }
+
+	    // data of the table
+	    Vector<Vector<Object>> data = new Vector<Vector<Object>>();
+	    while (rs.next()) {
+	        Vector<Object> vector = new Vector<Object>();
+	        for (int columnIndex = 1; columnIndex <= columnCount; columnIndex++) {
+	            vector.add(rs.getObject(columnIndex));
+	        }
+	        data.add(vector);
+	    }
+
+	    return new DefaultTableModel(data, columnNames);
+
 	}
 }
