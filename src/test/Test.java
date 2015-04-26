@@ -27,7 +27,7 @@ public class Test {
     	
     	est = (Einstellungen)dm.laden(est.getSicherungsDatei());
     	
-    	System.out.println("DBName: "+est.getDbUser());
+    	System.out.println("DBName: "+est.getDbTable());
     	
     }
 }

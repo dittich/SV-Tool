@@ -22,7 +22,6 @@ public class SVTool {
 	public void einstellungenLaden()
 	{
 		Object objEinstellungen = dm.laden("config.svt");
-		if(objEinstellungen==null)System.out.println("Est ist null");
 		if(objEinstellungen!=null)einstellungen=(Einstellungen)objEinstellungen;
 		else einstellungen = new Einstellungen();
 	}
@@ -32,9 +31,15 @@ public class SVTool {
 		dm.speichern(einstellungen,"config.svt");
 	}
 	
+	public String getDbTable()
+	{
+		return einstellungen.getDbTable();
+	}
+	
 	public void setDbTable(String dbTable)
 	{
-		dv.setDbTable(dbTable);
+		einstellungen.setDbTable(dbTable);
+		einstellungenSpeichern();
 	}
 	
 	public ResultSet sqlQuery(String query)
@@ -64,7 +69,6 @@ public class SVTool {
 	
 	public void setDbDaten(String dbIp, String dbName, String dbUser, String dbPassword)
 	{
-		System.out.println(dbIp+" - "+dbName+" - "+dbUser+" - "+dbPassword);
 		einstellungen.setDbIp(dbIp);
 		einstellungen.setDbName(dbName);
 		einstellungen.setDbUser(dbUser);

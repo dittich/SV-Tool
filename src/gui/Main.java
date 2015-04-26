@@ -101,7 +101,7 @@ public class Main {
 		
 		JPanel pnlDbConnect = new JPanel();
 		pnlDbConnect.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
-		pnlDbConnect.setBounds(10, 11, 338, 205);
+		pnlDbConnect.setBounds(10, 11, 227, 133);
 		pnlDB.add(pnlDbConnect);
 		pnlDbConnect.setLayout(null);
 		
@@ -311,7 +311,6 @@ public class Main {
 		btnEinstellungen.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				Einstellungen est = svtool.getEinstellungen();
-				System.out.println(est.getDbIp());
 				txtEsDbIp.setText(est.getDbIp());
 				txtEsDbPort.setText(""+est.getDbPort());
 				txtEsDbName.setText(est.getDbName());
@@ -392,6 +391,7 @@ public class Main {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		cboDbTable.setSelectedItem(svtool.getDbTable());
 	}
 	
 	private void setEnableButton()
