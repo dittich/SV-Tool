@@ -1,8 +1,8 @@
 package test;
 
-import java.sql.ResultSet;
+import svt.Einstellungen;
+import dv.Dateimanager;
 
-import dv.Datenverwaltung;
  
 public class Test {
  
@@ -12,19 +12,22 @@ public class Test {
      */
     public static void main(String[] args) throws Exception
     {
-        Datenverwaltung dv = new Datenverwaltung();
-        
-        dv.connect();
-        
-        ResultSet rs = dv.sqlQuery("select * from sv_schueler");
-        
-        while(rs.next())
-        {
-        	String name = rs.getString("name");
-        	String vorname = rs.getString("vorname");
-        	System.out.println(name+", "+vorname);
-        }
-        
-        dv.close();
+    	Einstellungen est = new Einstellungen();
+    	Dateimanager dm = new Dateimanager();  
+    	est.setDbName("Holger");
+    	
+    	//boolean gespeichert = dm.speichern(est);
+    	
+    	//System.out.println("Speichern in: "+est.getSicherungsDatei());
+    	//System.out.println("Speichern..."+gespeichert);
+    	
+    	est = new Einstellungen();
+    	
+    	System.out.println("DBName: "+est.getDbName());
+    	
+    	est = (Einstellungen)dm.laden(est.getSicherungsDatei());
+    	
+    	System.out.println("DBName: "+est.getDbUser());
+    	
     }
 }

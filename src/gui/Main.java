@@ -24,6 +24,7 @@ import javax.swing.JTextField;
 import javax.swing.border.BevelBorder;
 import javax.swing.SwingConstants;
 
+import svt.Einstellungen;
 import svt.SVTool;
 
 import java.awt.Color;
@@ -46,6 +47,11 @@ public class Main {
 	private JButton btnDbConnect;
 	private JComboBox cboDbTable;
 	private JPanel pnlDbTableAuswahl;
+	private JButton btnListe;
+	private JButton btnBilder;
+	private JButton btnDisk;
+	private JButton btnPDF;
+	
 
 	/**
 	 * Launch the application.
@@ -116,6 +122,7 @@ public class Main {
 				if(svtool.isDbConnected())svtool.dbClose();
 				else svtool.dbConnect();
 				setBtnDbConnectColor();
+				setEnableButton();
 			}
 		});
 		btnDbConnect.setBounds(120, 30, 100, 19);
@@ -161,7 +168,6 @@ public class Main {
 		lblEsDbIp.setFont(new Font("Tahoma", Font.PLAIN, 11));
 		
 		txtEsDbIp = new JTextField();
-		txtEsDbIp.setText("localhost");
 		txtEsDbIp.setBounds(10, 71, 100, 19);
 		pnlEsDb.add(txtEsDbIp);
 		txtEsDbIp.setFont(new Font("Tahoma", Font.PLAIN, 11));
@@ -172,7 +178,6 @@ public class Main {
 		pnlEsDb.add(lblEsDbPort);
 		
 		txtEsDbPort = new JTextField();
-		txtEsDbPort.setText("3306");
 		txtEsDbPort.setBounds(130, 70, 100, 19);
 		pnlEsDb.add(txtEsDbPort);
 		txtEsDbPort.setColumns(10);
@@ -233,6 +238,7 @@ public class Main {
 		btnEsDbSpeichern.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				svtool.setDbDaten(txtEsDbIp.getText(), txtEsDbName.getText(), txtEsDbUser.getText(), txtEsDbPassword.getText());
+				svtool.einstellungenSpeichern();
 			}
 		});
 		btnEsDbSpeichern.setBounds(10, 195, 220, 19);
@@ -269,25 +275,29 @@ public class Main {
 		frmSvausweise.getContentPane().add(pnl_buttonMenue);
 		pnl_buttonMenue.setLayout(null);
 		
-		JButton btnListe = new JButton(new ImageIcon(Main.class.getResource("../IMG/sv_list.png")));
+		btnListe = new JButton(new ImageIcon(Main.class.getResource("../IMG/sv_list.png")));
 		btnListe.setBounds(0, 0, 34, 34);
 		pnl_buttonMenue.add(btnListe);
 		btnListe.setToolTipText("Sch\u00FClerliste");
+		btnListe.setEnabled(false);
 		
-		JButton btnBilder = new JButton(new ImageIcon(Main.class.getResource("../IMG/sv_userfoto.png")));
+		btnBilder = new JButton(new ImageIcon(Main.class.getResource("../IMG/sv_userfoto.png")));
 		btnBilder.setBounds(35, 0, 34, 34);
 		pnl_buttonMenue.add(btnBilder);
 		btnBilder.setToolTipText("Bildbearbeitung");
+		btnBilder.setEnabled(false);
 		
-		JButton btnDisk = new JButton(new ImageIcon(Main.class.getResource("../IMG/sv_disk.png")));
+		btnDisk = new JButton(new ImageIcon(Main.class.getResource("../IMG/sv_disk.png")));
 		btnDisk.setBounds(70, 0, 34, 34);
 		pnl_buttonMenue.add(btnDisk);
 		btnDisk.setToolTipText("Laden/Speichern");
+		btnDisk.setEnabled(false);
 		
-		JButton btnPDF = new JButton(new ImageIcon(Main.class.getResource("../IMG/sv_pdf.png")));
+		btnPDF = new JButton(new ImageIcon(Main.class.getResource("../IMG/sv_pdf.png")));
 		btnPDF.setBounds(105, 0, 34, 34);
 		pnl_buttonMenue.add(btnPDF);
 		btnPDF.setToolTipText("PDF erstellen");
+		btnPDF.setEnabled(false);
 		
 		JButton btnDB = new JButton(new ImageIcon(Main.class.getResource("../IMG/sv_db.png")));
 		btnDB.setBounds(140, 0, 34, 34);
@@ -300,6 +310,13 @@ public class Main {
 		
 		btnEinstellungen.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				Einstellungen est = svtool.getEinstellungen();
+				System.out.println(est.getDbIp());
+				txtEsDbIp.setText(est.getDbIp());
+				txtEsDbPort.setText(""+est.getDbPort());
+				txtEsDbName.setText(est.getDbName());
+				txtEsDbUser.setText(est.getDbUser());
+				txtEsDbPassword.setText(est.getDbPassword());
 				setVisiblePanel(pnlEinstellungen);
 			}
 		});
@@ -375,6 +392,15 @@ public class Main {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+	
+	private void setEnableButton()
+	{
+		boolean btnEnable = svtool.isDbConnected();
+		btnListe.setEnabled(btnEnable);
+		btnBilder.setEnabled(btnEnable);
+		btnDisk.setEnabled(btnEnable);
+		btnPDF.setEnabled(btnEnable);
 	}
 	
 	private void setVisiblePanel(JPanel activatePanel)

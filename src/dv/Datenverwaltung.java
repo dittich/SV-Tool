@@ -6,8 +6,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-public class Datenverwaltung {
+import svt.Einstellungen;
 
+public class Datenverwaltung {
+	
 	private String dbIp;
 	
 	private String dbName;
@@ -21,6 +23,7 @@ public class Datenverwaltung {
 	private ResultSet resultSet = null;
 	
 	public Datenverwaltung(){
+		
 		dbIp = "localhost";
 		dbUser = "dittich";
 		dbPassword = "!Casi2009!";

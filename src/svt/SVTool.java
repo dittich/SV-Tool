@@ -1,10 +1,13 @@
 package svt;
 
 import java.sql.ResultSet;
+
+import dv.Dateimanager;
 import dv.Datenverwaltung;
 
 public class SVTool {
 	
+	private Dateimanager dm;
 	private Datenverwaltung dv;
 	private Einstellungen einstellungen;
 	
@@ -12,7 +15,21 @@ public class SVTool {
 	public SVTool()
 	{
 		dv = new Datenverwaltung();
-		einstellungen = new Einstellungen();
+		dm = new Dateimanager();
+		einstellungenLaden();
+	}
+	
+	public void einstellungenLaden()
+	{
+		Object objEinstellungen = dm.laden("config.svt");
+		if(objEinstellungen==null)System.out.println("Est ist null");
+		if(objEinstellungen!=null)einstellungen=(Einstellungen)objEinstellungen;
+		else einstellungen = new Einstellungen();
+	}
+	
+	public void einstellungenSpeichern()
+	{
+		dm.speichern(einstellungen,"config.svt");
 	}
 	
 	public void setDbTable(String dbTable)
@@ -47,6 +64,7 @@ public class SVTool {
 	
 	public void setDbDaten(String dbIp, String dbName, String dbUser, String dbPassword)
 	{
+		System.out.println(dbIp+" - "+dbName+" - "+dbUser+" - "+dbPassword);
 		einstellungen.setDbIp(dbIp);
 		einstellungen.setDbName(dbName);
 		einstellungen.setDbUser(dbUser);
@@ -63,5 +81,13 @@ public class SVTool {
 		boolean testDbConnect = dv.connect();
 		boolean testDbClose = dv.close();
 		return testDbClose&&testDbConnect;
+	}
+
+	public Einstellungen getEinstellungen() {
+		return einstellungen;
+	}
+
+	public void setEinstellungen(Einstellungen einstellungen) {
+		this.einstellungen = einstellungen;
 	}
 }
