@@ -2,7 +2,7 @@ package test;
 
 import java.sql.ResultSet;
 
-import DV.Datenverwaltung;
+import dv.Datenverwaltung;
  
 public class Test {
  
