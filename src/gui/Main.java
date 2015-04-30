@@ -1,6 +1,7 @@
 package gui;
 
 import java.awt.EventQueue;
+import java.awt.ItemSelectable;
 import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
@@ -41,6 +42,11 @@ import java.awt.event.KeyEvent;
 import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
 
+import java.awt.event.ItemListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+
 public class Main {
 
 	private JFrame frmSvausweise;
@@ -55,6 +61,7 @@ public class Main {
 	private JTextField txtDbName;
 	private JButton btnDbConnect;
 	private JComboBox cboDbTable;
+	private JComboBox cboListKlasse;
 	private JPanel pnlDbTableAuswahl;
 	private JButton btnListe;
 	private JButton btnBilder;
@@ -118,8 +125,8 @@ public class Main {
 		JButton btnListAlle = new JButton("A");
 		btnListAlle.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				ResultSet rs = svtool.sqlQuery("SELECT * FROM sv_schueler WHERE geloescht=0");
-				JTable t = new JTable(DBDienste.resultSetToTableModel(rs));
+				String sqlQuery = "SELECT * FROM sv_schueler WHERE geloescht=0";
+				JTable t = dbDienste.resultSetToTable(sqlQuery);
 				scrollPane.setViewportView(t);
 			}
 		});
@@ -129,20 +136,25 @@ public class Main {
 		JButton btnListSelektiert = new JButton("S");
 		btnListSelektiert.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				ResultSet rs = svtool.sqlQuery("SELECT * FROM sv_schueler WHERE selektiert=1");
-				JTable t = new JTable(DBDienste.resultSetToTableModel(rs));
+				String sqlQuery = "SELECT * FROM sv_schueler WHERE selektiert=1";
+				JTable t = dbDienste.resultSetToTable(sqlQuery);
 				scrollPane.setViewportView(t);
 			}
 		});
 		btnListSelektiert.setBounds(0, 0, 69, 34);
 		pnlListMenue.add(btnListSelektiert);
 		
-		JComboBox cboListKlasse = new JComboBox();
+		cboListKlasse = new JComboBox();
 		cboListKlasse.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				System.out.println("Liste alle SuS der gewählten Klasse auf");
-			}
-		});
+            public void actionPerformed(ActionEvent e) {
+            	String klasse = cboListKlasse.getSelectedItem().toString();
+            	if(!klasse.equals("")){
+            		String sqlQuery = "SELECT * FROM sv_schueler WHERE klasse='"+klasse+"'";
+                    JTable t = dbDienste.resultSetToTable(sqlQuery);
+    				scrollPane.setViewportView(t);
+            	}
+            }
+        });
 		cboListKlasse.setBounds(175, 0, 69, 34);
 		pnlListMenue.add(cboListKlasse);
 		
@@ -151,9 +163,8 @@ public class Main {
 			@Override
 			public void keyPressed(KeyEvent arg0) {
 				String suchText = dbDienste.suchText(txtSuche.getText(),arg0);
-				String sqlAnfrage = "SELECT * FROM sv_schueler WHERE name LIKE '%"+suchText+"%' OR vorname LIKE '%"+suchText+"%'";
-				ResultSet rs = svtool.sqlQuery(sqlAnfrage);
-				JTable t = new JTable(DBDienste.resultSetToTableModel(rs));
+				String sqlQuery = "SELECT * FROM sv_schueler WHERE name LIKE '%"+suchText+"%' OR vorname LIKE '%"+suchText+"%'";
+				JTable t = dbDienste.resultSetToTable(sqlQuery);
 				scrollPane.setViewportView(t);
 			}
 		});
@@ -171,9 +182,6 @@ public class Main {
 		scrollPane.setViewportBorder(null);
 		scrollPane.setBounds(0, 0, 744, 440);
 		pnlListTable.add(scrollPane);
-		
-		table = new JTable();
-		scrollPane.add(table);
 		
 		JPanel pnlDB = new JPanel();
 		pnlDB.setBounds(10, 45, 764, 495);
@@ -204,7 +212,7 @@ public class Main {
 				if(svtool.isDbConnected())svtool.dbClose();
 				else svtool.dbConnect();
 				dbDienste.setBtnDbConnect(btnDbConnect, pnlDbTableAuswahl, cboDbTable);
-				setEnableButton();
+				dbDienste.setEnableDbButton();
 			}
 		});
 		btnDbConnect.setBounds(120, 30, 100, 19);
@@ -353,24 +361,28 @@ public class Main {
 		btnListe.setBounds(0, 0, 34, 34);
 		pnl_buttonMenue.add(btnListe);
 		btnListe.setToolTipText("Sch\u00FClerliste");
+		dbDienste.addMenuButton(btnListe);
 		btnListe.setEnabled(false);
 		
 		btnBilder = new JButton(new ImageIcon(Main.class.getResource("../IMG/sv_userfoto.png")));
 		btnBilder.setBounds(35, 0, 34, 34);
 		pnl_buttonMenue.add(btnBilder);
 		btnBilder.setToolTipText("Bildbearbeitung");
+		dbDienste.addMenuButton(btnBilder);
 		btnBilder.setEnabled(false);
 		
 		btnDisk = new JButton(new ImageIcon(Main.class.getResource("../IMG/sv_disk.png")));
 		btnDisk.setBounds(70, 0, 34, 34);
 		pnl_buttonMenue.add(btnDisk);
 		btnDisk.setToolTipText("Laden/Speichern");
+		dbDienste.addMenuButton(btnDisk);
 		btnDisk.setEnabled(false);
 		
 		btnPDF = new JButton(new ImageIcon(Main.class.getResource("../IMG/sv_pdf.png")));
 		btnPDF.setBounds(105, 0, 34, 34);
 		pnl_buttonMenue.add(btnPDF);
 		btnPDF.setToolTipText("PDF erstellen");
+		dbDienste.addMenuButton(btnPDF);
 		btnPDF.setEnabled(false);
 		
 		JButton btnDB = new JButton(new ImageIcon(Main.class.getResource("../IMG/sv_db.png")));
@@ -417,6 +429,7 @@ public class Main {
 		});
 		btnListe.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+				dbDienste.fuelleCombobox(cboListKlasse, "SELECT klasse FROM sv_schueler GROUP BY klasse ORDER BY klasse");
 				dbDienste.setVisibleMenuePanel(pnlListe);
 				System.out.println("Rahel");
 			}
@@ -427,14 +440,8 @@ public class Main {
 		dbDienste.addMenuePanel(pnlDB);
 		dbDienste.addMenuePanel(pnlEinstellungen);
 		dbDienste.addMenuePanel(pnlListe);
-	}
-	
-	private void setEnableButton()
-	{
-		boolean btnEnable = svtool.isDbConnected();
-		btnListe.setEnabled(btnEnable);
-		btnBilder.setEnabled(btnEnable);
-		btnDisk.setEnabled(btnEnable);
-		btnPDF.setEnabled(btnEnable);
+		
+		table = new JTable();
+		scrollPane.add(table);
 	}
 }
