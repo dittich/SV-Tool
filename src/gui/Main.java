@@ -49,7 +49,6 @@ public class Main {
 	private JTextField txtEsDbUser;
 	private JTextField txtEsDbPassword;
 	
-	private LinkedList allMenuePanels;
 	private SVTool svtool;
 	private DBDienste dbDienste;
 	private JTextField txtEsDbName;
@@ -89,8 +88,7 @@ public class Main {
 	 */
 	public Main(){
 		svtool = new SVTool();
-		dbDienste = new DBDienste();
-		allMenuePanels = new LinkedList();
+		dbDienste = new DBDienste(svtool);
 		initializeGUI();
 	}
 
@@ -111,7 +109,6 @@ public class Main {
 		frmSvausweise.getContentPane().add(pnlListe);
 		pnlListe.setLayout(null);
 		pnlListe.setVisible(false);
-		allMenuePanels.add(pnlListe);
 		
 		JPanel pnlListMenue = new JPanel();
 		pnlListMenue.setBounds(0, 0, 764, 34);
@@ -183,7 +180,6 @@ public class Main {
 		frmSvausweise.getContentPane().add(pnlDB);
 		pnlDB.setLayout(null);
 		pnlDB.setVisible(false);
-		allMenuePanels.add(pnlDB);
 		
 		JPanel pnlDbConnect = new JPanel();
 		pnlDbConnect.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
@@ -207,7 +203,7 @@ public class Main {
 			public void actionPerformed(ActionEvent e) {
 				if(svtool.isDbConnected())svtool.dbClose();
 				else svtool.dbConnect();
-				setBtnDbConnectColor();
+				dbDienste.setBtnDbConnect(btnDbConnect, pnlDbTableAuswahl, cboDbTable);
 				setEnableButton();
 			}
 		});
@@ -330,8 +326,6 @@ public class Main {
 		btnEsDbSpeichern.setBounds(10, 195, 220, 19);
 		pnlEsDb.add(btnEsDbSpeichern);
 		
-		allMenuePanels.add(pnlEinstellungen);
-		
 		JPanel pnlBilder = new JPanel();
 		pnlBilder.setBounds(10, 45, 764, 495);
 		frmSvausweise.getContentPane().add(pnlBilder);
@@ -396,81 +390,43 @@ public class Main {
 				txtEsDbName.setText(est.getDbName());
 				txtEsDbUser.setText(est.getDbUser());
 				txtEsDbPassword.setText(est.getDbPassword());
-				setVisiblePanel(pnlEinstellungen);
+				dbDienste.setVisibleMenuePanel(pnlEinstellungen);
 			}
 		});
 		btnDB.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				setVisiblePanel(pnlDB);
-				setBtnDbConnectColor();
+				dbDienste.setVisibleMenuePanel(pnlDB);
+				dbDienste.setBtnDbConnect(btnDbConnect, pnlDbTableAuswahl, cboDbTable);
 				txtDbName.setText(svtool.getDbName());
 			}
 		});
 		btnPDF.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				setVisiblePanel(pnlPDF);
 				System.out.println("Nele");
 			}
 		});
 		btnDisk.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				setVisiblePanel(pnlDisk);
 				System.out.println("Mama");
 			}
 		});
 		btnBilder.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				setVisiblePanel(pnlBilder);
 				System.out.println("Papa");
 			}
 		});
 		btnListe.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				setVisiblePanel(pnlListe);
+				dbDienste.setVisibleMenuePanel(pnlListe);
 				System.out.println("Rahel");
 			}
 		});
-		allMenuePanels.add(pnlBilder);
-		allMenuePanels.add(pnlDisk);
-		allMenuePanels.add(pnlPDF);
-	}
-	/*
-	private ArrayList setCboDbTable()
-	{
-		ResultSet resultSet = svtool.sqlQuery("SHOW TABLES");
-		return dbDienste.convertResultSetToArrayList(resultSet);
-	}
-	*/
-	private void setBtnDbConnectColor()
-	{
-		if(svtool.isDbConnected())
-		{
-			btnDbConnect.setText("Connect");
-			btnDbConnect.setForeground(new Color(0, 128, 0));
-			pnlDbTableAuswahl.setVisible(true);
-			setcboDbTable();
-		}
-		else
-		{
-			btnDbConnect.setText("Disconnect");
-			btnDbConnect.setForeground(Color.RED);
-			pnlDbTableAuswahl.setVisible(false);
-		}
-	}
-	
-	private void setcboDbTable()
-	{
-		cboDbTable.removeAllItems();
-		ResultSet rs = svtool.sqlQuery("SHOW TABLES");
-		try {
-			while(rs.next()){
-				cboDbTable.addItem(rs.getString(1));
-			}
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		cboDbTable.setSelectedItem(svtool.getDbTable());
+		dbDienste.addMenuePanel(pnlBilder);
+		dbDienste.addMenuePanel(pnlDisk);
+		dbDienste.addMenuePanel(pnlPDF);
+		dbDienste.addMenuePanel(pnlDB);
+		dbDienste.addMenuePanel(pnlEinstellungen);
+		dbDienste.addMenuePanel(pnlListe);
 	}
 	
 	private void setEnableButton()
@@ -480,41 +436,5 @@ public class Main {
 		btnBilder.setEnabled(btnEnable);
 		btnDisk.setEnabled(btnEnable);
 		btnPDF.setEnabled(btnEnable);
-	}
-	
-	private void setVisiblePanel(JPanel activatePanel)
-	{
-		Iterator iter = allMenuePanels.listIterator();
-		while(iter.hasNext())
-		{
-			JPanel menuePanel = (JPanel)iter.next();
-			menuePanel.setVisible(false);
-		}
-		activatePanel.setVisible(true);
-	}
-	
-	public static DefaultTableModel buildTableModel(ResultSet rs) throws SQLException{
-
-	    ResultSetMetaData metaData = rs.getMetaData();
-
-	    // names of columns
-	    Vector<String> columnNames = new Vector<String>();
-	    int columnCount = metaData.getColumnCount();
-	    for (int column = 1; column <= columnCount; column++) {
-	        columnNames.add(metaData.getColumnName(column));
-	    }
-
-	    // data of the table
-	    Vector<Vector<Object>> data = new Vector<Vector<Object>>();
-	    while (rs.next()) {
-	        Vector<Object> vector = new Vector<Object>();
-	        for (int columnIndex = 1; columnIndex <= columnCount; columnIndex++) {
-	            vector.add(rs.getObject(columnIndex));
-	        }
-	        data.add(vector);
-	    }
-
-	    return new DefaultTableModel(data, columnNames);
-
 	}
 }

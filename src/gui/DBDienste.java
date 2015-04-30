@@ -1,18 +1,78 @@
 package gui;
 
+import java.awt.Color;
 import java.awt.event.KeyEvent;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.Vector;
 
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JPanel;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 
+import svt.SVTool;
+
 public class DBDienste {
 	
-	public DBDienste()
+	private SVTool svtool;
+	private LinkedList allMenuePanels;
+	
+	public DBDienste(SVTool svtool)
 	{
-		
+		this.svtool = svtool;
+		allMenuePanels = new LinkedList();
+	}
+	
+	public void setVisibleMenuePanel(JPanel activatePanel)
+	{
+		Iterator iter = allMenuePanels.listIterator();
+		while(iter.hasNext())
+		{
+			JPanel menuePanel = (JPanel)iter.next();
+			menuePanel.setVisible(false);
+		}
+		activatePanel.setVisible(true);
+	}
+	
+	public void addMenuePanel(JPanel pnl){
+		this.allMenuePanels.add(pnl);
+	}
+	
+	public void setBtnDbConnect(JButton btn, JPanel pnl, JComboBox cbo)
+	{
+		if(svtool.isDbConnected())
+		{
+			btn.setText("Connect");
+			btn.setForeground(new Color(0, 128, 0));
+			pnl.setVisible(true);
+			fuelleCombobox(cbo, "SHOW TABLES");
+		}
+		else
+		{
+			btn.setText("Disconnect");
+			btn.setForeground(Color.RED);
+			pnl.setVisible(false);
+		}
+	}
+	
+	public void fuelleCombobox(JComboBox jcbBox, String sqlQuery)
+	{
+		jcbBox.removeAllItems();
+		ResultSet rs = svtool.sqlQuery(sqlQuery);
+		try {
+			while(rs.next()){
+				jcbBox.addItem(rs.getString(1));
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		jcbBox.setSelectedItem(svtool.getDbTable());
 	}
 	
 	public String suchText(String text, KeyEvent arg0){
