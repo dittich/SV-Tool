@@ -43,6 +43,18 @@ public class Datenverwaltung {
 		return resultSet;
 	}
 	
+	public boolean sqlUpdate(String query)
+	{
+		try {
+			statement.executeUpdate(query);
+			return true;
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return false;
+		}
+	}
+	
 	public boolean isConnected() {
 		try {
 			return !connect.isClosed();

@@ -1,14 +1,7 @@
 package gui;
 
 import java.awt.EventQueue;
-import java.awt.ItemSelectable;
 import java.io.IOException;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.sql.SQLException;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.Vector;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
@@ -25,13 +18,10 @@ import java.awt.Font;
 
 import javax.swing.JTextField;
 import javax.swing.border.BevelBorder;
-import javax.swing.table.DefaultTableModel;
 import javax.swing.SwingConstants;
 
 import svt.Einstellungen;
 import svt.SVTool;
-
-import java.awt.Color;
 
 import javax.swing.JComboBox;
 import javax.swing.JTable;
@@ -40,14 +30,8 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
 import javax.swing.JScrollPane;
-import javax.swing.ScrollPaneConstants;
 
-import java.awt.event.ItemListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-
-public class Main {
+public class Main{
 
 	private JFrame frmSvausweise;
 	private JTextField txtEsDbIp;
@@ -95,7 +79,7 @@ public class Main {
 	 */
 	public Main(){
 		svtool = new SVTool();
-		dbDienste = new DBDienste(svtool);
+		dbDienste = new DBDienste(this,svtool);
 		initializeGUI();
 	}
 
@@ -443,5 +427,10 @@ public class Main {
 		
 		table = new JTable();
 		scrollPane.add(table);
+	}
+	
+	public void updateTable(String sqlQuery){
+		JTable t = dbDienste.resultSetToTable(sqlQuery);
+		scrollPane.setViewportView(t);
 	}
 }

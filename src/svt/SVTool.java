@@ -47,6 +47,11 @@ public class SVTool {
 		return dv.sqlQuery(query);
 	}
 	
+	public boolean sqlUpdate(String query)
+	{
+		return dv.sqlUpdate(query);
+	}
+	
 	public boolean isDbConnected()
 	{
 		return dv.isConnected();

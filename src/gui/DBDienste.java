@@ -1,7 +1,6 @@
 package gui;
 
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -16,19 +15,20 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JPanel;
 import javax.swing.JTable;
-import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.TableModel;
+import javax.swing.table.DefaultTableModel;
 
 import svt.SVTool;
 
-public class DBDienste {
+public class DBDienste{
 	
 	private SVTool svtool;
 	private LinkedList<JPanel> allMenuePanels;
 	private LinkedList<JButton> menuButton;
+	private Main main;
 	
-	public DBDienste(SVTool svtool)
+	public DBDienste(Main main, SVTool svtool)
 	{
+		this.main = main;
 		this.svtool = svtool;
 		allMenuePanels = new LinkedList<JPanel>();
 		menuButton = new LinkedList<JButton>();
@@ -107,55 +107,35 @@ public class DBDienste {
 	public JTable resultSetToTable(String sqlQuery){
 		ResultSet rs = svtool.sqlQuery(sqlQuery);
 		JTable tbl = new JTable(resultSetToTableModel(rs));
+		
 		tbl.addMouseListener(new MouseAdapter() {
 			@Override
-			public void mouseClicked(MouseEvent e) {
+			public void mousePressed(MouseEvent e) {
+				int row = tbl.rowAtPoint(e.getPoint());
+				int spalte = tbl.columnAtPoint(e.getPoint());
+				int idIndex = (int)tbl.getModel().getValueAt(row, (tbl.getColumn("id").getModelIndex() ));
+				boolean newSelect = !(boolean) tbl.getModel().getValueAt(row, (tbl.getColumn("selektiert").getModelIndex() ));
+				
 				if(e.getButton() == MouseEvent.BUTTON1){
-					System.out.println("Detected Mouse Left Click!");
+					String sqlUpdate = "UPDATE sv_schueler SET selektiert="+newSelect+" WHERE id="+idIndex;
+					boolean result = svtool.sqlUpdate(sqlUpdate);
+					main.updateTable(sqlQuery);
 				}	    
-				else if(e.getButton() == MouseEvent.BUTTON3){
-					System.out.println("Detected Mouse Right Click!");
-				}
 				else if(e.getButton() == MouseEvent.BUTTON2){
 					System.out.println("Detected Mouse Middle Click!");
+				}
+				else if(e.getButton() == MouseEvent.BUTTON3){
+					System.out.println("Detected Mouse Right Click!");
 				}
 			}
 		});
 		
-		tbl.setDefaultRenderer( Object.class, new DefaultTableCellRenderer(){
-			/**
-			 * 
-			 */
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-				Component component = super.getTableCellRendererComponent( table, value, isSelected, hasFocus, row, column);
-				boolean select = (boolean) table.getModel().getValueAt(row, (table.getColumn("selektiert").getModelIndex() ));
-				Object imageType = (Object)table.getModel().getValueAt(row, (table.getColumn("bild").getModelIndex() ));
-				
-				if( select ) {
-					component.setBackground(Color.green);
-				}
-				else {
-					component.setBackground(Color.white);
-				}
-				
-				if( imageType == null){
-					component.setForeground(Color.red);
-				}
-				else {
-					component.setForeground(Color.black);
-				}
-				
-				return component;
-			};
-		});
-					
+		tbl.setDefaultRenderer(Object.class, new SvTableCellRenderer());
+		
 		return tbl;
 	}
 	
-	public static TableModel resultSetToTableModel(ResultSet rs) {
+	public DefaultTableModel resultSetToTableModel(ResultSet rs) {
         try {
             ResultSetMetaData metaData = rs.getMetaData();
             int numberOfColumns = metaData.getColumnCount();
@@ -179,8 +159,7 @@ public class DBDienste {
                 rows.addElement(newRow);
             }
 
-           return new SvTableModel(rows, columnNames);
-            //return new DefaultTableModel(rows, columnNames);
+            return new SvTableModel(rows, columnNames);
         } catch (Exception e) {
             e.printStackTrace();
 
