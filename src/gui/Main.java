@@ -38,6 +38,9 @@ import javax.swing.JTable;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
+import javax.swing.JScrollPane;
+import javax.swing.ScrollPaneConstants;
+
 public class Main {
 
 	private JFrame frmSvausweise;
@@ -59,7 +62,9 @@ public class Main {
 	private JButton btnDisk;
 	private JButton btnPDF;
 	private JTextField txtSuche;
-	private JTable tblListSuS;
+	private JPanel pnlListTable;
+	private JTable table;
+	private JScrollPane scrollPane;
 	
 
 	/**
@@ -97,7 +102,7 @@ public class Main {
 		frmSvausweise = new JFrame("");
 		frmSvausweise.setIconImage(Toolkit.getDefaultToolkit().getImage(Main.class.getResource("../IMG/sv_ad.png")));
 		frmSvausweise.setTitle("SV-Ausweise 0.1");
-		frmSvausweise.setBounds(100, 100, 800, 590);
+		frmSvausweise.setBounds(100, 100, 800, 610);
 		frmSvausweise.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frmSvausweise.getContentPane().setLayout(null);
 		
@@ -116,17 +121,9 @@ public class Main {
 		JButton btnListAlle = new JButton("A");
 		btnListAlle.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				ResultSet rs = svtool.sqlQuery("SELECT * FROM sv_schueler");
-				try {
-					tblListSuS = new JTable(buildTableModel(rs));
-				} catch (SQLException e1) {
-					// TODO Auto-generated catch block
-					System.out.println(e1.toString());
-				}
-				DefaultTableModel defTabMod = (DefaultTableModel)tblListSuS.getModel();
-				tblListSuS.validate();
-				tblListSuS.repaint();
-				System.out.println("Liste alle in der Table auf");
+				ResultSet rs = svtool.sqlQuery("SELECT * FROM sv_schueler WHERE geloescht=0");
+				JTable t = new JTable(DBDienste.resultSetToTableModel(rs));
+				scrollPane.setViewportView(t);
 			}
 		});
 		btnListAlle.setBounds(100, 0, 69, 34);
@@ -135,7 +132,9 @@ public class Main {
 		JButton btnListSelektiert = new JButton("S");
 		btnListSelektiert.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				System.out.println("Liste alle selektierten SuS auf");
+				ResultSet rs = svtool.sqlQuery("SELECT * FROM sv_schueler WHERE selektiert=1");
+				JTable t = new JTable(DBDienste.resultSetToTableModel(rs));
+				scrollPane.setViewportView(t);
 			}
 		});
 		btnListSelektiert.setBounds(0, 0, 69, 34);
@@ -154,22 +153,30 @@ public class Main {
 		txtSuche.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent arg0) {
-				System.out.println("Die Taste "+arg0.getKeyChar()+" wurde gedrückt");
+				String suchText = dbDienste.suchText(txtSuche.getText(),arg0);
+				String sqlAnfrage = "SELECT * FROM sv_schueler WHERE name LIKE '%"+suchText+"%' OR vorname LIKE '%"+suchText+"%'";
+				ResultSet rs = svtool.sqlQuery(sqlAnfrage);
+				JTable t = new JTable(DBDienste.resultSetToTableModel(rs));
+				scrollPane.setViewportView(t);
 			}
 		});
-		txtSuche.setText("Suche...");
+		txtSuche.setText("");
 		txtSuche.setBounds(250, 0, 139, 34);
 		pnlListMenue.add(txtSuche);
 		txtSuche.setColumns(10);
 		
-		JPanel pnlListTable = new JPanel();
+		pnlListTable = new JPanel();
 		pnlListTable.setBounds(10, 44, 744, 440);
 		pnlListe.add(pnlListTable);
 		pnlListTable.setLayout(null);
 		
-		tblListSuS = new JTable();
-		pnlListTable.add(tblListSuS);
-		tblListSuS.setBounds(0, 0, 744, 440);
+		scrollPane = new JScrollPane();
+		scrollPane.setViewportBorder(null);
+		scrollPane.setBounds(0, 0, 744, 440);
+		pnlListTable.add(scrollPane);
+		
+		table = new JTable();
+		scrollPane.add(table);
 		
 		JPanel pnlDB = new JPanel();
 		pnlDB.setBounds(10, 45, 764, 495);

@@ -6,7 +6,9 @@ import java.awt.EventQueue;
 
 import javax.swing.JFrame;
 import javax.swing.JButton;
+import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.ScrollPaneConstants;
 
 import svt.SVTool;
 
@@ -18,8 +20,10 @@ import java.util.LinkedList;
 public class TestGUI {
 
 	private JFrame frame;
-	private JTable table;
+	private JScrollPane scroll;
 	private SVTool svtool;
+	private JScrollPane scrollPane;
+	private JTable table;
 
 	/**
 	 * Launch the application.
@@ -61,19 +65,30 @@ public class TestGUI {
 			public void actionPerformed(ActionEvent e) {
 				ResultSet rs = svtool.sqlQuery("SELECT * FROM sv_schueler");
 				JTable t = new JTable(DbUtils.resultSetToTableModel(rs));
+				t.setBounds(20, 55, 668, 323);
+				scrollPane.setViewportView(t);
+				
+				/*
 				t.setBounds(39, 85, 597, 282);
 				frame.getContentPane().add(t);
 				frame.validate();
 				frame.repaint();
 				frame.getContentPane().remove(table);
+				*/
 			}
 		});
 		btnNewButton.setBounds(10, 11, 89, 23);
 		frame.getContentPane().add(btnNewButton);
 		
+		
+		
+		scrollPane = new JScrollPane(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		scrollPane.setBounds(20, 55, 668, 323);
+		frame.getContentPane().add(scrollPane);
+		
 		table = new JTable();
-		table.setBounds(39, 85, 597, 282);
-		frame.getContentPane().add(table);
+		table.setBounds(20, 55, 668, 323);
+		
+		scrollPane.setViewportView(table);
 	}
-
 }
