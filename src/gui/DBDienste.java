@@ -25,6 +25,7 @@ public class DBDienste{
 	private LinkedList<JPanel> allMenuePanels;
 	private LinkedList<JButton> menuButton;
 	private Main main;
+	private String lastSql = "";
 	
 	public DBDienste(Main main, SVTool svtool)
 	{
@@ -32,6 +33,24 @@ public class DBDienste{
 		this.svtool = svtool;
 		allMenuePanels = new LinkedList<JPanel>();
 		menuButton = new LinkedList<JButton>();
+	}
+	
+	public void alleAbwaehlen(JTable tbl){
+		alleSelektieren(tbl,false);
+	}
+	
+	public void alleAuswaehlen(JTable tbl){
+		alleSelektieren(tbl,true);
+	}
+	
+	private void alleSelektieren(JTable tbl, boolean select){
+		int rows = tbl.getRowCount();
+		for(int row=0; row<tbl.getRowCount(); row++){
+			int idIndex = (int)tbl.getModel().getValueAt(row, (tbl.getColumn("id").getModelIndex() ));
+			String sqlUpdate = "UPDATE sv_schueler SET selektiert="+select+" WHERE id="+idIndex;
+			boolean result = svtool.sqlUpdate(sqlUpdate);
+		}
+		main.updateTable(lastSql);
 	}
 	
 	public void setEnableDbButton()
@@ -106,6 +125,7 @@ public class DBDienste{
 	
 	public JTable resultSetToTable(String sqlQuery){
 		ResultSet rs = svtool.sqlQuery(sqlQuery);
+		if(rs!=null) lastSql=sqlQuery;
 		JTable tbl = new JTable(resultSetToTableModel(rs));
 		
 		tbl.addMouseListener(new MouseAdapter() {

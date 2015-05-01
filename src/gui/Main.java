@@ -157,6 +157,29 @@ public class Main{
 		pnlListMenue.add(txtSuche);
 		txtSuche.setColumns(10);
 		
+		JPanel pnlWaehlen = new JPanel();
+		pnlWaehlen.setBounds(450, 0, 305, 34);
+		pnlListMenue.add(pnlWaehlen);
+		pnlWaehlen.setLayout(null);
+		
+		JButton btnAuswaehlen = new JButton("Alle ausw\u00E4hlen");
+		btnAuswaehlen.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				dbDienste.alleAuswaehlen((JTable)scrollPane.getViewport().getComponent(0));
+			}
+		});
+		btnAuswaehlen.setBounds(0, 0, 150, 34);
+		pnlWaehlen.add(btnAuswaehlen);
+		
+		JButton btnAbwaehlen = new JButton("Alle abw\u00E4hlen");
+		btnAbwaehlen.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				dbDienste.alleAbwaehlen((JTable)scrollPane.getViewport().getComponent(0));
+			}
+		});
+		btnAbwaehlen.setBounds(155, 0, 150, 34);
+		pnlWaehlen.add(btnAbwaehlen);
+		
 		pnlListTable = new JPanel();
 		pnlListTable.setBounds(10, 44, 744, 440);
 		pnlListe.add(pnlListTable);
