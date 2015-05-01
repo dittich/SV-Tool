@@ -4,6 +4,10 @@ import java.awt.Color;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
+import java.io.BufferedInputStream;
+import java.io.IOException;
+import java.sql.Blob;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
@@ -11,6 +15,8 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Vector;
 
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JPanel;
@@ -145,14 +151,46 @@ public class DBDienste{
 					System.out.println("Detected Mouse Middle Click!");
 				}
 				else if(e.getButton() == MouseEvent.BUTTON3){
-					System.out.println("Detected Mouse Right Click!");
+					main.setTxtInfoId(idIndex);
+					
+					String sqlQuery = "SELECT schueler_id,name,vorname,gebdatum,geschlecht,klasse,bild FROM sv_schueler WHERE id="+idIndex;
+					ResultSet rs = svtool.sqlQuery(sqlQuery);
+
+					try {
+						while(rs.next()){
+							main.setTxtInfoSchuelerId(rs.getInt(1));
+							main.setTxtInfoNameVorname(rs.getString(2), rs.getString(3));
+							main.setTxtInfoGebDatum(rs.getString(4));
+							if(rs.getString(5).equals("m"))main.setTxtInfoGeschlecht("männlich");
+							else main.setTxtInfoGeschlecht("weiblich");
+							main.setTxtInfoKlasse(rs.getString(6));
+							BufferedImage im = ImageIO.read(rs.getBinaryStream(7));
+							ImageIcon image1 = new ImageIcon(im);
+							main.getLblInfoImage().setIcon(image1);
+						}
+					} catch (Exception e1) {
+						// TODO Auto-generated catch block
+						main.getLblInfoImage().setIcon(null);
+					}
 				}
 			}
 		});
 		
 		tbl.setDefaultRenderer(Object.class, new SvTableCellRenderer());
 		
+		minCol(tbl,"id");
+		minCol(tbl,"geschlecht");
+		minCol(tbl,"geloescht");
+		minCol(tbl,"selektiert");
+		minCol(tbl,"bild");
+		minCol(tbl,"typ");
+		
 		return tbl;
+	}
+	
+	private void minCol(JTable tbl, String name){
+		tbl.getColumn(name).setMinWidth(0);
+		tbl.getColumn(name).setMaxWidth(0);
 	}
 	
 	public DefaultTableModel resultSetToTableModel(ResultSet rs) {
@@ -180,6 +218,55 @@ public class DBDienste{
             }
 
             return new SvTableModel(rows, columnNames);
+        } catch (Exception e) {
+            e.printStackTrace();
+
+            return null;
+        }
+    }
+	
+	public MyTableModel resultSetToMyTableModel1(ResultSet rs) {
+        try {
+            ResultSetMetaData metaData = rs.getMetaData();
+            int numberOfColumns = metaData.getColumnCount();
+            Vector<String> columnNames = new Vector<String>();
+            int ids[] = new int[numberOfColumns];
+            boolean hidden[] = new boolean[numberOfColumns];
+            Object data[] = new Object[numberOfColumns];
+
+            // Get the column names
+            for (int column = 0; column < numberOfColumns; column++) {
+                columnNames.addElement(metaData.getColumnLabel(column + 1));
+                ids[column]=column;
+                hidden[column]=false;
+            }
+            
+            String[] names = columnNames.toArray(new String[columnNames.size()]);
+            
+            MyTableModel mtm = new MyTableModel(names, ids, hidden);
+            
+            // Get all rows.
+            Vector<Vector<Object>> rows = new Vector<Vector<Object>>();
+
+            while (rs.next()) {
+                Vector<Object> newRow = new Vector<Object>();
+
+                for (int i = 1; i <= numberOfColumns; i++) {
+                    newRow.addElement(rs.getObject(i));
+                }
+
+                mtm.addRowVec(newRow);
+            }
+            
+            mtm.setColumnHidden("schueler_id",true);
+			mtm.setColumnHidden("gebdatum",true);
+	        mtm.setColumnHidden("geschlecht",true);
+	        mtm.setColumnHidden("geloescht",true);
+	        mtm.setColumnHidden("selektiert",true);
+	        mtm.setColumnHidden("bild",true);
+	        mtm.setColumnHidden("typ",true);
+            
+            return mtm;
         } catch (Exception e) {
             e.printStackTrace();
 

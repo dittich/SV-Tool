@@ -55,6 +55,13 @@ public class Main{
 	private JPanel pnlListTable;
 	private JTable table;
 	private JScrollPane scrollPane;
+	private JTextField txtInfoId;
+	private JTextField txtInfoSchuelerId;
+	private JTextField txtInfoNameVorname;
+	private JTextField txtInfoGebDatum;
+	private JTextField txtInfoGeschlecht;
+	private JTextField txtInfoKlasse;
+	private JLabel lblInfoImage;
 	
 
 	/**
@@ -91,7 +98,7 @@ public class Main{
 		frmSvausweise = new JFrame("");
 		frmSvausweise.setIconImage(Toolkit.getDefaultToolkit().getImage(Main.class.getResource("../IMG/sv_ad.png")));
 		frmSvausweise.setTitle("SV-Ausweise 0.1");
-		frmSvausweise.setBounds(100, 100, 800, 610);
+		frmSvausweise.setBounds(100, 100, 800, 587);
 		frmSvausweise.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frmSvausweise.getContentPane().setLayout(null);
 		
@@ -181,13 +188,13 @@ public class Main{
 		pnlWaehlen.add(btnAbwaehlen);
 		
 		pnlListTable = new JPanel();
-		pnlListTable.setBounds(10, 44, 744, 440);
+		pnlListTable.setBounds(10, 44, 500, 440);
 		pnlListe.add(pnlListTable);
 		pnlListTable.setLayout(null);
 		
 		scrollPane = new JScrollPane();
 		scrollPane.setViewportBorder(null);
-		scrollPane.setBounds(0, 0, 744, 440);
+		scrollPane.setBounds(0, 0, 500, 440);
 		pnlListTable.add(scrollPane);
 		
 		JPanel pnlDB = new JPanel();
@@ -450,10 +457,102 @@ public class Main{
 		
 		table = new JTable();
 		scrollPane.add(table);
+		
+		JPanel pnlListInfo = new JPanel();
+		pnlListInfo.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
+		pnlListInfo.setBounds(520, 45, 234, 439);
+		pnlListe.add(pnlListInfo);
+		pnlListInfo.setLayout(null);
+		
+		JLabel lblInfoId = new JLabel("ID");
+		lblInfoId.setBounds(10, 10, 80, 19);
+		pnlListInfo.add(lblInfoId);
+		
+		JLabel lblInfoSchuelerId = new JLabel("Sch\u00FCler ID");
+		lblInfoSchuelerId.setBounds(10, 30, 80, 19);
+		pnlListInfo.add(lblInfoSchuelerId);
+		
+		JLabel lblInfoNameVorname = new JLabel("Name, Vorname");
+		lblInfoNameVorname.setBounds(10, 50, 80, 19);
+		pnlListInfo.add(lblInfoNameVorname);
+		
+		JLabel lblInfoGebDatum = new JLabel("Geburtsdatum");
+		lblInfoGebDatum.setBounds(10, 70, 80, 19);
+		pnlListInfo.add(lblInfoGebDatum);
+		
+		JLabel lblInfoGeschlecht = new JLabel("Geschlecht");
+		lblInfoGeschlecht.setBounds(10, 90, 80, 19);
+		pnlListInfo.add(lblInfoGeschlecht);
+		
+		JLabel lblInfoKlasse = new JLabel("Klasse");
+		lblInfoKlasse.setBounds(10, 110, 80, 19);
+		pnlListInfo.add(lblInfoKlasse);
+		
+		txtInfoId = new JTextField();
+		txtInfoId.setBounds(100, 10, 125, 19);
+		pnlListInfo.add(txtInfoId);
+		txtInfoId.setColumns(10);
+		
+		txtInfoSchuelerId = new JTextField();
+		txtInfoSchuelerId.setBounds(100, 30, 125, 19);
+		pnlListInfo.add(txtInfoSchuelerId);
+		txtInfoSchuelerId.setColumns(10);
+		
+		txtInfoNameVorname = new JTextField();
+		txtInfoNameVorname.setBounds(100, 50, 125, 19);
+		pnlListInfo.add(txtInfoNameVorname);
+		txtInfoNameVorname.setColumns(10);
+		
+		txtInfoGebDatum = new JTextField();
+		txtInfoGebDatum.setBounds(100, 70, 125, 19);
+		pnlListInfo.add(txtInfoGebDatum);
+		txtInfoGebDatum.setColumns(10);
+		
+		txtInfoGeschlecht = new JTextField();
+		txtInfoGeschlecht.setBounds(100, 90, 125, 19);
+		pnlListInfo.add(txtInfoGeschlecht);
+		txtInfoGeschlecht.setColumns(10);
+		
+		txtInfoKlasse = new JTextField();
+		txtInfoKlasse.setBounds(100, 110, 125, 19);
+		pnlListInfo.add(txtInfoKlasse);
+		txtInfoKlasse.setColumns(10);
+		
+		lblInfoImage = new JLabel("");
+		lblInfoImage.setBounds(10, 142, 215, 286);
+		pnlListInfo.add(lblInfoImage);
 	}
 	
 	public void updateTable(String sqlQuery){
 		JTable t = dbDienste.resultSetToTable(sqlQuery);
 		scrollPane.setViewportView(t);
+	}
+
+	public void setTxtInfoId(int id) {
+		this.txtInfoId.setText(""+id);
+	}
+
+	public void setTxtInfoSchuelerId(int susId) {
+		this.txtInfoSchuelerId.setText(""+susId);
+	}
+
+	public void setTxtInfoNameVorname(String name, String vorname) {
+		this.txtInfoNameVorname.setText(name+", "+vorname);
+	}
+
+	public void setTxtInfoGebDatum(String gebDatum) {
+		this.txtInfoGebDatum.setText(gebDatum);
+	}
+
+	public void setTxtInfoGeschlecht(String geschlecht) {
+		this.txtInfoGeschlecht.setText(geschlecht);
+	}
+
+	public void setTxtInfoKlasse(String klasse) {
+		this.txtInfoKlasse.setText(klasse);
+	}
+
+	public JLabel getLblInfoImage() {
+		return lblInfoImage;
 	}
 }
