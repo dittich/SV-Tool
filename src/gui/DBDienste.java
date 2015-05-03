@@ -18,6 +18,7 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JPanel;
 import javax.swing.JTable;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
 import svt.SVTool;
@@ -126,6 +127,25 @@ public class DBDienste{
 		}
 	}
 	
+	public JTable resultSetToTableZuweisen(String sqlQuery){
+		ResultSet rs = svtool.sqlQuery(sqlQuery);
+		JTable tbl = new JTable(resultSetToTableModel(rs));
+		
+		tbl.setDefaultRenderer(Object.class, new DefaultTableCellRenderer());
+		
+		minCol(tbl,"id");
+		minCol(tbl,"schueler_id");
+		minCol(tbl,"gebdatum");
+		minCol(tbl,"geschlecht");
+		minCol(tbl,"geloescht");
+		minCol(tbl,"selektiert");
+		minCol(tbl,"klasse");
+		minCol(tbl,"bild");
+		minCol(tbl,"typ");
+		
+		return tbl;
+	}
+	
 	public JTable resultSetToTable(String sqlQuery){
 		ResultSet rs = svtool.sqlQuery(sqlQuery);
 		if(rs!=null) lastSql=sqlQuery;
@@ -214,7 +234,8 @@ public class DBDienste{
                 rows.addElement(newRow);
             }
 
-            return new SvTableModel(rows, columnNames);
+            //return new SvTableModel(rows, columnNames);
+            return new DefaultTableModel(rows, columnNames);
         } catch (Exception e) {
             e.printStackTrace();
 

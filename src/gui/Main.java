@@ -37,7 +37,7 @@ import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 
 import javax.swing.JScrollPane;
-import javax.swing.border.CompoundBorder;
+import javax.swing.JList;
 
 public class Main{
 
@@ -63,6 +63,7 @@ public class Main{
 	private JPanel pnlListTable;
 	private JTable table;
 	private JScrollPane scrollPane;
+	private JScrollPane scrollPaneZuweisen;
 	private JTextField txtInfoId;
 	private JTextField txtInfoSchuelerId;
 	private JTextField txtInfoNameVorname;
@@ -71,7 +72,7 @@ public class Main{
 	private JTextField txtInfoKlasse;
 	private JLabel lblInfoImage;
 	private JTextField txtEsImportOrdner;
-	private JLabel lblImgBearbeiten;
+	private DragPanel pnlImgWork;
 	
 
 	/**
@@ -121,9 +122,83 @@ public class Main{
 		
 		JPanel pnlImgDirectory = new JPanel();
 		pnlImgDirectory.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
-		pnlImgDirectory.setBounds(0, 0, 260, 495);
+		pnlImgDirectory.setBounds(0, 0, 220, 495);
 		pnlBilder.add(pnlImgDirectory);
 		pnlImgDirectory.setLayout(null);
+		
+		JPanel pnlImgBearbeiten = new JPanel();
+		pnlImgBearbeiten.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
+		pnlImgBearbeiten.setBounds(225, 0, 540, 495);
+		pnlBilder.add(pnlImgBearbeiten);
+		pnlImgBearbeiten.setLayout(null);
+		
+		JPanel pnlImgBild = new JPanel();
+		pnlImgBild.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
+		pnlImgBild.setBounds(10, 10, 370, 475);
+		pnlImgBearbeiten.add(pnlImgBild);
+		pnlImgBild.setLayout(null);
+		
+		pnlImgWork = new DragPanel();
+		pnlImgWork.setBounds(10, 10, 350, 450);
+		pnlImgBild.add(pnlImgWork);
+		
+		JPanel pnlImgZuweisen = new JPanel();
+		pnlImgZuweisen.setBounds(390, 10, 150, 475);
+		pnlImgBearbeiten.add(pnlImgZuweisen);
+		pnlImgZuweisen.setLayout(null);
+		
+		JLabel lblImgNewImage = new JLabel("");
+		lblImgNewImage.setBounds(23, 10, 105, 135);
+		pnlImgZuweisen.add(lblImgNewImage);
+		
+		JButton btnImgAusschneiden = new JButton("Ausschneiden");
+		btnImgAusschneiden.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				BufferedImage img1 = pnlImgWork.chop();
+				BufferedImage img2 = new ImageScaler().scaleImage(img1, new Dimension(210,270));
+				lblImgNewImage.setIcon(new ImageIcon(new ImageScaler().scaleImage(img1, new Dimension(105,135))));
+			}
+		});
+		btnImgAusschneiden.setBounds(10, 425, 130, 19);
+		pnlImgZuweisen.add(btnImgAusschneiden);
+		
+		JComboBox cboImgKlasse = new JComboBox();
+		cboImgKlasse.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+            	String klasse = cboImgKlasse.getSelectedItem().toString();
+            	if(!klasse.equals("")){
+            		String sqlQuery = "SELECT * FROM sv_schueler WHERE klasse='"+klasse+"'";
+                    JTable t = dbDienste.resultSetToTableZuweisen(sqlQuery);
+                    scrollPaneZuweisen.setViewportView(t);
+            	}
+            }
+        });
+		cboImgKlasse.setBounds(10, 155, 130, 19);
+		pnlImgZuweisen.add(cboImgKlasse);
+		
+		scrollPaneZuweisen = new JScrollPane();
+		scrollPaneZuweisen.setViewportBorder(null);
+		scrollPaneZuweisen.setBounds(10, 185, 130, 230);
+		pnlImgZuweisen.add(scrollPaneZuweisen);
+		
+		JTable tblImgSuS = new JTable();
+		tblImgSuS.setBounds(0, 0, 0, 0);
+		scrollPaneZuweisen.add(tblImgSuS);
+		
+		JButton btnImgZuweisen = new JButton("Zuweisen");
+		btnImgZuweisen.setBounds(10, 445, 130, 19);
+		pnlImgZuweisen.add(btnImgZuweisen);
+		
+		JPanel pnlListe = new JPanel();
+		pnlListe.setBounds(10, 45, 764, 495);
+		frmSvausweise.getContentPane().add(pnlListe);
+		pnlListe.setLayout(null);
+		pnlListe.setVisible(false);
+		
+		JPanel pnlListMenue = new JPanel();
+		pnlListMenue.setBounds(0, 0, 764, 34);
+		pnlListe.add(pnlListMenue);
+		pnlListMenue.setLayout(null);
 		
 		JFileChooser fileChooser = new JFileChooser();
 		fileChooser.addActionListener(new ActionListener() {
@@ -137,9 +212,9 @@ public class Main{
 					BufferedImage image;
 					try {
 						image = ImageIO.read(new File(selectedFile.getParent()+"\\"+selectedFile.getName()));
-						BufferedImage image1 = new ImageScaler().scaleImage(image, new Dimension(285,455));
-						ImageIcon image2 = new ImageIcon(image1);
-						lblImgBearbeiten.setIcon(image2);
+						BufferedImage image1 = new ImageScaler().scaleImage(image, new Dimension(350,450));
+						System.out.println(pnlImgWork.toString());
+						pnlImgWork.setImage(image1);
 					} catch (IOException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -155,39 +230,8 @@ public class Main{
 			}
 		});
 		fileChooser.setCurrentDirectory(svtool.getImportOrdner());
-		fileChooser.setBounds(10, 11, 240, 473);
+		fileChooser.setBounds(0, 10, 220, 475);
 		pnlImgDirectory.add(fileChooser);
-		
-		JPanel pnlImgBearbeiten = new JPanel();
-		pnlImgBearbeiten.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
-		pnlImgBearbeiten.setBounds(270, 0, 495, 495);
-		pnlBilder.add(pnlImgBearbeiten);
-		pnlImgBearbeiten.setLayout(null);
-		
-		JPanel pnlImgBild = new JPanel();
-		pnlImgBild.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
-		pnlImgBild.setBounds(10, 10, 305, 475);
-		pnlImgBearbeiten.add(pnlImgBild);
-		pnlImgBild.setLayout(null);
-		
-		lblImgBearbeiten = new JLabel("");
-		lblImgBearbeiten.setBounds(10, 10, 285, 455);
-		pnlImgBild.add(lblImgBearbeiten);
-		
-		JPanel pnlImgZuweisen = new JPanel();
-		pnlImgZuweisen.setBounds(325, 10, 160, 475);
-		pnlImgBearbeiten.add(pnlImgZuweisen);
-		
-		JPanel pnlListe = new JPanel();
-		pnlListe.setBounds(10, 45, 764, 495);
-		frmSvausweise.getContentPane().add(pnlListe);
-		pnlListe.setLayout(null);
-		pnlListe.setVisible(false);
-		
-		JPanel pnlListMenue = new JPanel();
-		pnlListMenue.setBounds(0, 0, 764, 34);
-		pnlListe.add(pnlListMenue);
-		pnlListMenue.setLayout(null);
 		
 		JButton btnListAlle = new JButton("A");
 		btnListAlle.addActionListener(new ActionListener() {
@@ -606,6 +650,7 @@ public class Main{
 		btnBilder.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				dbDienste.setVisibleMenuePanel(pnlBilder);
+				dbDienste.fuelleCombobox(cboImgKlasse, "SELECT klasse FROM sv_schueler GROUP BY klasse ORDER BY klasse");
 				System.out.println("Papa");
 			}
 		});
