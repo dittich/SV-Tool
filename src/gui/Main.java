@@ -1,9 +1,12 @@
 package gui;
 
 import java.awt.EventQueue;
+import java.io.File;
 import java.io.IOException;
 
 import javax.swing.ImageIcon;
+import javax.swing.JDialog;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JButton;
 
@@ -62,6 +65,7 @@ public class Main{
 	private JTextField txtInfoGeschlecht;
 	private JTextField txtInfoKlasse;
 	private JLabel lblInfoImage;
+	private JTextField txtEsImportOrdner;
 	
 
 	/**
@@ -101,6 +105,159 @@ public class Main{
 		frmSvausweise.setBounds(100, 100, 800, 587);
 		frmSvausweise.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frmSvausweise.getContentPane().setLayout(null);
+		
+		JPanel pnlBilder = new JPanel();
+		pnlBilder.setBounds(10, 45, 764, 495);
+		frmSvausweise.getContentPane().add(pnlBilder);
+		pnlBilder.setLayout(null);
+		pnlBilder.setVisible(false);
+		dbDienste.addMenuePanel(pnlBilder);
+		
+		JPanel pnlImgDirectory = new JPanel();
+		pnlImgDirectory.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
+		pnlImgDirectory.setBounds(0, 0, 260, 495);
+		pnlBilder.add(pnlImgDirectory);
+		pnlImgDirectory.setLayout(null);
+		
+		JFileChooser fileChooser = new JFileChooser();
+		fileChooser.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent actionEvent) {
+		        JFileChooser theFileChooser = (JFileChooser) actionEvent.getSource();
+		        String command = actionEvent.getActionCommand();
+		        if (command.equals(JFileChooser.APPROVE_SELECTION)) {
+		          File selectedFile = theFileChooser.getSelectedFile();
+		          System.out.println(selectedFile.getParent());
+		          System.out.println(selectedFile.getName());
+		        } else if (command.equals(JFileChooser.CANCEL_SELECTION)) {
+		          System.out.println(JFileChooser.CANCEL_SELECTION);
+		        }
+		      }
+		});
+		fileChooser.setCurrentDirectory(svtool.getImportOrdner());
+		fileChooser.setBounds(10, 11, 240, 473);
+		pnlImgDirectory.add(fileChooser);
+		
+		JPanel pnlEinstellungen = new JPanel();
+		pnlEinstellungen.setBounds(10, 45, 764, 495);
+		frmSvausweise.getContentPane().add(pnlEinstellungen);
+		pnlEinstellungen.setLayout(null);
+		
+		JPanel pnlEsDb = new JPanel();
+		pnlEsDb.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
+		pnlEsDb.setBounds(0, 0, 240, 272);
+		pnlEinstellungen.add(pnlEsDb);
+		pnlEsDb.setLayout(null);
+		
+		JLabel lblEsDbIp = new JLabel("Server (IP)");
+		lblEsDbIp.setBounds(10, 51, 100, 19);
+		pnlEsDb.add(lblEsDbIp);
+		lblEsDbIp.setFont(new Font("Tahoma", Font.PLAIN, 11));
+		
+		txtEsDbIp = new JTextField();
+		txtEsDbIp.setBounds(10, 71, 100, 19);
+		pnlEsDb.add(txtEsDbIp);
+		txtEsDbIp.setFont(new Font("Tahoma", Font.PLAIN, 11));
+		txtEsDbIp.setColumns(10);
+		
+		JLabel lblEsDbPort = new JLabel("Port");
+		lblEsDbPort.setBounds(130, 50, 100, 19);
+		pnlEsDb.add(lblEsDbPort);
+		
+		txtEsDbPort = new JTextField();
+		txtEsDbPort.setBounds(130, 70, 100, 19);
+		pnlEsDb.add(txtEsDbPort);
+		txtEsDbPort.setColumns(10);
+		
+		JLabel lblEsDbName = new JLabel("Db-Name");
+		lblEsDbName.setBounds(10, 95, 100, 19);
+		pnlEsDb.add(lblEsDbName);
+		
+		txtEsDbName = new JTextField();
+		txtEsDbName.setBounds(10, 115, 100, 19);
+		pnlEsDb.add(txtEsDbName);
+		txtEsDbName.setColumns(10);
+		pnlEinstellungen.setVisible(false);
+		
+		JLabel lblEsDbUsername = new JLabel("Username");
+		lblEsDbUsername.setBounds(10, 140, 100, 19);
+		pnlEsDb.add(lblEsDbUsername);
+		
+		txtEsDbUser = new JTextField();
+		txtEsDbUser.setBounds(10, 160, 100, 19);
+		pnlEsDb.add(txtEsDbUser);
+		txtEsDbUser.setColumns(10);
+		
+		JLabel lblEsDbPasswort = new JLabel("Passwort");
+		lblEsDbPasswort.setBounds(130, 140, 100, 19);
+		pnlEsDb.add(lblEsDbPasswort);
+		
+		txtEsDbPassword = new JTextField();
+		txtEsDbPassword.setBounds(130, 160, 100, 19);
+		pnlEsDb.add(txtEsDbPassword);
+		txtEsDbPassword.setColumns(10);
+		
+		JLabel lblEsDbStatus = new JLabel("DB Status");
+		lblEsDbStatus.setHorizontalAlignment(SwingConstants.CENTER);
+		lblEsDbStatus.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		lblEsDbStatus.setBounds(10, 245, 220, 19);
+		pnlEsDb.add(lblEsDbStatus);
+		
+		JButton btnEsDbVerbindungstest = new JButton("Test");
+		btnEsDbVerbindungstest.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				boolean dbTest = svtool.testDbVerbindung();
+				if(dbTest)lblEsDbStatus.setText("Erfolgreich");
+				else lblEsDbStatus.setText("Verbindungsfehler");
+				
+			}
+		});
+		btnEsDbVerbindungstest.setBounds(10, 220, 220, 19);
+		pnlEsDb.add(btnEsDbVerbindungstest);
+		
+		JLabel lblEsDbVerbindung = new JLabel("Datenbank - Verbindung");
+		lblEsDbVerbindung.setHorizontalAlignment(SwingConstants.CENTER);
+		lblEsDbVerbindung.setFont(new Font("Tahoma", Font.BOLD, 16));
+		lblEsDbVerbindung.setBounds(10, 10, 220, 40);
+		pnlEsDb.add(lblEsDbVerbindung);
+		
+		JButton btnEsDbSpeichern = new JButton("Speichern");
+		btnEsDbSpeichern.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				svtool.setDbDaten(txtEsDbIp.getText(), txtEsDbName.getText(), txtEsDbUser.getText(), txtEsDbPassword.getText());
+				svtool.einstellungenSpeichern();
+			}
+		});
+		btnEsDbSpeichern.setBounds(10, 195, 220, 19);
+		pnlEsDb.add(btnEsDbSpeichern);
+		dbDienste.addMenuePanel(pnlEinstellungen);
+		
+		JPanel pnlEsImportOrdner = new JPanel();
+		pnlEsImportOrdner.setBounds(251, 0, 170, 90);
+		pnlEinstellungen.add(pnlEsImportOrdner);
+		pnlEsImportOrdner.setLayout(null);
+		
+		JLabel lblEsImportOrdner = new JLabel("Import - Ordner");
+		lblEsImportOrdner.setBounds(10, 10, 150, 20);
+		lblEsImportOrdner.setHorizontalAlignment(SwingConstants.CENTER);
+		lblEsImportOrdner.setFont(new Font("Tahoma", Font.BOLD, 16));
+		pnlEsImportOrdner.add(lblEsImportOrdner);
+		
+		txtEsImportOrdner = new JTextField();
+		txtEsImportOrdner.setText(svtool.getImportOrdner().toString());
+		txtEsImportOrdner.setBounds(10, 40, 150, 19);
+		pnlEsImportOrdner.add(txtEsImportOrdner);
+		txtEsImportOrdner.setColumns(10);
+		
+		JButton btnEsImportOrdner = new JButton("Ordner w\u00E4hlen");
+		btnEsImportOrdner.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				File importOrdner = SwingUtil.getDirectoryChoice(new JDialog(), txtEsImportOrdner.getText(), "Odner");
+				txtEsImportOrdner.setText(importOrdner.toString());
+				svtool.setImportOrdner(importOrdner);
+			}
+		});
+		btnEsImportOrdner.setBounds(10, 60, 150, 19);
+		pnlEsImportOrdner.add(btnEsImportOrdner);
 		
 		JPanel pnlListe = new JPanel();
 		pnlListe.setBounds(10, 45, 764, 495);
@@ -255,105 +412,6 @@ public class Main{
 			}
 		});
 		
-		JPanel pnlEinstellungen = new JPanel();
-		pnlEinstellungen.setBounds(10, 45, 764, 495);
-		frmSvausweise.getContentPane().add(pnlEinstellungen);
-		pnlEinstellungen.setLayout(null);
-		
-		JPanel pnlEsDb = new JPanel();
-		pnlEsDb.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
-		pnlEsDb.setBounds(0, 0, 240, 272);
-		pnlEinstellungen.add(pnlEsDb);
-		pnlEsDb.setLayout(null);
-		
-		JLabel lblEsDbIp = new JLabel("Server (IP)");
-		lblEsDbIp.setBounds(10, 51, 100, 19);
-		pnlEsDb.add(lblEsDbIp);
-		lblEsDbIp.setFont(new Font("Tahoma", Font.PLAIN, 11));
-		
-		txtEsDbIp = new JTextField();
-		txtEsDbIp.setBounds(10, 71, 100, 19);
-		pnlEsDb.add(txtEsDbIp);
-		txtEsDbIp.setFont(new Font("Tahoma", Font.PLAIN, 11));
-		txtEsDbIp.setColumns(10);
-		
-		JLabel lblEsDbPort = new JLabel("Port");
-		lblEsDbPort.setBounds(130, 50, 100, 19);
-		pnlEsDb.add(lblEsDbPort);
-		
-		txtEsDbPort = new JTextField();
-		txtEsDbPort.setBounds(130, 70, 100, 19);
-		pnlEsDb.add(txtEsDbPort);
-		txtEsDbPort.setColumns(10);
-		
-		JLabel lblEsDbName = new JLabel("Db-Name");
-		lblEsDbName.setBounds(10, 95, 100, 19);
-		pnlEsDb.add(lblEsDbName);
-		
-		txtEsDbName = new JTextField();
-		txtEsDbName.setBounds(10, 115, 100, 19);
-		pnlEsDb.add(txtEsDbName);
-		txtEsDbName.setColumns(10);
-		pnlEinstellungen.setVisible(false);
-		
-		JLabel lblEsDbUsername = new JLabel("Username");
-		lblEsDbUsername.setBounds(10, 140, 100, 19);
-		pnlEsDb.add(lblEsDbUsername);
-		
-		txtEsDbUser = new JTextField();
-		txtEsDbUser.setBounds(10, 160, 100, 19);
-		pnlEsDb.add(txtEsDbUser);
-		txtEsDbUser.setColumns(10);
-		
-		JLabel lblEsDbPasswort = new JLabel("Passwort");
-		lblEsDbPasswort.setBounds(130, 140, 100, 19);
-		pnlEsDb.add(lblEsDbPasswort);
-		
-		txtEsDbPassword = new JTextField();
-		txtEsDbPassword.setBounds(130, 160, 100, 19);
-		pnlEsDb.add(txtEsDbPassword);
-		txtEsDbPassword.setColumns(10);
-		
-		JLabel lblEsDbStatus = new JLabel("DB Status");
-		lblEsDbStatus.setHorizontalAlignment(SwingConstants.CENTER);
-		lblEsDbStatus.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblEsDbStatus.setBounds(10, 245, 220, 19);
-		pnlEsDb.add(lblEsDbStatus);
-		
-		JButton btnEsDbVerbindungstest = new JButton("Test");
-		btnEsDbVerbindungstest.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				boolean dbTest = svtool.testDbVerbindung();
-				if(dbTest)lblEsDbStatus.setText("Erfolgreich");
-				else lblEsDbStatus.setText("Verbindungsfehler");
-				
-			}
-		});
-		btnEsDbVerbindungstest.setBounds(10, 220, 220, 19);
-		pnlEsDb.add(btnEsDbVerbindungstest);
-		
-		JLabel lblEsDbVerbindung = new JLabel("Datenbank - Verbindung");
-		lblEsDbVerbindung.setHorizontalAlignment(SwingConstants.CENTER);
-		lblEsDbVerbindung.setFont(new Font("Tahoma", Font.BOLD, 16));
-		lblEsDbVerbindung.setBounds(10, 10, 220, 40);
-		pnlEsDb.add(lblEsDbVerbindung);
-		
-		JButton btnEsDbSpeichern = new JButton("Speichern");
-		btnEsDbSpeichern.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				svtool.setDbDaten(txtEsDbIp.getText(), txtEsDbName.getText(), txtEsDbUser.getText(), txtEsDbPassword.getText());
-				svtool.einstellungenSpeichern();
-			}
-		});
-		btnEsDbSpeichern.setBounds(10, 195, 220, 19);
-		pnlEsDb.add(btnEsDbSpeichern);
-		
-		JPanel pnlBilder = new JPanel();
-		pnlBilder.setBounds(10, 45, 764, 495);
-		frmSvausweise.getContentPane().add(pnlBilder);
-		pnlBilder.setLayout(null);
-		pnlBilder.setVisible(false);
-		
 		JPanel pnlDisk = new JPanel();
 		pnlDisk.setBounds(10, 45, 764, 495);
 		frmSvausweise.getContentPane().add(pnlDisk);
@@ -438,6 +496,7 @@ public class Main{
 		});
 		btnBilder.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				dbDienste.setVisibleMenuePanel(pnlBilder);
 				System.out.println("Papa");
 			}
 		});
@@ -448,11 +507,9 @@ public class Main{
 				System.out.println("Rahel");
 			}
 		});
-		dbDienste.addMenuePanel(pnlBilder);
 		dbDienste.addMenuePanel(pnlDisk);
 		dbDienste.addMenuePanel(pnlPDF);
 		dbDienste.addMenuePanel(pnlDB);
-		dbDienste.addMenuePanel(pnlEinstellungen);
 		dbDienste.addMenuePanel(pnlListe);
 		
 		table = new JTable();

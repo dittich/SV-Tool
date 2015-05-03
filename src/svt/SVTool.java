@@ -1,5 +1,6 @@
 package svt;
 
+import java.io.File;
 import java.sql.ResultSet;
 
 import dv.Dateimanager;
@@ -29,6 +30,19 @@ public class SVTool {
 	public void einstellungenSpeichern()
 	{
 		dm.speichern(einstellungen,"config.svt");
+	}
+	
+	public File getImportOrdner()
+	{
+		File importOrdner = einstellungen.getImportOrdner();
+		if(importOrdner==null)return new File("C:");
+		return importOrdner;
+	}
+	
+	public void setImportOrdner(File importOrdner)
+	{
+		einstellungen.setImportOrdner(importOrdner);
+		einstellungenSpeichern();
 	}
 	
 	public String getDbTable()

@@ -1,5 +1,6 @@
 package svt;
 
+import java.io.File;
 import java.io.Serializable;
 
 public class Einstellungen implements Serializable{
@@ -13,6 +14,8 @@ public class Einstellungen implements Serializable{
 	
 	private String dbUser;
 	private String dbPassword;
+	
+	private File importOrdner;
 	
 	private String sicherungsDatei = "config.svt";;
 	
@@ -75,5 +78,13 @@ public class Einstellungen implements Serializable{
 
 	public void setDbPort(int dbPort) {
 		this.dbPort = dbPort;
+	}
+
+	public File getImportOrdner() {
+		return importOrdner;
+	}
+
+	public void setImportOrdner(File importOrdner) {
+		this.importOrdner = importOrdner;
 	}
 }
