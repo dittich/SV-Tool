@@ -15,6 +15,12 @@ import javax.swing.JButton;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
+import java.awt.event.ContainerEvent;
+import java.awt.event.ContainerListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.Toolkit;
 
 import javax.swing.JPanel;
@@ -24,6 +30,8 @@ import java.awt.Font;
 
 import javax.swing.JTextField;
 import javax.swing.border.BevelBorder;
+import javax.swing.event.AncestorEvent;
+import javax.swing.event.AncestorListener;
 import javax.swing.SwingConstants;
 
 import svt.Einstellungen;
@@ -213,11 +221,28 @@ public class Main{
 		pnlListMenue.setLayout(null);
 		
 		JFileChooser fileChooser = new JFileChooser();
+		
 		fileChooser.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent actionEvent) {
 				JFileChooser theFileChooser = (JFileChooser) actionEvent.getSource();
 				String command = actionEvent.getActionCommand();
+				
 				if (command.equals(JFileChooser.APPROVE_SELECTION)) {
+					File selectedFile = theFileChooser.getSelectedFile();
+					System.out.println(selectedFile.getParent());
+					System.out.println(selectedFile.getName());
+					BufferedImage image;
+					try {
+						image = ImageIO.read(new File(selectedFile.getParent()+"\\"+selectedFile.getName()));
+						BufferedImage image1 = new ImageScaler().scaleImage(image, new Dimension(350,450));
+						System.out.println(pnlImgWork.toString());
+						pnlImgWork.setImage(image1);
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+				else if (command.equals(JFileChooser.SELECTED_FILE_CHANGED_PROPERTY)) {
 					File selectedFile = theFileChooser.getSelectedFile();
 					System.out.println(selectedFile.getParent());
 					System.out.println(selectedFile.getName());
@@ -235,7 +260,8 @@ public class Main{
 					//Image image = Toolkit.getDefaultToolkit().getImage(selectedFile.getParent()+"\\"+selectedFile.getName());
 					//Image image1 = new ImageScaler().scaleImage(image, new Dimension(210,270));
 					
-				} else if (command.equals(JFileChooser.CANCEL_SELECTION)) {
+				}
+				else if (command.equals(JFileChooser.CANCEL_SELECTION)) {
 					theFileChooser.setCurrentDirectory(svtool.getImportOrdner());
 					System.out.println(JFileChooser.CANCEL_SELECTION);
 				}
