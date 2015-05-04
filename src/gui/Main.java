@@ -73,6 +73,7 @@ public class Main{
 	private JLabel lblInfoImage;
 	private JTextField txtEsImportOrdner;
 	private DragPanel pnlImgWork;
+	private BufferedImage imgDbCut;
 	
 
 	/**
@@ -154,9 +155,9 @@ public class Main{
 		JButton btnImgAusschneiden = new JButton("Ausschneiden");
 		btnImgAusschneiden.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				BufferedImage img1 = pnlImgWork.chop();
-				BufferedImage img2 = new ImageScaler().scaleImage(img1, new Dimension(210,270));
-				lblImgNewImage.setIcon(new ImageIcon(new ImageScaler().scaleImage(img1, new Dimension(105,135))));
+				BufferedImage img = pnlImgWork.chop();
+				imgDbCut = new ImageScaler().scaleImage(img, new Dimension(210,270));
+				lblImgNewImage.setIcon(new ImageIcon(new ImageScaler().scaleImage(img, new Dimension(105,135))));
 			}
 		});
 		btnImgAusschneiden.setBounds(10, 425, 130, 19);
@@ -165,11 +166,13 @@ public class Main{
 		JComboBox cboImgKlasse = new JComboBox();
 		cboImgKlasse.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-            	String klasse = cboImgKlasse.getSelectedItem().toString();
-            	if(!klasse.equals("")){
-            		String sqlQuery = "SELECT * FROM sv_schueler WHERE klasse='"+klasse+"'";
-                    JTable t = dbDienste.resultSetToTableZuweisen(sqlQuery);
-                    scrollPaneZuweisen.setViewportView(t);
+            	if(cboImgKlasse.getSelectedItem()!=null){
+            		String klasse = cboImgKlasse.getSelectedItem().toString();
+                	if(!klasse.equals("")){
+                		String sqlQuery = "SELECT * FROM sv_schueler WHERE klasse='"+klasse+"'";
+                        JTable t = dbDienste.resultSetToTableZuweisen(sqlQuery);
+                        scrollPaneZuweisen.setViewportView(t);
+                	}
             	}
             }
         });
@@ -186,6 +189,15 @@ public class Main{
 		scrollPaneZuweisen.add(tblImgSuS);
 		
 		JButton btnImgZuweisen = new JButton("Zuweisen");
+		btnImgZuweisen.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				JTable tbl = (JTable)scrollPaneZuweisen.getViewport().getComponent(0);
+				int idIndex = (int)tbl.getModel().getValueAt(tbl.getColumn("id").getModelIndex(),tbl.getSelectedRow());
+				//imgDbCut - BufferedImage
+				if(svtool.updateSqlImg(idIndex, imgDbCut))System.out.println("OK");
+				else System.out.println("Error");
+			}
+		});
 		btnImgZuweisen.setBounds(10, 445, 130, 19);
 		pnlImgZuweisen.add(btnImgZuweisen);
 		
@@ -258,11 +270,13 @@ public class Main{
 		cboListKlasse = new JComboBox();
 		cboListKlasse.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-            	String klasse = cboListKlasse.getSelectedItem().toString();
-            	if(!klasse.equals("")){
-            		String sqlQuery = "SELECT * FROM sv_schueler WHERE klasse='"+klasse+"'";
-                    JTable t = dbDienste.resultSetToTable(sqlQuery);
-    				scrollPane.setViewportView(t);
+            	if(cboListKlasse.getSelectedItem()!=null){
+            		String klasse = cboListKlasse.getSelectedItem().toString();
+            		if(!klasse.equals("")){
+                		String sqlQuery = "SELECT * FROM sv_schueler WHERE klasse='"+klasse+"'";
+                        JTable t = dbDienste.resultSetToTable(sqlQuery);
+        				scrollPane.setViewportView(t);
+                	}
             	}
             }
         });
@@ -317,9 +331,6 @@ public class Main{
 		scrollPane.setBounds(0, 0, 500, 440);
 		pnlListTable.add(scrollPane);
 		dbDienste.addMenuePanel(pnlListe);
-		
-		table = new JTable();
-		scrollPane.add(table);
 		
 		JPanel pnlListInfo = new JPanel();
 		pnlListInfo.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));

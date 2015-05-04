@@ -1,5 +1,6 @@
 package svt;
 
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.sql.ResultSet;
 
@@ -54,6 +55,10 @@ public class SVTool {
 	{
 		einstellungen.setDbTable(dbTable);
 		einstellungenSpeichern();
+	}
+	
+	public boolean updateSqlImg(int id, BufferedImage img){
+		return dv.sqlUpdateImg(id,img);
 	}
 	
 	public ResultSet sqlQuery(String query)

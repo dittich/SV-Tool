@@ -1,10 +1,16 @@
 package dv;
 
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+
+import javax.imageio.ImageIO;
 
 public class Datenverwaltung {
 	
@@ -51,6 +57,34 @@ public class Datenverwaltung {
 			e.printStackTrace();
 			return false;
 		}
+	}
+	
+	public boolean sqlUpdateImg(int id, BufferedImage img)
+	{
+		return true;
+		//String sqlUpdate = "UPDATE sv_schueler SET selektiert="+select+" WHERE id="+idIndex;
+		/*
+		try {
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			ImageIO.write(img, "jpeg", baos);
+			baos.flush();
+	        
+	        PreparedStatement ps = connect.prepareStatement("UPDATE sv_schueler SET bild, typ VALUES (?,?)");
+	        ps.setBytes(1, baos.toByteArray());
+	        ps.setString(2, "image/jpeg");
+	        
+	        ps.executeUpdate();
+	        
+	        ps.close();
+	        baos.close();
+	        return true;
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return false;
+		}
+		*/
+        
 	}
 	
 	public boolean isConnected() {
