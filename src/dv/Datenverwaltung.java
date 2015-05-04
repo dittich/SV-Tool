@@ -61,17 +61,18 @@ public class Datenverwaltung {
 	
 	public boolean sqlUpdateImg(int id, BufferedImage img)
 	{
-		return true;
 		//String sqlUpdate = "UPDATE sv_schueler SET selektiert="+select+" WHERE id="+idIndex;
-		/*
+		
 		try {
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			ImageIO.write(img, "jpeg", baos);
 			baos.flush();
 	        
-	        PreparedStatement ps = connect.prepareStatement("UPDATE sv_schueler SET bild, typ VALUES (?,?)");
+	        //PreparedStatement ps = connect.prepareStatement("UPDATE sv_schueler SET bild, typ VALUES (?,?)");
+			PreparedStatement ps = connect.prepareStatement("UPDATE sv_schueler SET bild=?, typ=? WHERE id=?");
 	        ps.setBytes(1, baos.toByteArray());
 	        ps.setString(2, "image/jpeg");
+	        ps.setInt(3, id);
 	        
 	        ps.executeUpdate();
 	        
@@ -83,7 +84,7 @@ public class Datenverwaltung {
 			e.printStackTrace();
 			return false;
 		}
-		*/
+		
         
 	}
 	
