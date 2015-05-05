@@ -200,7 +200,7 @@ public class Main{
 		btnImgZuweisen.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				JTable tbl = (JTable)scrollPaneZuweisen.getViewport().getComponent(0);
-				int idIndex = (int)tbl.getModel().getValueAt(tbl.getColumn("id").getModelIndex(),tbl.getSelectedRow());
+				int idIndex = (int)tbl.getModel().getValueAt(tbl.getSelectedRow(),tbl.getColumn("id").getModelIndex());
 				//imgDbCut - BufferedImage
 				if(svtool.updateSqlImg(idIndex, imgDbCut))System.out.println("OK");
 				else System.out.println("Error");

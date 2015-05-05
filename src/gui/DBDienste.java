@@ -133,7 +133,7 @@ public class DBDienste{
 		
 		tbl.setDefaultRenderer(Object.class, new DefaultTableCellRenderer());
 		
-		minCol(tbl,"id");
+		//minCol(tbl,"id");
 		minCol(tbl,"schueler_id");
 		minCol(tbl,"gebdatum");
 		minCol(tbl,"geschlecht");
