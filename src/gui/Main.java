@@ -82,6 +82,7 @@ public class Main{
 	private JTextField txtEsImportOrdner;
 	private DragPanel pnlImgWork;
 	private BufferedImage imgDbCut;
+	private JLabel lblImgNewImage;
 	
 
 	/**
@@ -147,7 +148,7 @@ public class Main{
 		pnlImgBearbeiten.add(pnlImgBild);
 		pnlImgBild.setLayout(null);
 		
-		pnlImgWork = new DragPanel();
+		pnlImgWork = new DragPanel(this);
 		pnlImgWork.setBounds(10, 10, 350, 450);
 		pnlImgBild.add(pnlImgWork);
 		
@@ -156,20 +157,9 @@ public class Main{
 		pnlImgBearbeiten.add(pnlImgZuweisen);
 		pnlImgZuweisen.setLayout(null);
 		
-		JLabel lblImgNewImage = new JLabel("");
+		lblImgNewImage = new JLabel("");
 		lblImgNewImage.setBounds(23, 10, 105, 135);
 		pnlImgZuweisen.add(lblImgNewImage);
-		
-		JButton btnImgAusschneiden = new JButton("Ausschneiden");
-		btnImgAusschneiden.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				BufferedImage img = pnlImgWork.chop();
-				imgDbCut = new ImageScaler().scaleImage(img, new Dimension(210,270));
-				lblImgNewImage.setIcon(new ImageIcon(new ImageScaler().scaleImage(img, new Dimension(105,135))));
-			}
-		});
-		btnImgAusschneiden.setBounds(10, 425, 130, 19);
-		pnlImgZuweisen.add(btnImgAusschneiden);
 		
 		JComboBox cboImgKlasse = new JComboBox();
 		cboImgKlasse.addActionListener(new ActionListener() {
@@ -201,12 +191,13 @@ public class Main{
 			public void actionPerformed(ActionEvent e) {
 				JTable tbl = (JTable)scrollPaneZuweisen.getViewport().getComponent(0);
 				int idIndex = (int)tbl.getModel().getValueAt(tbl.getSelectedRow(),tbl.getColumn("id").getModelIndex());
+				System.out.println(idIndex);
 				//imgDbCut - BufferedImage
 				if(svtool.updateSqlImg(idIndex, imgDbCut))System.out.println("OK");
 				else System.out.println("Error");
 			}
 		});
-		btnImgZuweisen.setBounds(10, 445, 130, 19);
+		btnImgZuweisen.setBounds(10, 426, 130, 38);
 		pnlImgZuweisen.add(btnImgZuweisen);
 		
 		JPanel pnlListe = new JPanel();
@@ -734,5 +725,17 @@ public class Main{
 
 	public JLabel getLblInfoImage() {
 		return lblInfoImage;
+	}
+
+	public JLabel getLblImgNewImage() {
+		return lblImgNewImage;
+	}
+
+	public void setLblImgNewImage(JLabel lblImgNewImage) {
+		this.lblImgNewImage = lblImgNewImage;
+	}
+
+	public void setImgDbCut(BufferedImage imgDbCut) {
+		this.imgDbCut = imgDbCut;
 	}
 }

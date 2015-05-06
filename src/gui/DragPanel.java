@@ -26,9 +26,11 @@ public class DragPanel extends JPanel {
     private Image image;
     private int image_left=0;
     private int image_top=0;
+    private Main main;
     
-    public DragPanel() {
+    public DragPanel(Main main) {
         super(null);
+        this.main = main;
         MouseHandler handler = new MouseHandler();
         addMouseListener(handler);
         addMouseMotionListener(handler);
@@ -118,7 +120,13 @@ public class DragPanel extends JPanel {
         }
 
         public void mouseClicked(MouseEvent arg0) {}
-        public void mouseReleased(MouseEvent arg0) {}
+        public void mouseReleased(MouseEvent arg0) {
+        	DragPanel dp = (DragPanel)arg0.getSource();
+        	BufferedImage img = dp.chop();
+        	BufferedImage imgCut = new ImageScaler().scaleImage(img, new Dimension(210,270));
+        	main.setImgDbCut(imgCut);
+        	main.getLblImgNewImage().setIcon((new ImageIcon(new ImageScaler().scaleImage(img, new Dimension(105,135)))));
+        }
         public void mouseEntered(MouseEvent arg0) {}
         public void mouseExited(MouseEvent arg0) {}
         public void mouseMoved(MouseEvent arg0) {}
