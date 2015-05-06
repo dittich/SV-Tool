@@ -5,6 +5,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
@@ -37,6 +38,10 @@ public class DBDienste{
 		this.svtool = svtool;
 		allMenuePanels = new LinkedList<JPanel>();
 		menuButton = new LinkedList<JButton>();
+	}
+	
+	public void sqlImport(File selectedFile){
+		
 	}
 	
 	public void alleAbwaehlen(JTable tbl){

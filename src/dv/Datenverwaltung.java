@@ -2,6 +2,7 @@ package dv;
 
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -34,6 +35,11 @@ public class Datenverwaltung {
 		
 		dbName = "sv_ausweise";
 		dbTable = "sv_schueler";
+	}
+	
+	public void sqlImport(File jarFile){
+		//CodeSource codeSource = YourImplementingClass.class.getProtectionDomain().getCodeSource();
+		String jarDir = jarFile.getParentFile().getPath();
 	}
 	
 	public ResultSet sqlQuery(String query)

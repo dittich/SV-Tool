@@ -12,6 +12,7 @@ import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JButton;
+import javax.swing.UIManager;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
@@ -46,6 +47,7 @@ import java.awt.image.BufferedImage;
 
 import javax.swing.JScrollPane;
 import javax.swing.JList;
+import javax.swing.JTabbedPane;
 
 public class Main{
 
@@ -65,7 +67,7 @@ public class Main{
 	private JPanel pnlDbTableAuswahl;
 	private JButton btnListe;
 	private JButton btnBilder;
-	private JButton btnDisk;
+	private JButton btnImport;
 	private JButton btnPDF;
 	private JTextField txtSuche;
 	private JPanel pnlListTable;
@@ -83,6 +85,7 @@ public class Main{
 	private DragPanel pnlImgWork;
 	private BufferedImage imgDbCut;
 	private JLabel lblImgNewImage;
+	private JTextField textField;
 	
 
 	/**
@@ -122,6 +125,60 @@ public class Main{
 		frmSvausweise.setBounds(100, 100, 800, 587);
 		frmSvausweise.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frmSvausweise.getContentPane().setLayout(null);
+		
+		JPanel pnlImport = new JPanel();
+		pnlImport.setBounds(10, 45, 764, 495);
+		frmSvausweise.getContentPane().add(pnlImport);
+		pnlImport.setLayout(null);
+		pnlImport.setVisible(false);
+		dbDienste.addMenuePanel(pnlImport);
+		
+		JLabel lblImport = new JLabel("Import");
+		lblImport.setBounds(677, 38, 46, 14);
+		pnlImport.add(lblImport);
+		
+		JPanel pnlImportFileChooser = new JPanel();
+		pnlImportFileChooser.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
+		pnlImportFileChooser.setBounds(0, 0, 417, 495);
+		pnlImport.add(pnlImportFileChooser);
+		pnlImportFileChooser.setLayout(null);
+		
+		UIManager.put("FileChooser.readOnly", Boolean.TRUE); 
+		JFileChooser importFileChooser = new JFileChooser();
+		importFileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+		importFileChooser.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent actionEvent) {
+				JFileChooser theFileChooser = (JFileChooser) actionEvent.getSource();
+				String command = actionEvent.getActionCommand();
+				
+				if (command.equals(JFileChooser.APPROVE_SELECTION)) {
+					File selectedFile = theFileChooser.getSelectedFile();
+					System.out.println("APPROVE_SELECTION");
+					System.out.println(selectedFile.getParent());
+					System.out.println(selectedFile.getName());
+					dbDienste.sqlImport(selectedFile);
+				}
+				else if (command.equals(JFileChooser.CANCEL_SELECTION)) {
+					theFileChooser.setCurrentDirectory(svtool.getImportOrdner());
+					System.out.println(JFileChooser.CANCEL_SELECTION);
+				}
+			}
+		});
+		importFileChooser.setCurrentDirectory(svtool.getImportOrdner());
+		importFileChooser.setBounds(10, 10, 397, 475);
+		pnlImportFileChooser.add(importFileChooser);
+		
+		
+		JPanel pnlExport = new JPanel();
+		pnlExport.setBounds(10, 45, 764, 495);
+		frmSvausweise.getContentPane().add(pnlExport);
+		pnlExport.setLayout(null);
+		pnlExport.setVisible(false);
+		dbDienste.addMenuePanel(pnlExport);
+		
+		JLabel lblExport = new JLabel("Export");
+		lblExport.setBounds(270, 74, 46, 14);
+		pnlExport.add(lblExport);
 		
 		JPanel pnlBilder = new JPanel();
 		pnlBilder.setBounds(10, 45, 764, 495);
@@ -593,12 +650,6 @@ public class Main{
 			}
 		});
 		
-		JPanel pnlDisk = new JPanel();
-		pnlDisk.setBounds(10, 45, 764, 495);
-		frmSvausweise.getContentPane().add(pnlDisk);
-		pnlDisk.setLayout(null);
-		pnlDisk.setVisible(false);
-		
 		JPanel pnlPDF = new JPanel();
 		pnlPDF.setBounds(10, 45, 764, 495);
 		frmSvausweise.getContentPane().add(pnlPDF);
@@ -624,28 +675,40 @@ public class Main{
 		dbDienste.addMenuButton(btnBilder);
 		btnBilder.setEnabled(false);
 		
-		btnDisk = new JButton(new ImageIcon(Main.class.getResource("../IMG/sv_disk.png")));
-		btnDisk.setBounds(70, 0, 34, 34);
-		pnl_buttonMenue.add(btnDisk);
-		btnDisk.setToolTipText("Laden/Speichern");
-		dbDienste.addMenuButton(btnDisk);
-		btnDisk.setEnabled(false);
+		btnImport = new JButton(new ImageIcon(Main.class.getResource("../IMG/sv_import.png")));
+		btnImport.setBounds(70, 0, 34, 34);
+		pnl_buttonMenue.add(btnImport);
+		btnImport.setToolTipText("SQL Import");
+		dbDienste.addMenuButton(btnImport);
+		btnImport.setEnabled(false);
 		
 		btnPDF = new JButton(new ImageIcon(Main.class.getResource("../IMG/sv_pdf.png")));
-		btnPDF.setBounds(105, 0, 34, 34);
+		btnPDF.setBounds(140, 0, 34, 34);
 		pnl_buttonMenue.add(btnPDF);
 		btnPDF.setToolTipText("PDF erstellen");
 		dbDienste.addMenuButton(btnPDF);
 		btnPDF.setEnabled(false);
 		
 		JButton btnDB = new JButton(new ImageIcon(Main.class.getResource("../IMG/sv_db.png")));
-		btnDB.setBounds(140, 0, 34, 34);
+		btnDB.setBounds(175, 0, 34, 34);
 		pnl_buttonMenue.add(btnDB);
 		btnDB.setToolTipText("Datenbank Optionen");
 		
 		JButton btnEinstellungen = new JButton(new ImageIcon(Main.class.getResource("../IMG/sv_einstellungen.png")));
-		btnEinstellungen.setBounds(190, 0, 34, 34);
+		btnEinstellungen.setBounds(225, 0, 34, 34);
 		pnl_buttonMenue.add(btnEinstellungen);
+		
+		JButton btnExport = new JButton(new ImageIcon(Main.class.getResource("../IMG/sv_export.png")));
+		btnExport.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				dbDienste.setVisibleMenuePanel(pnlExport);
+			}
+		});
+		btnExport.setBounds(105, 0, 34, 34);
+		pnl_buttonMenue.add(btnExport);
+		btnExport.setToolTipText("SQL Export");
+		dbDienste.addMenuButton(btnExport);
+		btnExport.setEnabled(false);
 		
 		btnEinstellungen.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -670,8 +733,9 @@ public class Main{
 				System.out.println("Nele");
 			}
 		});
-		btnDisk.addActionListener(new ActionListener() {
+		btnImport.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				dbDienste.setVisibleMenuePanel(pnlImport);
 				System.out.println("Mama");
 			}
 		});
@@ -689,7 +753,6 @@ public class Main{
 				System.out.println("Rahel");
 			}
 		});
-		dbDienste.addMenuePanel(pnlDisk);
 		dbDienste.addMenuePanel(pnlPDF);
 		dbDienste.addMenuePanel(pnlDB);
 	}
