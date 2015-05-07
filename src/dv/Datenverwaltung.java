@@ -20,6 +20,7 @@ import javax.imageio.ImageIO;
 
 public class Datenverwaltung {
 	
+	
 	private String dbIp;
 	
 	private String dbName;
