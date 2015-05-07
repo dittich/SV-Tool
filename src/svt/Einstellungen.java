@@ -22,7 +22,8 @@ public class Einstellungen implements Serializable{
 	
 	private File cmdFile = new File("cmd.exe");
 	private File mysqldumpFile = new File("C:/xampp/mysql/bin/mysqldump.exe");
-	private File mysql = new File("C:/xampp/mysql/bin/mysql.exe");
+	private File mysqlFile = new File("C:/xampp/mysql/bin/mysql.exe");
+	private File mysqlimportFile = new File("C:/xampp/mysql/bin/mysqlimport.exe");
 	
 	public Einstellungen()
 	{
@@ -109,11 +110,19 @@ public class Einstellungen implements Serializable{
 		this.mysqldumpFile = mysqldumpFile;
 	}
 
-	public File getMysql() {
-		return mysql;
+	public File getMysqlFile() {
+		return mysqlFile;
 	}
 
-	public void setMysql(File mysql) {
-		this.mysql = mysql;
+	public void setMysqlFile(File mysqlFile) {
+		this.mysqlFile = mysqlFile;
+	}
+
+	public File getMysqlimportFile() {
+		return mysqlimportFile;
+	}
+
+	public void setMysqlimportFile(File mysqlimportFile) {
+		this.mysqlimportFile = mysqlimportFile;
 	}
 }

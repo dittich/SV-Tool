@@ -23,7 +23,8 @@ public class SVTool {
 	}
 	
 	public boolean sqlImportBackup(File backupFile){
-		return dv.sqlImportBackup(backupFile, einstellungen.getMysql());
+		return dv.sqlImportBackup(backupFile, einstellungen.getCmdFile(), einstellungen.getMysqlFile());
+		//return dv.sqlImportBackup(backupFile, einstellungen.getMysqlFile());
 	}
 	
 	public boolean sqlDump(File fbackup){

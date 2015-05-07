@@ -15,6 +15,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.StringTokenizer;
 
 import javax.imageio.ImageIO;
 
@@ -43,11 +44,16 @@ public class Datenverwaltung {
 		dbTable = "sv_schueler";
 	}
 	
-	public boolean sqlImportBackup(File backupFile, File mysqlFile) { 
+	public boolean sqlImportBackup(File backupFile,File cmd, File mysqlFile) { 
 		boolean wert = false;
-		String mysqlPfad = mysqlFile.getParent()+"/"+mysqlFile.getName();
-		String source = backupFile.getParent()+"/"+backupFile.getName();
-		String[] executeCmd = new String[]{mysqlPfad, "--user=" + dbUser, "--password=" + dbPassword, dbName,"-e", " source "+source};  
+		String mysqlPfad = prepareSpaces(mysqlFile.getParent())+"\\"+mysqlFile.getName();
+		String source = prepareSpaces(backupFile.getParent())+"\\"+backupFile.getName();
+		System.out.println(mysqlPfad);
+		System.out.println(source);
+		String[] executeCmd = new String[] {cmd.getName(), "/c", mysqlPfad+" -u "+dbUser+" -p"+dbPassword+" --max_allowed_packet=1G "+dbName+" < "+source};
+		
+		System.out.println(executeCmd[2]);
+		
 		Process runtimeProcess;
 		try {
 			runtimeProcess = Runtime.getRuntime().exec(executeCmd);
@@ -65,53 +71,51 @@ public class Datenverwaltung {
 		}  
 		return wert;
 	}
-
 	
-	public boolean sqlDump(File fbackup, File cmd, File mysqldump){
-	    // execute mysqldump command
-		String mysqldumpPfad = mysqldump.getParent()+"/"+mysqldump.getName();
-		//String cmdPfad = cmd.getParent()+"/"+cmd.getName();
+	public boolean sqlDump(File fbackup, File cmd, File mysqldump) { 
+		boolean wert = false;
+		String mysqldumpPfad = prepareSpaces(mysqldump.getParent())+"\\"+mysqldump.getName();
+		String source = prepareSpaces(fbackup.getParent())+"\\"+fbackup.getName();
 		
-	    String[] command = new String[] {cmd.getName(), "/c", mysqldumpPfad+" -u "+dbUser+" -p"+dbPassword+" "+dbName};
-	    Process process;
+		System.out.println(mysqldumpPfad);
+		System.out.println(source);
+		
+		String[] executeCmd = new String[] {cmd.getName(), "/c", mysqldumpPfad+" -h "+dbIp+" --u "+dbUser+" -p"+dbPassword+" --hex-blob --max_allowed_packet=1G "+dbName+" > "+source};
+		
+		System.out.println(executeCmd[2]);
+		
+		Process runtimeProcess;
 		try {
-			process = Runtime.getRuntime().exec(command);
-		    // write process output line by line to file
-		    if(process!=null) {
-		        new Thread(new Runnable() {
-		            @Override
-		            public void run() {
-		                try{
-		                    try(BufferedReader reader = new BufferedReader(new InputStreamReader(new DataInputStream(process.getInputStream()))); 
-		                        BufferedWriter writer = new BufferedWriter(new FileWriter(fbackup))) {
-		                        String line;
-		                        while((line=reader.readLine())!=null)   {
-		                            writer.write(line);
-		                            writer.newLine();
-		                        }
-		                    }
-		                } catch(Exception ex){
-		                    // handle or log exception ...
-		                	System.out.println("Das war wohl nix ;-(");
-		                }
-		            }
-		        }).start();
-		    }
-		    if(process!=null && process.waitFor()==0) {
-		        // success ...
-		    	System.out.println("Dump erfolgreich...");
-		    	return true;
-		    } else {
-		        // failed
-		    	System.out.println("Dump failed...");
-		    	return false;
-		    }
+			runtimeProcess = Runtime.getRuntime().exec(executeCmd);
+			int processComplete = runtimeProcess.waitFor();  
+			if (processComplete == 0) {
+				System.out.println("Dump successfully");  
+				wert = true;  
+			}
+			else{  
+				System.out.println("Could not dump"); 
+			} 
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			return false;
+		}  
+		return wert;
+	}
+	
+	private String prepareSpaces(String kette){
+		String result = "";
+		StringTokenizer tko = new StringTokenizer(kette,"\\");
+		while(tko.hasMoreTokens()){
+			String part = tko.nextToken();
+			if(part.indexOf(' ')!=0){
+				part = "\""+part+"\"";
+			}
+			result+=part;
+			if(tko.hasMoreTokens()){
+				result+="\\";
+			}
 		}
-
+		return result;
 	}
 	
 	public void sqlImport(File jarFile){
