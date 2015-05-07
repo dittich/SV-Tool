@@ -1,9 +1,14 @@
 package dv;
 
 import java.awt.image.BufferedImage;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
+import java.io.DataInputStream;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -35,6 +40,77 @@ public class Datenverwaltung {
 		
 		dbName = "sv_ausweise";
 		dbTable = "sv_schueler";
+	}
+	
+	public boolean sqlImportBackup(File backupFile, File mysqlFile) { 
+		boolean wert = false;
+		String mysqlPfad = mysqlFile.getParent()+"/"+mysqlFile.getName();
+		String source = backupFile.getParent()+"/"+backupFile.getName();
+		String[] executeCmd = new String[]{mysqlPfad, "--user=" + dbUser, "--password=" + dbPassword, dbName,"-e", " source "+source};  
+		Process runtimeProcess;
+		try {
+			runtimeProcess = Runtime.getRuntime().exec(executeCmd);
+			int processComplete = runtimeProcess.waitFor();  
+			if (processComplete == 0) {
+				System.out.println("Backup restored successfully");  
+				wert = true;  
+			}
+			else{  
+				System.out.println("Could not restore the backup"); 
+			} 
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}  
+		return wert;
+	}
+
+	
+	public boolean sqlDump(File fbackup, File cmd, File mysqldump){
+	    // execute mysqldump command
+		String mysqldumpPfad = mysqldump.getParent()+"/"+mysqldump.getName();
+		//String cmdPfad = cmd.getParent()+"/"+cmd.getName();
+		
+	    String[] command = new String[] {cmd.getName(), "/c", mysqldumpPfad+" -u "+dbUser+" -p"+dbPassword+" "+dbName};
+	    Process process;
+		try {
+			process = Runtime.getRuntime().exec(command);
+		    // write process output line by line to file
+		    if(process!=null) {
+		        new Thread(new Runnable() {
+		            @Override
+		            public void run() {
+		                try{
+		                    try(BufferedReader reader = new BufferedReader(new InputStreamReader(new DataInputStream(process.getInputStream()))); 
+		                        BufferedWriter writer = new BufferedWriter(new FileWriter(fbackup))) {
+		                        String line;
+		                        while((line=reader.readLine())!=null)   {
+		                            writer.write(line);
+		                            writer.newLine();
+		                        }
+		                    }
+		                } catch(Exception ex){
+		                    // handle or log exception ...
+		                	System.out.println("Das war wohl nix ;-(");
+		                }
+		            }
+		        }).start();
+		    }
+		    if(process!=null && process.waitFor()==0) {
+		        // success ...
+		    	System.out.println("Dump erfolgreich...");
+		    	return true;
+		    } else {
+		        // failed
+		    	System.out.println("Dump failed...");
+		    	return false;
+		    }
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return false;
+		}
+
 	}
 	
 	public void sqlImport(File jarFile){

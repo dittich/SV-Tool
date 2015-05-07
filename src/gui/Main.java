@@ -85,7 +85,6 @@ public class Main{
 	private DragPanel pnlImgWork;
 	private BufferedImage imgDbCut;
 	private JLabel lblImgNewImage;
-	private JTextField textField;
 	
 
 	/**
@@ -122,9 +121,11 @@ public class Main{
 		frmSvausweise = new JFrame("");
 		frmSvausweise.setIconImage(Toolkit.getDefaultToolkit().getImage(Main.class.getResource("../IMG/sv_ad.png")));
 		frmSvausweise.setTitle("SV-Ausweise 0.1");
-		frmSvausweise.setBounds(100, 100, 800, 587);
+		frmSvausweise.setBounds(100, 100, 930, 650);
 		frmSvausweise.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frmSvausweise.getContentPane().setLayout(null);
+		
+		UIManager.put("FileChooser.readOnly", Boolean.TRUE);
 		
 		JPanel pnlImport = new JPanel();
 		pnlImport.setBounds(10, 45, 764, 495);
@@ -134,7 +135,7 @@ public class Main{
 		dbDienste.addMenuePanel(pnlImport);
 		
 		JLabel lblImport = new JLabel("Import");
-		lblImport.setBounds(677, 38, 46, 14);
+		lblImport.setBounds(659, 38, 64, 43);
 		pnlImport.add(lblImport);
 		
 		JPanel pnlImportFileChooser = new JPanel();
@@ -143,8 +144,8 @@ public class Main{
 		pnlImport.add(pnlImportFileChooser);
 		pnlImportFileChooser.setLayout(null);
 		
-		UIManager.put("FileChooser.readOnly", Boolean.TRUE); 
 		JFileChooser importFileChooser = new JFileChooser();
+		importFileChooser.setApproveButtonText("Import");
 		importFileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
 		importFileChooser.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent actionEvent) {
@@ -154,9 +155,7 @@ public class Main{
 				if (command.equals(JFileChooser.APPROVE_SELECTION)) {
 					File selectedFile = theFileChooser.getSelectedFile();
 					System.out.println("APPROVE_SELECTION");
-					System.out.println(selectedFile.getParent());
-					System.out.println(selectedFile.getName());
-					dbDienste.sqlImport(selectedFile);
+					svtool.sqlImportBackup(selectedFile);
 				}
 				else if (command.equals(JFileChooser.CANCEL_SELECTION)) {
 					theFileChooser.setCurrentDirectory(svtool.getImportOrdner());
@@ -168,7 +167,6 @@ public class Main{
 		importFileChooser.setBounds(10, 10, 397, 475);
 		pnlImportFileChooser.add(importFileChooser);
 		
-		
 		JPanel pnlExport = new JPanel();
 		pnlExport.setBounds(10, 45, 764, 495);
 		frmSvausweise.getContentPane().add(pnlExport);
@@ -179,6 +177,35 @@ public class Main{
 		JLabel lblExport = new JLabel("Export");
 		lblExport.setBounds(270, 74, 46, 14);
 		pnlExport.add(lblExport);
+		
+		JPanel pnlExportFileChooser = new JPanel();
+		pnlExportFileChooser.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
+		pnlExportFileChooser.setBounds(0, 0, 417, 495);
+		pnlExport.add(pnlExportFileChooser);
+		pnlExportFileChooser.setLayout(null);
+		
+		JFileChooser exportFileChooser = new JFileChooser();
+		exportFileChooser.setApproveButtonText("Export");
+		exportFileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+		exportFileChooser.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent actionEvent) {
+				JFileChooser theFileChooser = (JFileChooser) actionEvent.getSource();
+				String command = actionEvent.getActionCommand();
+				
+				if (command.equals(JFileChooser.APPROVE_SELECTION)) {
+					File selectedFile = theFileChooser.getSelectedFile();
+					boolean check = svtool.sqlDump(selectedFile);
+					System.out.println(check);
+				}
+				else if (command.equals(JFileChooser.CANCEL_SELECTION)) {
+					theFileChooser.setCurrentDirectory(svtool.getImportOrdner());
+					System.out.println(JFileChooser.CANCEL_SELECTION);
+				}
+			}
+		});
+		exportFileChooser.setCurrentDirectory(svtool.getImportOrdner());
+		exportFileChooser.setBounds(10, 10, 397, 475);
+		pnlExportFileChooser.add(exportFileChooser);
 		
 		JPanel pnlBilder = new JPanel();
 		pnlBilder.setBounds(10, 45, 764, 495);

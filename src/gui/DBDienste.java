@@ -40,10 +40,6 @@ public class DBDienste{
 		menuButton = new LinkedList<JButton>();
 	}
 	
-	public void sqlImport(File selectedFile){
-		
-	}
-	
 	public void alleAbwaehlen(JTable tbl){
 		alleSelektieren(tbl,false);
 	}

@@ -17,7 +17,11 @@ public class Einstellungen implements Serializable{
 	
 	private File importOrdner;
 	
-	private String sicherungsDatei = "config.svt";;
+	private String sicherungsDatei = "config.svt";
+	
+	private File cmdFile = new File("cmd.exe");
+	private File mysqldumpFile = new File("C:/xampp/mysql/bin/mysqldump.exe");
+	private File mysql = new File("C:/xampp/mysql/bin/mysql.exe");
 	
 	public Einstellungen()
 	{
@@ -86,5 +90,29 @@ public class Einstellungen implements Serializable{
 
 	public void setImportOrdner(File importOrdner) {
 		this.importOrdner = importOrdner;
+	}
+
+	public File getCmdFile() {
+		return cmdFile;
+	}
+
+	public void setCmdFile(File cmdFile) {
+		this.cmdFile = cmdFile;
+	}
+
+	public File getMysqldumpFile() {
+		return mysqldumpFile;
+	}
+
+	public void setMysqldumpFile(File mysqldumpFile) {
+		this.mysqldumpFile = mysqldumpFile;
+	}
+
+	public File getMysql() {
+		return mysql;
+	}
+
+	public void setMysql(File mysql) {
+		this.mysql = mysql;
 	}
 }

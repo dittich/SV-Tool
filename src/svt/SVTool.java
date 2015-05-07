@@ -21,6 +21,14 @@ public class SVTool {
 		einstellungenLaden();
 	}
 	
+	public boolean sqlImportBackup(File backupFile){
+		return dv.sqlImportBackup(backupFile, einstellungen.getMysql());
+	}
+	
+	public boolean sqlDump(File fbackup){
+		return dv.sqlDump(fbackup, einstellungen.getCmdFile(), einstellungen.getMysqldumpFile());
+	}
+	
 	public void einstellungenLaden()
 	{
 		Object objEinstellungen = dm.laden("config.svt");
