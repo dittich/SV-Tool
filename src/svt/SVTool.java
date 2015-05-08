@@ -56,6 +56,54 @@ public class SVTool {
 		einstellungenSpeichern();
 	}
 	
+	public File getBilderOrdner()
+	{
+		File bilderOrdner = einstellungen.getBilderOrdner();
+		if(bilderOrdner==null)return new File("C:");
+		return bilderOrdner;
+	}
+	
+	public void setBilderOrdner(File bilderOrdner)
+	{
+		einstellungen.setBilderOrdner(bilderOrdner);
+		einstellungenSpeichern();
+	}
+	
+	public void setMysqlFile(File mysqlFile)
+	{
+		einstellungen.setMysqlFile(mysqlFile);
+		einstellungenSpeichern();
+	}
+	
+	public File getMysqlFile()
+	{
+		return einstellungen.getMysqlFile();
+	}
+	
+	public void setMysqldumpFile(File mysqldumpFile)
+	{
+		einstellungen.setMysqldumpFile(mysqldumpFile);
+		einstellungenSpeichern();
+	}
+	
+	public File getMysqldumpFile()
+	{
+		return einstellungen.getMysqldumpFile();
+	}
+	
+	public File getExportOrdner()
+	{
+		File exportOrdner = einstellungen.getExportOrdner();
+		if(exportOrdner==null)return new File("C:");
+		return exportOrdner;
+	}
+	
+	public void setExportOrdner(File exportOrdner)
+	{
+		einstellungen.setExportOrdner(exportOrdner);
+		einstellungenSpeichern();
+	}
+	
 	public String getDbTable()
 	{
 		return einstellungen.getDbTable();

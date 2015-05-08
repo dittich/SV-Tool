@@ -16,7 +16,9 @@ public class Einstellungen implements Serializable{
 	private String dbUser;
 	private String dbPassword;
 	
-	private File importOrdner;
+	private File importOrdner = new File("C:/");
+	private File exportOrdner = new File("C:/");
+	private File bilderOrdner = new File("C:/");
 	
 	private String sicherungsDatei = "config.svt";
 	
@@ -124,5 +126,21 @@ public class Einstellungen implements Serializable{
 
 	public void setMysqlimportFile(File mysqlimportFile) {
 		this.mysqlimportFile = mysqlimportFile;
+	}
+
+	public File getExportOrdner() {
+		return exportOrdner;
+	}
+
+	public void setExportOrdner(File exportOrdner) {
+		this.exportOrdner = exportOrdner;
+	}
+
+	public File getBilderOrdner() {
+		return bilderOrdner;
+	}
+
+	public void setBilderOrdner(File bilderOrdner) {
+		this.bilderOrdner = bilderOrdner;
 	}
 }

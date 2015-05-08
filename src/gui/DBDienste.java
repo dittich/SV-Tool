@@ -40,6 +40,15 @@ public class DBDienste{
 		menuButton = new LinkedList<JButton>();
 	}
 	
+	public File checkFile(File file){
+		if(file.getParent()==null){
+			String newFileName = file.getName();
+			newFileName.replace("\\", "");
+			file = new File(newFileName);
+		}
+		return file;
+	}
+	
 	public void alleAbwaehlen(JTable tbl){
 		alleSelektieren(tbl,false);
 	}
