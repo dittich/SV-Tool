@@ -367,6 +367,20 @@ public class Main{
 		btnEsBilderOrdner.setBounds(10, 60, 150, 19);
 		pnlEsBilderOrdner.add(btnEsBilderOrdner);
 		
+		JPanel pnlCSV = new JPanel();
+		pnlCSV.setBounds(10, 45, 764, 495);
+		frmSvausweise.getContentPane().add(pnlCSV);
+		pnlCSV.setLayout(null);
+		pnlCSV.setVisible(false);
+		dbDienste.addMenuePanel(pnlCSV);
+		
+		JPanel pnlPDF = new JPanel();
+		pnlPDF.setBounds(10, 45, 764, 495);
+		frmSvausweise.getContentPane().add(pnlPDF);
+		pnlPDF.setLayout(null);
+		pnlPDF.setVisible(false);
+		dbDienste.addMenuePanel(pnlPDF);
+		
 		JPanel pnlImport = new JPanel();
 		pnlImport.setBounds(10, 45, 764, 495);
 		frmSvausweise.getContentPane().add(pnlImport);
@@ -793,12 +807,6 @@ public class Main{
 			}
 		});
 		
-		JPanel pnlPDF = new JPanel();
-		pnlPDF.setBounds(10, 45, 764, 495);
-		frmSvausweise.getContentPane().add(pnlPDF);
-		pnlPDF.setLayout(null);
-		pnlPDF.setVisible(false);
-		
 		JPanel pnl_buttonMenue = new JPanel();
 		pnl_buttonMenue.setBounds(0, 0, 784, 34);
 		frmSvausweise.getContentPane().add(pnl_buttonMenue);
@@ -838,6 +846,7 @@ public class Main{
 		btnDB.setToolTipText("Datenbank Optionen");
 		
 		JButton btnEinstellungen = new JButton(new ImageIcon(Main.class.getResource("../IMG/sv_einstellungen.png")));
+		btnEinstellungen.setToolTipText("Einstellungen");
 		btnEinstellungen.setBounds(225, 0, 34, 34);
 		pnl_buttonMenue.add(btnEinstellungen);
 		
@@ -852,6 +861,19 @@ public class Main{
 		btnExport.setToolTipText("SQL Export");
 		dbDienste.addMenuButton(btnExport);
 		btnExport.setEnabled(false);
+		
+		JButton btnCSV = new JButton(new ImageIcon(Main.class.getResource("../IMG/sv_csv.png")));
+		btnCSV.setToolTipText("SuS Import aus Schild");
+		btnCSV.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				dbDienste.setVisibleMenuePanel(pnlCSV);
+				System.out.println("CSV - Import neuer SuS");
+			}
+		});
+		btnCSV.setBounds(300, 0, 34, 34);
+		pnl_buttonMenue.add(btnCSV);
+		dbDienste.addMenuButton(btnCSV);
+		btnCSV.setEnabled(false);
 		
 		btnEinstellungen.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -896,7 +918,6 @@ public class Main{
 				System.out.println("Rahel");
 			}
 		});
-		dbDienste.addMenuePanel(pnlPDF);
 		dbDienste.addMenuePanel(pnlDB);
 	}
 	
