@@ -19,6 +19,7 @@ public class Einstellungen implements Serializable{
 	private File importOrdner = new File("C:/");
 	private File exportOrdner = new File("C:/");
 	private File bilderOrdner = new File("C:/");
+	private File pdfOrdner = new File("C:/");
 	
 	private String sicherungsDatei = "config.svt";
 	
@@ -142,5 +143,13 @@ public class Einstellungen implements Serializable{
 
 	public void setBilderOrdner(File bilderOrdner) {
 		this.bilderOrdner = bilderOrdner;
+	}
+
+	public File getPdfOrdner() {
+		return pdfOrdner;
+	}
+
+	public void setPdfOrdner(File pdfOrdner) {
+		this.pdfOrdner = pdfOrdner;
 	}
 }

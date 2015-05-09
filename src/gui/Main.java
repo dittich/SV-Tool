@@ -93,6 +93,7 @@ public class Main{
 	private JTextField txtEsMysqlFile;
 	private JTextField txtEsMysqldumpFile;
 	private JTextField txtEsBilderOrdner;
+	private JTextField txtEsPDFOrdner;
 	
 
 	/**
@@ -252,8 +253,10 @@ public class Main{
 		btnEsImportOrdner.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				File importOrdner = SwingUtil.getDirectoryChoice(new JDialog(), txtEsImportOrdner.getText(), "Ordner");
-				txtEsImportOrdner.setText(importOrdner.toString());
-				svtool.setImportOrdner(dbDienste.checkFile(importOrdner));
+				if(importOrdner!=null){
+					txtEsImportOrdner.setText(importOrdner.toString());
+					svtool.setImportOrdner(dbDienste.checkFile(importOrdner));
+				}
 			}
 		});
 		btnEsImportOrdner.setBounds(10, 60, 150, 19);
@@ -282,8 +285,10 @@ public class Main{
 		btnEsExportOrdner.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				File exportOrdner = SwingUtil.getDirectoryChoice(new JDialog(), txtEsExportOrdner.getText(), "Export - Ordner");
-				txtEsExportOrdner.setText(exportOrdner.toString());
-				svtool.setExportOrdner(dbDienste.checkFile(exportOrdner));
+				if(exportOrdner!=null){
+					txtEsExportOrdner.setText(exportOrdner.toString());
+					svtool.setExportOrdner(dbDienste.checkFile(exportOrdner));
+				}
 			}
 		});
 		btnEsExportOrdner.setBounds(10, 60, 150, 19);
@@ -360,12 +365,46 @@ public class Main{
 		btnEsBilderOrdner.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				File bilderOrdner = SwingUtil.getDirectoryChoice(new JDialog(), txtEsBilderOrdner.getText(), "Bilder - Ordner");
-				txtEsBilderOrdner.setText(bilderOrdner.toString());
-				svtool.setBilderOrdner(dbDienste.checkFile(bilderOrdner));
+				if(bilderOrdner!=null){
+					txtEsBilderOrdner.setText(bilderOrdner.toString());
+					svtool.setBilderOrdner(dbDienste.checkFile(bilderOrdner));
+				}
 			}
 		});
 		btnEsBilderOrdner.setBounds(10, 60, 150, 19);
 		pnlEsBilderOrdner.add(btnEsBilderOrdner);
+		
+		JPanel pnlEsPDFOrdner = new JPanel();
+		pnlEsPDFOrdner.setLayout(null);
+		pnlEsPDFOrdner.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
+		pnlEsPDFOrdner.setBounds(251, 302, 170, 90);
+		pnlEinstellungen.add(pnlEsPDFOrdner);
+		
+		JLabel lblPDFOrdner = new JLabel("PDF-Ordner");
+		lblPDFOrdner.setHorizontalAlignment(SwingConstants.CENTER);
+		lblPDFOrdner.setFont(new Font("Tahoma", Font.BOLD, 16));
+		lblPDFOrdner.setBounds(10, 10, 150, 20);
+		pnlEsPDFOrdner.add(lblPDFOrdner);
+		
+		txtEsPDFOrdner = new JTextField();
+		txtEsPDFOrdner.setText(svtool.getPDFOrdner().toString());
+		txtEsPDFOrdner.setEditable(false);
+		txtEsPDFOrdner.setColumns(10);
+		txtEsPDFOrdner.setBounds(10, 40, 150, 19);
+		pnlEsPDFOrdner.add(txtEsPDFOrdner);
+		
+		JButton btnEsPDFOrdner = new JButton("Ordner w\u00E4hlen");
+		btnEsPDFOrdner.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				File pdfOrdner = SwingUtil.getDirectoryChoice(new JDialog(), txtEsPDFOrdner.getText(), "PDF - Ordner");
+				if(pdfOrdner!=null){
+					txtEsPDFOrdner.setText(pdfOrdner.toString());
+					svtool.setPDFOrdner(dbDienste.checkFile(pdfOrdner));
+				}
+			}
+		});
+		btnEsPDFOrdner.setBounds(10, 60, 150, 19);
+		pnlEsPDFOrdner.add(btnEsPDFOrdner);
 		
 		JPanel pnlCSV = new JPanel();
 		pnlCSV.setBounds(10, 45, 764, 495);

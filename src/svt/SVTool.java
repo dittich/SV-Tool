@@ -69,6 +69,19 @@ public class SVTool {
 		einstellungenSpeichern();
 	}
 	
+	public File getPDFOrdner()
+	{
+		File pdfOrdner = einstellungen.getPdfOrdner();
+		if(pdfOrdner==null)return new File("C:");
+		return pdfOrdner;
+	}
+	
+	public void setPDFOrdner(File pdfOrdner)
+	{
+		einstellungen.setPdfOrdner(pdfOrdner);
+		einstellungenSpeichern();
+	}
+	
 	public void setMysqlFile(File mysqlFile)
 	{
 		einstellungen.setMysqlFile(mysqlFile);
