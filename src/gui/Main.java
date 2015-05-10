@@ -79,7 +79,7 @@ public class Main{
 	private JTextField txtEsMysqlFile;
 	private JTextField txtEsMysqldumpFile;
 	private JTextField txtEsBilderOrdner;
-	private JTextField txtEsPDFOrdner;
+	private JTextField txtEsPDFDatei;
 	
 
 	/**
@@ -121,149 +121,6 @@ public class Main{
 		frmSvausweise.getContentPane().setLayout(null);
 		
 		UIManager.put("FileChooser.readOnly", Boolean.TRUE);
-		
-		JPanel pnlBilder = new JPanel();
-		pnlBilder.setBounds(10, 45, 764, 495);
-		frmSvausweise.getContentPane().add(pnlBilder);
-		pnlBilder.setLayout(null);
-		pnlBilder.setVisible(false);
-		dbDienste.addMenuePanel(pnlBilder);
-		
-		JPanel pnlImgDirectory = new JPanel();
-		pnlImgDirectory.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
-		pnlImgDirectory.setBounds(0, 0, 220, 495);
-		pnlBilder.add(pnlImgDirectory);
-		pnlImgDirectory.setLayout(null);
-		
-		JPanel pnlImgBearbeiten = new JPanel();
-		pnlImgBearbeiten.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
-		pnlImgBearbeiten.setBounds(225, 0, 540, 495);
-		pnlBilder.add(pnlImgBearbeiten);
-		pnlImgBearbeiten.setLayout(null);
-		
-		JPanel pnlImgBild = new JPanel();
-		pnlImgBild.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
-		pnlImgBild.setBounds(10, 10, 370, 475);
-		pnlImgBearbeiten.add(pnlImgBild);
-		pnlImgBild.setLayout(null);
-		
-		pnlImgWork = new DragPanel(this);
-		pnlImgWork.setBounds(10, 10, 350, 450);
-		pnlImgBild.add(pnlImgWork);
-		
-		JPanel pnlImgZuweisen = new JPanel();
-		pnlImgZuweisen.setBounds(390, 10, 150, 475);
-		pnlImgBearbeiten.add(pnlImgZuweisen);
-		pnlImgZuweisen.setLayout(null);
-		
-		lblImgNewImage = new JLabel("");
-		lblImgNewImage.setBounds(23, 10, 105, 135);
-		pnlImgZuweisen.add(lblImgNewImage);
-		
-		JComboBox cboImgKlasse = new JComboBox();
-		cboImgKlasse.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-            	if(cboImgKlasse.getSelectedItem()!=null){
-            		String klasse = cboImgKlasse.getSelectedItem().toString();
-                	if(!klasse.equals("")){
-                		String sqlQuery = "SELECT * FROM sv_schueler WHERE klasse='"+klasse+"'";
-                        JTable t = dbDienste.resultSetToTableZuweisen(sqlQuery);
-                        scrollPaneZuweisen.setViewportView(t);
-                	}
-            	}
-            }
-        });
-		cboImgKlasse.setBounds(10, 155, 130, 19);
-		pnlImgZuweisen.add(cboImgKlasse);
-		
-		scrollPaneZuweisen = new JScrollPane();
-		scrollPaneZuweisen.setViewportBorder(null);
-		scrollPaneZuweisen.setBounds(10, 185, 130, 230);
-		pnlImgZuweisen.add(scrollPaneZuweisen);
-		
-		JTable tblImgSuS = new JTable();
-		tblImgSuS.setBounds(0, 0, 0, 0);
-		scrollPaneZuweisen.add(tblImgSuS);
-		
-		JButton btnImgZuweisen = new JButton("Zuweisen");
-		btnImgZuweisen.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				JTable tbl = (JTable)scrollPaneZuweisen.getViewport().getComponent(0);
-				int idIndex = (int)tbl.getModel().getValueAt(tbl.getSelectedRow(),tbl.getColumn("id").getModelIndex());
-				System.out.println(idIndex);
-				//imgDbCut - BufferedImage
-				if(svtool.updateSqlImg(idIndex, imgDbCut))System.out.println("OK");
-				else System.out.println("Error");
-			}
-		});
-		btnImgZuweisen.setBounds(10, 426, 130, 38);
-		pnlImgZuweisen.add(btnImgZuweisen);
-		
-		JFileChooser fileChooser = new JFileChooser();
-		
-		fileChooser.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent actionEvent) {
-				JFileChooser theFileChooser = (JFileChooser) actionEvent.getSource();
-				String command = actionEvent.getActionCommand();
-				
-				if (command.equals(JFileChooser.APPROVE_SELECTION)) {
-					File selectedFile = theFileChooser.getSelectedFile();
-					BufferedImage image;
-					try {
-						image = ImageIO.read(new File(selectedFile.getParent()+"\\"+selectedFile.getName()));
-						BufferedImage image1 = new ImageScaler().scaleImage(image, new Dimension(350,450));
-						System.out.println(pnlImgWork.toString());
-						pnlImgWork.setImage(image1);
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				}
-				else if (command.equals(JFileChooser.SELECTED_FILE_CHANGED_PROPERTY)) {
-					File selectedFile = theFileChooser.getSelectedFile();
-					System.out.println(selectedFile.getParent());
-					System.out.println(selectedFile.getName());
-					BufferedImage image;
-					try {
-						image = ImageIO.read(new File(selectedFile.getParent()+"\\"+selectedFile.getName()));
-						BufferedImage image1 = new ImageScaler().scaleImage(image, new Dimension(350,450));
-						System.out.println(pnlImgWork.toString());
-						pnlImgWork.setImage(image1);
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					
-					//Image image = Toolkit.getDefaultToolkit().getImage(selectedFile.getParent()+"\\"+selectedFile.getName());
-					//Image image1 = new ImageScaler().scaleImage(image, new Dimension(210,270));
-					
-				}
-				else if (command.equals(JFileChooser.CANCEL_SELECTION)) {
-					theFileChooser.setCurrentDirectory(svtool.getImportOrdner());
-					System.out.println(JFileChooser.CANCEL_SELECTION);
-				}
-			}
-		});
-		fileChooser.setCurrentDirectory(svtool.getBilderOrdner());
-		fileChooser.setBounds(0, 10, 220, 475);
-		pnlImgDirectory.add(fileChooser);
-		
-		JPanel pnlPDF = new JPanel();
-		pnlPDF.setBounds(10, 45, 764, 495);
-		frmSvausweise.getContentPane().add(pnlPDF);
-		pnlPDF.setLayout(null);
-		pnlPDF.setVisible(false);
-		dbDienste.addMenuePanel(pnlPDF);
-		
-		JButton btnCreatePDF = new JButton("Create PDF");
-		btnCreatePDF.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				PDFDienste pdfDienst = new PDFDienste(svtool.getPDFOrdner(),svtool.sqlQuery("SELECT * FROM sv_schueler WHERE selektiert=1"));
-				pdfDienst.makePDF();
-			}
-		});
-		btnCreatePDF.setBounds(10, 11, 147, 23);
-		pnlPDF.add(btnCreatePDF);
 		
 		JPanel pnlEinstellungen = new JPanel();
 		pnlEinstellungen.setBounds(10, 45, 764, 495);
@@ -506,34 +363,183 @@ public class Main{
 		JPanel pnlEsPDFOrdner = new JPanel();
 		pnlEsPDFOrdner.setLayout(null);
 		pnlEsPDFOrdner.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
-		pnlEsPDFOrdner.setBounds(251, 302, 170, 90);
+		pnlEsPDFOrdner.setBounds(430, 151, 334, 90);
 		pnlEinstellungen.add(pnlEsPDFOrdner);
 		
-		JLabel lblPDFOrdner = new JLabel("PDF-Ordner");
-		lblPDFOrdner.setHorizontalAlignment(SwingConstants.CENTER);
-		lblPDFOrdner.setFont(new Font("Tahoma", Font.BOLD, 16));
-		lblPDFOrdner.setBounds(10, 10, 150, 20);
-		pnlEsPDFOrdner.add(lblPDFOrdner);
+		JLabel lblPDFDatei = new JLabel("PDF - Datei");
+		lblPDFDatei.setHorizontalAlignment(SwingConstants.CENTER);
+		lblPDFDatei.setFont(new Font("Tahoma", Font.BOLD, 16));
+		lblPDFDatei.setBounds(77, 9, 150, 20);
+		pnlEsPDFOrdner.add(lblPDFDatei);
 		
-		txtEsPDFOrdner = new JTextField();
-		txtEsPDFOrdner.setText(svtool.getPDFOrdner().toString());
-		txtEsPDFOrdner.setEditable(false);
-		txtEsPDFOrdner.setColumns(10);
-		txtEsPDFOrdner.setBounds(10, 40, 150, 19);
-		pnlEsPDFOrdner.add(txtEsPDFOrdner);
+		txtEsPDFDatei = new JTextField();
+		txtEsPDFDatei.setText(svtool.getPDFOrdner().toString());
+		txtEsPDFDatei.setEditable(false);
+		txtEsPDFDatei.setColumns(10);
+		txtEsPDFDatei.setBounds(10, 40, 314, 19);
+		pnlEsPDFOrdner.add(txtEsPDFDatei);
 		
-		JButton btnEsPDFOrdner = new JButton("Ordner w\u00E4hlen");
-		btnEsPDFOrdner.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				File pdfOrdner = SwingUtil.getDirectoryChoice(new JDialog(), txtEsPDFOrdner.getText(), "PDF - Ordner");
-				if(pdfOrdner!=null){
-					txtEsPDFOrdner.setText(pdfOrdner.toString());
-					svtool.setPDFOrdner(dbDienste.checkFile(pdfOrdner));
+		JButton btnEsPDFDatei = new JButton("Datei w\u00E4hlen");
+		btnEsPDFDatei.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {				
+				FilenameFilter filter = new FilenameFilter() {
+			        public boolean accept(File directory, String fileName) {
+			            return fileName.endsWith(".pdf");
+			        }
+		        };
+				
+				File mysqlFile = SwingUtil.getFileChoice(new JDialog(), txtEsMysqlFile.getText(), null, "PDF - Datei");
+				if(mysqlFile!=null){
+					txtEsPDFDatei.setText(mysqlFile.toString());
+					svtool.setPDFOrdner(dbDienste.checkFile(mysqlFile));
 				}
 			}
 		});
-		btnEsPDFOrdner.setBounds(10, 60, 150, 19);
-		pnlEsPDFOrdner.add(btnEsPDFOrdner);
+		btnEsPDFDatei.setBounds(10, 60, 150, 19);
+		pnlEsPDFOrdner.add(btnEsPDFDatei);
+		
+		JPanel pnlBilder = new JPanel();
+		pnlBilder.setBounds(10, 45, 764, 495);
+		frmSvausweise.getContentPane().add(pnlBilder);
+		pnlBilder.setLayout(null);
+		pnlBilder.setVisible(false);
+		dbDienste.addMenuePanel(pnlBilder);
+		
+		JPanel pnlImgDirectory = new JPanel();
+		pnlImgDirectory.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
+		pnlImgDirectory.setBounds(0, 0, 220, 495);
+		pnlBilder.add(pnlImgDirectory);
+		pnlImgDirectory.setLayout(null);
+		
+		JPanel pnlImgBearbeiten = new JPanel();
+		pnlImgBearbeiten.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
+		pnlImgBearbeiten.setBounds(225, 0, 540, 495);
+		pnlBilder.add(pnlImgBearbeiten);
+		pnlImgBearbeiten.setLayout(null);
+		
+		JPanel pnlImgBild = new JPanel();
+		pnlImgBild.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
+		pnlImgBild.setBounds(10, 10, 370, 475);
+		pnlImgBearbeiten.add(pnlImgBild);
+		pnlImgBild.setLayout(null);
+		
+		pnlImgWork = new DragPanel(this);
+		pnlImgWork.setBounds(10, 10, 350, 450);
+		pnlImgBild.add(pnlImgWork);
+		
+		JPanel pnlImgZuweisen = new JPanel();
+		pnlImgZuweisen.setBounds(390, 10, 150, 475);
+		pnlImgBearbeiten.add(pnlImgZuweisen);
+		pnlImgZuweisen.setLayout(null);
+		
+		lblImgNewImage = new JLabel("");
+		lblImgNewImage.setBounds(23, 10, 105, 135);
+		pnlImgZuweisen.add(lblImgNewImage);
+		
+		JComboBox cboImgKlasse = new JComboBox();
+		cboImgKlasse.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+            	if(cboImgKlasse.getSelectedItem()!=null){
+            		String klasse = cboImgKlasse.getSelectedItem().toString();
+                	if(!klasse.equals("")){
+                		String sqlQuery = "SELECT * FROM sv_schueler WHERE klasse='"+klasse+"'";
+                        JTable t = dbDienste.resultSetToTableZuweisen(sqlQuery);
+                        scrollPaneZuweisen.setViewportView(t);
+                	}
+            	}
+            }
+        });
+		cboImgKlasse.setBounds(10, 155, 130, 19);
+		pnlImgZuweisen.add(cboImgKlasse);
+		
+		scrollPaneZuweisen = new JScrollPane();
+		scrollPaneZuweisen.setViewportBorder(null);
+		scrollPaneZuweisen.setBounds(10, 185, 130, 230);
+		pnlImgZuweisen.add(scrollPaneZuweisen);
+		
+		JTable tblImgSuS = new JTable();
+		tblImgSuS.setBounds(0, 0, 0, 0);
+		scrollPaneZuweisen.add(tblImgSuS);
+		
+		JButton btnImgZuweisen = new JButton("Zuweisen");
+		btnImgZuweisen.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				JTable tbl = (JTable)scrollPaneZuweisen.getViewport().getComponent(0);
+				int idIndex = (int)tbl.getModel().getValueAt(tbl.getSelectedRow(),tbl.getColumn("id").getModelIndex());
+				System.out.println(idIndex);
+				//imgDbCut - BufferedImage
+				if(svtool.updateSqlImg(idIndex, imgDbCut))System.out.println("OK");
+				else System.out.println("Error");
+			}
+		});
+		btnImgZuweisen.setBounds(10, 426, 130, 38);
+		pnlImgZuweisen.add(btnImgZuweisen);
+		
+		JFileChooser fileChooser = new JFileChooser();
+		
+		fileChooser.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent actionEvent) {
+				JFileChooser theFileChooser = (JFileChooser) actionEvent.getSource();
+				String command = actionEvent.getActionCommand();
+				
+				if (command.equals(JFileChooser.APPROVE_SELECTION)) {
+					File selectedFile = theFileChooser.getSelectedFile();
+					BufferedImage image;
+					try {
+						image = ImageIO.read(new File(selectedFile.getParent()+"\\"+selectedFile.getName()));
+						BufferedImage image1 = new ImageScaler().scaleImage(image, new Dimension(350,450));
+						System.out.println(pnlImgWork.toString());
+						pnlImgWork.setImage(image1);
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+				else if (command.equals(JFileChooser.SELECTED_FILE_CHANGED_PROPERTY)) {
+					File selectedFile = theFileChooser.getSelectedFile();
+					System.out.println(selectedFile.getParent());
+					System.out.println(selectedFile.getName());
+					BufferedImage image;
+					try {
+						image = ImageIO.read(new File(selectedFile.getParent()+"\\"+selectedFile.getName()));
+						BufferedImage image1 = new ImageScaler().scaleImage(image, new Dimension(350,450));
+						System.out.println(pnlImgWork.toString());
+						pnlImgWork.setImage(image1);
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					
+					//Image image = Toolkit.getDefaultToolkit().getImage(selectedFile.getParent()+"\\"+selectedFile.getName());
+					//Image image1 = new ImageScaler().scaleImage(image, new Dimension(210,270));
+					
+				}
+				else if (command.equals(JFileChooser.CANCEL_SELECTION)) {
+					theFileChooser.setCurrentDirectory(svtool.getImportOrdner());
+					System.out.println(JFileChooser.CANCEL_SELECTION);
+				}
+			}
+		});
+		fileChooser.setCurrentDirectory(svtool.getBilderOrdner());
+		fileChooser.setBounds(0, 10, 220, 475);
+		pnlImgDirectory.add(fileChooser);
+		
+		JPanel pnlPDF = new JPanel();
+		pnlPDF.setBounds(10, 45, 764, 495);
+		frmSvausweise.getContentPane().add(pnlPDF);
+		pnlPDF.setLayout(null);
+		pnlPDF.setVisible(false);
+		dbDienste.addMenuePanel(pnlPDF);
+		
+		JButton btnCreatePDF = new JButton("Create PDF");
+		btnCreatePDF.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				PDFDienste pdfDienst = new PDFDienste(svtool.getPDFOrdner(),svtool.sqlQuery("SELECT * FROM sv_schueler WHERE selektiert=1"));
+				pdfDienst.makePDF();
+			}
+		});
+		btnCreatePDF.setBounds(10, 11, 147, 23);
+		pnlPDF.add(btnCreatePDF);
 		
 		JPanel pnlCSV = new JPanel();
 		pnlCSV.setBounds(10, 45, 764, 495);

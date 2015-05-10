@@ -1,6 +1,5 @@
 package gui;
 
-import com.itextpdf.text.BadElementException;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.BaseColor;
@@ -59,7 +58,7 @@ public class PDFDienste {
 		document.setPageSize(rect);
 		
 		try{
-			PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream("d:/doc.pdf"));
+			PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(pdfFile.toString()));
 			
 			document.open();
 			
@@ -111,16 +110,37 @@ public class PDFDienste {
 	
 	private void setEAN13(PdfContentByte cb, int susID, float x, float y, BaseColor bc1, BaseColor bc2){
 		BarcodeEAN ean = new BarcodeEAN();
-		ean.setCode("0000000013215");
+		ean.setCode(this.generateENA13(susID));
 		ean.setCodeType(BarcodeEAN.EAN13);
-		//ean.createAwtImage(new Color(0,0,0), new Color(255,255,255));
 
-			Image iImage = ean.createImageWithBarcode(cb, null, null);
-			//java.awt.Image eanImg = ean.createAwtImage(new Color(0,0,0), new Color(255,255,255));
-			//Image iImage = Image.getInstance(eanImg, new Color(255, 255, 255));
-			setImage(cb, iImage, 35, x, y);
-
+		Image iImage = ean.createImageWithBarcode(cb, null, null);
+		setImage(cb, iImage, 35, x, y);
+	}
+	
+	private String generateENA13(int wert){
+		String susID = ""+wert;
 		
+		while(susID.length()<12){
+			susID = "0"+susID;
+		}
+		
+		int pruefZiffer = this.ean13Pruefziffer(susID);
+		susID = susID+pruefZiffer;
+		return ""+susID;
+	}
+	
+	private int ean13Pruefziffer(String wert){
+		int pruefziffersumme = 0;
+		for(int i=0; i<wert.length(); i++){
+			String ziffer = wert.substring(i, i+1);
+			int zifferInt = Integer.parseInt(ziffer);
+			if(i%2==0)
+				pruefziffersumme=pruefziffersumme + 1*zifferInt;
+			else 
+				pruefziffersumme=pruefziffersumme + 3*zifferInt;
+		}
+		
+		return (10-pruefziffersumme%10)%10;
 	}
 	
 	private void setImage(PdfContentByte cb, String pfad, float widthMM, float x, float y){
@@ -146,13 +166,10 @@ public class PDFDienste {
 	private void setImage(PdfContentByte cb, Image iImage, float widthMM, float x, float y){
 		int width = (int)dot(widthMM);
 		try {
-			//Image iImage = Image.getInstance(buffImg, new Color(0, 91, 127));
 			float wImg = iImage.getPlainWidth();
 			float hImg = iImage.getPlainHeight();
 			iImage.scaleToFit(width, hImg*width/wImg);
-			System.out.println(iImage.getPlainHeight());
 			iImage.setAbsolutePosition(dotx(x),doty(y)-iImage.getPlainHeight());
-			System.out.println(iImage.toString());
 			cb.addImage(iImage);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
