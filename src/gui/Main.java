@@ -892,6 +892,8 @@ public class Main{
 		btnCSV.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				dbDienste.setVisibleMenuePanel(pnlCSV);
+				CSVDienste csv = new CSVDienste();
+				csv.csvImport(null, null, svtool);
 			}
 		});
 		btnCSV.setBounds(300, 0, 34, 34);
