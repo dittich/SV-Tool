@@ -69,16 +69,16 @@ public class SVTool {
 		einstellungenSpeichern();
 	}
 	
-	public File getPDFOrdner()
+	public File getPDFFile()
 	{
-		File pdfOrdner = einstellungen.getPdfOrdner();
-		if(pdfOrdner==null)return new File("C:");
-		return pdfOrdner;
+		File pdfFile = einstellungen.getPdfFile();
+		if(pdfFile==null)return new File("C:");
+		return pdfFile;
 	}
 	
-	public void setPDFOrdner(File pdfOrdner)
+	public void setPDFOrdner(File pdfFile)
 	{
-		einstellungen.setPdfOrdner(pdfOrdner);
+		einstellungen.setPdfFile(pdfFile);
 		einstellungenSpeichern();
 	}
 	

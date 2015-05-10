@@ -4,5 +4,7 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="D:/Eclipse Projekte/onGit/SV-Tool/jarDat/mysql-connector-java-5.1.35-bin.jar"/>
 	<classpathentry kind="lib" path="D:/Eclipse Projekte/onGit/SV-Tool/jarDat/itextpdf-5.5.5.jar"/>
+	<classpathentry kind="lib" path="D:/Eclipse Projekte/onGit/SV-Tool/jarDat/icepdf-viewer-4.3.3.jar"/>
+	<classpathentry kind="lib" path="D:/Eclipse Projekte/onGit/SV-Tool/jarDat/icepdf-core-4.3.3.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -19,7 +19,7 @@ public class Einstellungen implements Serializable{
 	private File importOrdner = new File("C:/");
 	private File exportOrdner = new File("C:/");
 	private File bilderOrdner = new File("C:/");
-	private File pdfOrdner = new File("C:/");
+	
 	
 	private String sicherungsDatei = "config.svt";
 	
@@ -27,6 +27,7 @@ public class Einstellungen implements Serializable{
 	private File mysqldumpFile = new File("C:/xampp/mysql/bin/mysqldump.exe");
 	private File mysqlFile = new File("C:/xampp/mysql/bin/mysql.exe");
 	private File mysqlimportFile = new File("C:/xampp/mysql/bin/mysqlimport.exe");
+	private File pdfFile = new File("C:/ausweise.pdf");
 	
 	public Einstellungen()
 	{
@@ -145,11 +146,11 @@ public class Einstellungen implements Serializable{
 		this.bilderOrdner = bilderOrdner;
 	}
 
-	public File getPdfOrdner() {
-		return pdfOrdner;
+	public File getPdfFile() {
+		return pdfFile;
 	}
 
-	public void setPdfOrdner(File pdfOrdner) {
-		this.pdfOrdner = pdfOrdner;
+	public void setPdfFile(File pdfFile) {
+		this.pdfFile = pdfFile;
 	}
 }

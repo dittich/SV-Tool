@@ -11,14 +11,25 @@ import com.itextpdf.text.Utilities;
 import com.itextpdf.text.Image;
 import com.itextpdf.text.pdf.BarcodeEAN;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.sql.ResultSet;
 
 import javax.imageio.ImageIO;
+import javax.swing.JPanel;
+import javax.swing.border.BevelBorder;
+
+import org.icepdf.ri.common.SwingController;
+import org.icepdf.ri.common.SwingViewBuilder;
 
 public class PDFDienste {
 	private Utilities util;
@@ -29,6 +40,27 @@ public class PDFDienste {
 		this.pdfFile = pdfFile;
 		this.rs = rs;
 		util = new Utilities();
+	}
+	
+	public void viewPDF(File pdfFile, JPanel pdfPanel){
+		try {
+			InputStream inputStream = new FileInputStream("d:/ausweise.pdf");
+			SwingController controller = new SwingController();
+			SwingViewBuilder factory = new SwingViewBuilder(controller);
+			JPanel viewerComponentPanel = factory.buildViewerPanel();
+			viewerComponentPanel.setPreferredSize(new Dimension(760, 460));;
+			System.out.println(viewerComponentPanel.getPreferredSize().toString());
+			pdfPanel.removeAll();
+			pdfPanel.add(viewerComponentPanel);
+			pdfPanel.revalidate();
+			pdfPanel.repaint();
+			
+			controller.openDocument(inputStream, "", "");
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 	}
 	
 	public void makePDF(){
@@ -65,6 +97,10 @@ public class PDFDienste {
 			PdfContentByte cb = writer.getDirectContent();
 			
 			while(rs.next()){
+				rect.setBackgroundColor(new BaseColor(0, 91, 127));
+				document.setPageSize(rect);
+				document.newPage();
+				
 				this.setText(cb, "SCHÜLERAUSWEIS", 10, 18, 3, bf[1], bc[0]);
 	            this.setText(cb, "/Student Identity Card/Pièce d\'identité scolaire", 6, 18, 8, bf[0], bc[1]);
 	            this.setText(cb, "Albrecht-Dürer-Gymnasium", 8, 18, 14.5f, bf[0], bc[1]);

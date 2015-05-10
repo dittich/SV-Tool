@@ -39,6 +39,7 @@ import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 
 import javax.swing.JScrollPane;
+import java.awt.FlowLayout;
 
 public class Main{
 
@@ -116,11 +117,24 @@ public class Main{
 		frmSvausweise = new JFrame("");
 		frmSvausweise.setIconImage(Toolkit.getDefaultToolkit().getImage(Main.class.getResource("../IMG/sv_ad.png")));
 		frmSvausweise.setTitle("SV-Ausweise 0.1");
-		frmSvausweise.setBounds(100, 100, 930, 650);
+		frmSvausweise.setBounds(100, 100, 797, 582);
 		frmSvausweise.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frmSvausweise.getContentPane().setLayout(null);
 		
 		UIManager.put("FileChooser.readOnly", Boolean.TRUE);
+		
+		JPanel pnlPDF = new JPanel();
+		pnlPDF.setBounds(10, 45, 764, 495);
+		frmSvausweise.getContentPane().add(pnlPDF);
+		pnlPDF.setLayout(null);
+		pnlPDF.setVisible(false);
+		dbDienste.addMenuePanel(pnlPDF);
+		
+		JPanel pnlPDFViewer = new JPanel();
+		pnlPDFViewer.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
+		pnlPDFViewer.setBounds(-3, 0, 770, 470);
+		pnlPDF.add(pnlPDFViewer);
+		pnlPDFViewer.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 		
 		JPanel pnlEinstellungen = new JPanel();
 		pnlEinstellungen.setBounds(10, 45, 764, 495);
@@ -373,7 +387,7 @@ public class Main{
 		pnlEsPDFOrdner.add(lblPDFDatei);
 		
 		txtEsPDFDatei = new JTextField();
-		txtEsPDFDatei.setText(svtool.getPDFOrdner().toString());
+		txtEsPDFDatei.setText(svtool.getPDFFile().toString());
 		txtEsPDFDatei.setEditable(false);
 		txtEsPDFDatei.setColumns(10);
 		txtEsPDFDatei.setBounds(10, 40, 314, 19);
@@ -523,23 +537,6 @@ public class Main{
 		fileChooser.setCurrentDirectory(svtool.getBilderOrdner());
 		fileChooser.setBounds(0, 10, 220, 475);
 		pnlImgDirectory.add(fileChooser);
-		
-		JPanel pnlPDF = new JPanel();
-		pnlPDF.setBounds(10, 45, 764, 495);
-		frmSvausweise.getContentPane().add(pnlPDF);
-		pnlPDF.setLayout(null);
-		pnlPDF.setVisible(false);
-		dbDienste.addMenuePanel(pnlPDF);
-		
-		JButton btnCreatePDF = new JButton("Create PDF");
-		btnCreatePDF.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				PDFDienste pdfDienst = new PDFDienste(svtool.getPDFOrdner(),svtool.sqlQuery("SELECT * FROM sv_schueler WHERE selektiert=1"));
-				pdfDienst.makePDF();
-			}
-		});
-		btnCreatePDF.setBounds(10, 11, 147, 23);
-		pnlPDF.add(btnCreatePDF);
 		
 		JPanel pnlCSV = new JPanel();
 		pnlCSV.setBounds(10, 45, 764, 495);
@@ -849,7 +846,7 @@ public class Main{
 		});
 		
 		JPanel pnl_buttonMenue = new JPanel();
-		pnl_buttonMenue.setBounds(0, 0, 784, 34);
+		pnl_buttonMenue.setBounds(0, 0, 571, 34);
 		frmSvausweise.getContentPane().add(pnl_buttonMenue);
 		pnl_buttonMenue.setLayout(null);
 		
@@ -937,6 +934,9 @@ public class Main{
 		btnPDF.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				dbDienste.setVisibleMenuePanel(pnlPDF);
+				PDFDienste pdfDienst = new PDFDienste(svtool.getPDFFile(),svtool.sqlQuery("SELECT * FROM sv_schueler WHERE selektiert=1"));
+				pdfDienst.makePDF();
+				pdfDienst.viewPDF(svtool.getPDFFile(), pnlPDFViewer);
 				System.out.println("Nele");
 			}
 		});
