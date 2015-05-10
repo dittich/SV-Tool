@@ -1,9 +1,8 @@
 package gui;
 
+import com.itextpdf.text.BadElementException;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
-import com.itextpdf.text.PageSize;
-import com.itextpdf.text.Font;
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.pdf.BaseFont;
 import com.itextpdf.text.pdf.PdfContentByte;
@@ -11,9 +10,9 @@ import com.itextpdf.text.pdf.PdfWriter;
 import com.itextpdf.text.Rectangle;
 import com.itextpdf.text.Utilities;
 import com.itextpdf.text.Image;
+import com.itextpdf.text.pdf.BarcodeEAN;
 
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -21,7 +20,6 @@ import java.io.IOException;
 import java.sql.ResultSet;
 
 import javax.imageio.ImageIO;
-import javax.swing.ImageIcon;
 
 public class PDFDienste {
 	private Utilities util;
@@ -68,37 +66,61 @@ public class PDFDienste {
 			PdfContentByte cb = writer.getDirectContent();
 			
 			while(rs.next()){
-				this.setText(cb, "SCHÜLERAUSWEIS", 10, 17, 2, bf[1], bc[0]);
-	            this.setText(cb, "/Student Identity Card/Pièce d\'identité scolaire", 6, 17, 7, bf[0], bc[1]);
-	            this.setText(cb, "Albrecht-Dürer-Gymnasium", 8, 17, 14, bf[0], bc[1]);
-	            this.setText(cb, "Heinitzstr. 73 | 58097 Hagen", 6, 17, 18, bf[0], bc[1]);
-	            this.setText(cb, "http://www.ad-hagen.de", 6, 17, 20.8f, bf[0], bc[1]);
-	            this.setText(cb, "Name", 8, 3, 24.3f, bf[0], bc[1]);
-	            this.setText(cb, "/Name/Nom", 5, 11, 25.3f, bf[0], bc[1]);
-	            this.setText(cb, "Geburtsdatum", 8, 3, 33.3f, bf[0], bc[1]);
-	            this.setText(cb, "/date of birth/Date de naissance", 5, 21.5f, 34.3f, bf[0], bc[1]);
-	            this.setText(cb, "Gültig bis ", 8, 3, 42.3f, bf[0], bc[1]);
-	            this.setText(cb, "/valid till/Durée de validité", 5, 15.5f, 43.3f, bf[0], bc[1]);
-	            this.setText(cb, "siehe Rückseite ", 10, 3, 47, bf[0], bc[0]);
-	            this.setText(cb, "/see back/voir au verso", 8, 29, 47.3f, bf[0], bc[0]);
+				this.setText(cb, "SCHÜLERAUSWEIS", 10, 18, 3, bf[1], bc[0]);
+	            this.setText(cb, "/Student Identity Card/Pièce d\'identité scolaire", 6, 18, 8, bf[0], bc[1]);
+	            this.setText(cb, "Albrecht-Dürer-Gymnasium", 8, 18, 14.5f, bf[0], bc[1]);
+	            this.setText(cb, "Heinitzstr. 73 | 58097 Hagen", 6, 18, 19, bf[0], bc[1]);
+	            this.setText(cb, "http://www.ad-hagen.de", 6, 18, 21.2f, bf[0], bc[1]);
+	            this.setText(cb, "Name", 8, 4, 25.4f, bf[0], bc[1]);
+	            this.setText(cb, "/Name/Nom", 5, 12, 26.4f, bf[0], bc[1]);
+	            this.setText(cb, "Geburtsdatum", 8, 4, 34.6f, bf[0], bc[1]);
+	            this.setText(cb, "/date of birth/Date de naissance", 5, 22.4f, 35.7f, bf[0], bc[1]);
+	            this.setText(cb, "Gültig bis ", 8, 4, 43.8f, bf[0], bc[1]);
+	            this.setText(cb, "/valid till/Durée de validité", 5, 16.3f, 44.8f, bf[0], bc[1]);
+	            this.setText(cb, "siehe Rückseite ", 10, 4, 47, bf[0], bc[0]);
+	            this.setText(cb, "/see back/voir au verso", 8, 29.9f, 47.7f, bf[0], bc[0]);
 	            
 	            String name = rs.getString("vorname") + " " + rs.getString("name");
-	            this.setText(cb, name, 10, 3, 27, bf[0], bc[0]);
+	            this.setText(cb, name, 10, 4, 28.5f, bf[0], bc[0]);
 	            
 	            String gebDatum = rs.getString("gebdatum");
-	            this.setText(cb, gebDatum, 10, 3, 36, bf[0], bc[0]);
+	            this.setText(cb, gebDatum, 10, 4, 37.5f, bf[0], bc[0]);
 	            
-	            this.setImage(cb, "../IMG/sv_nrw_logo.png", 13, 3, 3);
+	            this.setImage(cb, "../IMG/sv_nrw_logo.png", 14.2f, 3, 3);
 	            this.setImage(cb, "../IMG/sv_ad_logo.png", 20, 63, 3);
 	            
 	            BufferedImage buffImg = ImageIO.read(rs.getBinaryStream("bild"));
 	            this.setImage(cb, buffImg, 20, 63, 24.5f);
+	            
+	            rect.setBackgroundColor(new BaseColor(255, 255, 255));
+	            document.setPageSize(rect);
+	            document.newPage();
+	            
+	            this.setText(cb, "nur mit Siegelaufkleber gültig bis", 8, 4, 3.3f, bf[2], bc[2]);
+	            this.setText(cb, "/valid till/Durée de validité", 6, 45.5f, 3.9f, bf[2], bc[2]);
+	            
+	            int susID = rs.getInt("schueler_id");
+	            this.setEAN13(cb, susID, 4, 37, bc[0], bc[2]);
 			}
 			
 			document.close();
 		} catch(Exception e){
 			e.printStackTrace();
 		}
+	}
+	
+	private void setEAN13(PdfContentByte cb, int susID, float x, float y, BaseColor bc1, BaseColor bc2){
+		BarcodeEAN ean = new BarcodeEAN();
+		ean.setCode("0000000013215");
+		ean.setCodeType(BarcodeEAN.EAN13);
+		//ean.createAwtImage(new Color(0,0,0), new Color(255,255,255));
+
+			Image iImage = ean.createImageWithBarcode(cb, null, null);
+			//java.awt.Image eanImg = ean.createAwtImage(new Color(0,0,0), new Color(255,255,255));
+			//Image iImage = Image.getInstance(eanImg, new Color(255, 255, 255));
+			setImage(cb, iImage, 35, x, y);
+
+		
 	}
 	
 	private void setImage(PdfContentByte cb, String pfad, float widthMM, float x, float y){
@@ -112,9 +134,19 @@ public class PDFDienste {
 	}
 	
 	private void setImage(PdfContentByte cb, BufferedImage buffImg, float widthMM, float x, float y){
-		int width = (int)dot(widthMM);
 		try {
 			Image iImage = Image.getInstance(buffImg, new Color(0, 91, 127));
+			setImage(cb,iImage,widthMM,x,y);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	private void setImage(PdfContentByte cb, Image iImage, float widthMM, float x, float y){
+		int width = (int)dot(widthMM);
+		try {
+			//Image iImage = Image.getInstance(buffImg, new Color(0, 91, 127));
 			float wImg = iImage.getPlainWidth();
 			float hImg = iImage.getPlainHeight();
 			iImage.scaleToFit(width, hImg*width/wImg);

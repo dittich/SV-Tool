@@ -3,12 +3,9 @@ package gui;
 
 import java.awt.Dimension;
 import java.awt.EventQueue;
-import java.awt.Image;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
-
-import javafx.stage.FileChooser;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
@@ -20,12 +17,6 @@ import javax.swing.UIManager;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
-import java.awt.event.ComponentEvent;
-import java.awt.event.ComponentListener;
-import java.awt.event.ContainerEvent;
-import java.awt.event.ContainerListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.awt.Toolkit;
 
 import javax.swing.JPanel;
@@ -35,9 +26,6 @@ import java.awt.Font;
 
 import javax.swing.JTextField;
 import javax.swing.border.BevelBorder;
-import javax.swing.event.AncestorEvent;
-import javax.swing.event.AncestorListener;
-import javax.swing.filechooser.FileFilter;
 import javax.swing.SwingConstants;
 
 import svt.Einstellungen;
@@ -51,8 +39,6 @@ import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 
 import javax.swing.JScrollPane;
-import javax.swing.JList;
-import javax.swing.JTabbedPane;
 
 public class Main{
 
