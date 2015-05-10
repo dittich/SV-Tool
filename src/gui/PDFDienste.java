@@ -15,6 +15,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.image.BufferedImage;
+import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -33,23 +34,21 @@ import org.icepdf.ri.common.SwingViewBuilder;
 
 public class PDFDienste {
 	private Utilities util;
-	private File pdfFile;
 	private ResultSet rs;
 	
 	public PDFDienste(File pdfFile, ResultSet rs){
-		this.pdfFile = pdfFile;
 		this.rs = rs;
 		util = new Utilities();
 	}
 	
 	public void viewPDF(File pdfFile, JPanel pdfPanel){
 		try {
-			InputStream inputStream = new FileInputStream("d:/ausweise.pdf");
+			//InputStream inputStream = new FileInputStream(pdfFile.toString());
+			BufferedInputStream inputStream = new BufferedInputStream(new FileInputStream(pdfFile.toString()));
 			SwingController controller = new SwingController();
 			SwingViewBuilder factory = new SwingViewBuilder(controller);
 			JPanel viewerComponentPanel = factory.buildViewerPanel();
 			viewerComponentPanel.setPreferredSize(new Dimension(760, 460));;
-			System.out.println(viewerComponentPanel.getPreferredSize().toString());
 			pdfPanel.removeAll();
 			pdfPanel.add(viewerComponentPanel);
 			pdfPanel.revalidate();
@@ -63,7 +62,7 @@ public class PDFDienste {
 		
 	}
 	
-	public void makePDF(){
+	public void makePDF(File pdfFile){
 		Document document = new Document();
 		
 		BaseColor[] bc = {
@@ -124,7 +123,13 @@ public class PDFDienste {
 	            this.setImage(cb, "../IMG/sv_nrw_logo.png", 14.2f, 3, 3);
 	            this.setImage(cb, "../IMG/sv_ad_logo.png", 20, 63, 3);
 	            
-	            BufferedImage buffImg = ImageIO.read(rs.getBinaryStream("bild"));
+	            BufferedImage buffImg;
+	            try{
+	            	buffImg = ImageIO.read(rs.getBinaryStream("bild"));
+	            } catch(IllegalArgumentException iae){
+	            	File img = new File("src/img/sv_nofoto.png");
+	            	buffImg = ImageIO.read(img);
+	            }
 	            this.setImage(cb, buffImg, 20, 63, 24.5f);
 	            
 	            rect.setBackgroundColor(new BaseColor(255, 255, 255));

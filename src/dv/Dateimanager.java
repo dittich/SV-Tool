@@ -28,8 +28,6 @@ public class Dateimanager {
 			return true;
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			System.out.println(e.toString());
-			System.out.println(dateinamen);
 			return false;
 		}
 	}

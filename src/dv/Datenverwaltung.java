@@ -42,26 +42,22 @@ public class Datenverwaltung {
 		boolean wert = false;
 		String mysqlPfad = prepareSpaces(mysqlFile.getParent())+"\\"+mysqlFile.getName();
 		String source = prepareSpaces(backupFile.getParent())+"\\"+backupFile.getName();
-		System.out.println(mysqlPfad);
-		System.out.println(source);
 		String[] executeCmd = new String[] {cmd.getName(), "/c", mysqlPfad+" -u "+dbUser+" -p"+dbPassword+" --max_allowed_packet=1G "+dbName+" < "+source};
-		
-		System.out.println(executeCmd[2]);
 		
 		Process runtimeProcess;
 		try {
 			runtimeProcess = Runtime.getRuntime().exec(executeCmd);
 			int processComplete = runtimeProcess.waitFor();  
 			if (processComplete == 0) {
-				System.out.println("Backup restored successfully");  
+				//System.out.println("Backup restored successfully");  
 				wert = true;  
 			}
 			else{  
-				System.out.println("Could not restore the backup"); 
+				//System.out.println("Could not restore the backup"); 
 			} 
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			//e.printStackTrace();
 		}  
 		return wert;
 	}
@@ -71,27 +67,22 @@ public class Datenverwaltung {
 		String mysqldumpPfad = prepareSpaces(mysqldump.getParent())+"\\"+mysqldump.getName();
 		String source = prepareSpaces(fbackup.getParent())+"\\"+fbackup.getName();
 		
-		System.out.println(mysqldumpPfad);
-		System.out.println(source);
-		
 		String[] executeCmd = new String[] {cmd.getName(), "/c", mysqldumpPfad+" -h "+dbIp+" --u "+dbUser+" -p"+dbPassword+" --hex-blob --max_allowed_packet=1G "+dbName+" > "+source};
-		
-		System.out.println(executeCmd[2]);
 		
 		Process runtimeProcess;
 		try {
 			runtimeProcess = Runtime.getRuntime().exec(executeCmd);
 			int processComplete = runtimeProcess.waitFor();  
 			if (processComplete == 0) {
-				System.out.println("Dump successfully");  
+				//System.out.println("Dump successfully");  
 				wert = true;  
 			}
 			else{  
-				System.out.println("Could not dump"); 
+				//System.out.println("Could not dump"); 
 			} 
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			//e.printStackTrace();
 		}  
 		return wert;
 	}
@@ -112,7 +103,7 @@ public class Datenverwaltung {
 		return result;
 	}
 	
-	public void sqlImport(File jarFile){
+	public void sqlImport1(File jarFile){
 		//CodeSource codeSource = YourImplementingClass.class.getProtectionDomain().getCodeSource();
 		String jarDir = jarFile.getParentFile().getPath();
 	}

@@ -402,10 +402,10 @@ public class Main{
 			        }
 		        };
 				
-				File mysqlFile = SwingUtil.getFileChoice(new JDialog(), txtEsMysqlFile.getText(), null, "PDF - Datei");
-				if(mysqlFile!=null){
-					txtEsPDFDatei.setText(mysqlFile.toString());
-					svtool.setPDFOrdner(dbDienste.checkFile(mysqlFile));
+				File pdfFile = SwingUtil.getFileChoice(new JDialog(), txtEsPDFDatei.getText(), null, "PDF - Datei");
+				if(pdfFile!=null){
+					txtEsPDFDatei.setText(pdfFile.toString());
+					svtool.setPDFOrdner(dbDienste.checkFile(pdfFile));
 				}
 			}
 		});
@@ -480,10 +480,6 @@ public class Main{
 			public void actionPerformed(ActionEvent e) {
 				JTable tbl = (JTable)scrollPaneZuweisen.getViewport().getComponent(0);
 				int idIndex = (int)tbl.getModel().getValueAt(tbl.getSelectedRow(),tbl.getColumn("id").getModelIndex());
-				System.out.println(idIndex);
-				//imgDbCut - BufferedImage
-				if(svtool.updateSqlImg(idIndex, imgDbCut))System.out.println("OK");
-				else System.out.println("Error");
 			}
 		});
 		btnImgZuweisen.setBounds(10, 426, 130, 38);
@@ -502,7 +498,6 @@ public class Main{
 					try {
 						image = ImageIO.read(new File(selectedFile.getParent()+"\\"+selectedFile.getName()));
 						BufferedImage image1 = new ImageScaler().scaleImage(image, new Dimension(350,450));
-						System.out.println(pnlImgWork.toString());
 						pnlImgWork.setImage(image1);
 					} catch (IOException e) {
 						// TODO Auto-generated catch block
@@ -511,13 +506,10 @@ public class Main{
 				}
 				else if (command.equals(JFileChooser.SELECTED_FILE_CHANGED_PROPERTY)) {
 					File selectedFile = theFileChooser.getSelectedFile();
-					System.out.println(selectedFile.getParent());
-					System.out.println(selectedFile.getName());
 					BufferedImage image;
 					try {
 						image = ImageIO.read(new File(selectedFile.getParent()+"\\"+selectedFile.getName()));
 						BufferedImage image1 = new ImageScaler().scaleImage(image, new Dimension(350,450));
-						System.out.println(pnlImgWork.toString());
 						pnlImgWork.setImage(image1);
 					} catch (IOException e) {
 						// TODO Auto-generated catch block
@@ -530,7 +522,6 @@ public class Main{
 				}
 				else if (command.equals(JFileChooser.CANCEL_SELECTION)) {
 					theFileChooser.setCurrentDirectory(svtool.getImportOrdner());
-					System.out.println(JFileChooser.CANCEL_SELECTION);
 				}
 			}
 		});
@@ -572,12 +563,10 @@ public class Main{
 				
 				if (command.equals(JFileChooser.APPROVE_SELECTION)) {
 					File selectedFile = theFileChooser.getSelectedFile();
-					System.out.println("APPROVE_SELECTION");
 					svtool.sqlImportBackup(selectedFile);
 				}
 				else if (command.equals(JFileChooser.CANCEL_SELECTION)) {
 					theFileChooser.setCurrentDirectory(svtool.getImportOrdner());
-					System.out.println(JFileChooser.CANCEL_SELECTION);
 				}
 			}
 		});
@@ -613,11 +602,9 @@ public class Main{
 				if (command.equals(JFileChooser.APPROVE_SELECTION)) {
 					File selectedFile = theFileChooser.getSelectedFile();
 					boolean check = svtool.sqlDump(selectedFile);
-					System.out.println(check);
 				}
 				else if (command.equals(JFileChooser.CANCEL_SELECTION)) {
 					theFileChooser.setCurrentDirectory(svtool.getImportOrdner());
-					System.out.println(JFileChooser.CANCEL_SELECTION);
 				}
 			}
 		});
@@ -905,7 +892,6 @@ public class Main{
 		btnCSV.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				dbDienste.setVisibleMenuePanel(pnlCSV);
-				System.out.println("CSV - Import neuer SuS");
 			}
 		});
 		btnCSV.setBounds(300, 0, 34, 34);
@@ -935,29 +921,25 @@ public class Main{
 			public void actionPerformed(ActionEvent e) {
 				dbDienste.setVisibleMenuePanel(pnlPDF);
 				PDFDienste pdfDienst = new PDFDienste(svtool.getPDFFile(),svtool.sqlQuery("SELECT * FROM sv_schueler WHERE selektiert=1"));
-				pdfDienst.makePDF();
+				pdfDienst.makePDF(svtool.getPDFFile());
 				pdfDienst.viewPDF(svtool.getPDFFile(), pnlPDFViewer);
-				System.out.println("Nele");
 			}
 		});
 		btnImport.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				dbDienste.setVisibleMenuePanel(pnlImport);
-				System.out.println("Mama");
 			}
 		});
 		btnBilder.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				dbDienste.setVisibleMenuePanel(pnlBilder);
 				dbDienste.fuelleCombobox(cboImgKlasse, "SELECT klasse FROM sv_schueler GROUP BY klasse ORDER BY klasse");
-				System.out.println("Papa");
 			}
 		});
 		btnListe.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				dbDienste.fuelleCombobox(cboListKlasse, "SELECT klasse FROM sv_schueler GROUP BY klasse ORDER BY klasse");
 				dbDienste.setVisibleMenuePanel(pnlListe);
-				System.out.println("Rahel");
 			}
 		});
 		dbDienste.addMenuePanel(pnlDB);
