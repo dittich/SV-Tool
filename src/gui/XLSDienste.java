@@ -117,15 +117,15 @@ public class XLSDienste {
 		return result;
 	}
 	
-	private Vector selectedRow(Vector row){
-		Vector vec = new Vector();
-		vec.add(row.get(dbHeadline2xlsHeadlineIndex.get("schueler_id")));
-		vec.add(row.get(dbHeadline2xlsHeadlineIndex.get("name")));
-		vec.add(row.get(dbHeadline2xlsHeadlineIndex.get("vorname")));
-		vec.add(row.get(dbHeadline2xlsHeadlineIndex.get("gebdatum")));
-		vec.add(row.get(dbHeadline2xlsHeadlineIndex.get("geschlecht")));
-		vec.add(row.get(dbHeadline2xlsHeadlineIndex.get("geloescht")));
-		vec.add(row.get(dbHeadline2xlsHeadlineIndex.get("klasse")));
+	private Vector<String> selectedRow(Vector<?> row){
+		Vector<String> vec = new Vector<String>();
+		vec.add((String) row.get(dbHeadline2xlsHeadlineIndex.get("schueler_id")));
+		vec.add((String) row.get(dbHeadline2xlsHeadlineIndex.get("name")));
+		vec.add((String) row.get(dbHeadline2xlsHeadlineIndex.get("vorname")));
+		vec.add((String) row.get(dbHeadline2xlsHeadlineIndex.get("gebdatum")));
+		vec.add((String) row.get(dbHeadline2xlsHeadlineIndex.get("geschlecht")));
+		vec.add((String) row.get(dbHeadline2xlsHeadlineIndex.get("geloescht")));
+		vec.add((String) row.get(dbHeadline2xlsHeadlineIndex.get("klasse")));
 		
 		return vec;
 	}
