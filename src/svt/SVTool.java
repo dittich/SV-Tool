@@ -4,6 +4,8 @@ package svt;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.Vector;
 
 import dv.Dateimanager;
 import dv.Datenverwaltung;
@@ -20,6 +22,23 @@ public class SVTool {
 		dv = new Datenverwaltung();
 		dm = new Dateimanager();
 		einstellungenLaden();
+	}
+	
+	public boolean checkId(int susId){
+		boolean check = false;
+		String query = "SELECT count(*) FROM sv_schueler WHERE schueler_id="+susId;
+		ResultSet rs = dv.sqlQuery(query);
+		try {
+			while (rs.next()) {
+				if(rs.getInt(1)==1){
+					check=true;
+				}
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return check;
 	}
 	
 	public boolean sqlImportBackup(File backupFile){
@@ -135,6 +154,15 @@ public class SVTool {
 	public ResultSet sqlQuery(String query)
 	{
 		return dv.sqlQuery(query);
+	}
+	
+	public boolean sqlInsert(int susID, Vector vec){
+		return dv.sqlInsert(susID, vec);
+	}
+	
+	public boolean sqlUpdate(int susID, Vector vec)
+	{
+		return dv.sqlUpdate(susID, vec);
 	}
 	
 	public boolean sqlUpdate(String query)

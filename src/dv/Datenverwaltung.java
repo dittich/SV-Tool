@@ -10,6 +10,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.StringTokenizer;
+import java.util.Vector;
 
 import javax.imageio.ImageIO;
 
@@ -117,6 +118,72 @@ public class Datenverwaltung {
 			resultSet = null;
 		}
 		return resultSet;
+	}
+	
+	public boolean checkId(int susID){
+		boolean idIsSet = false;
+		String query = "SELECT * FROM sv_schueler WHERE schueler_id="+susID;
+
+		try {
+			resultSet = statement.executeQuery(query);
+			System.out.println(resultSet.getInt(1));
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			resultSet = null;
+		}
+		
+		return idIsSet;
+	}
+	
+	public boolean sqlInsert(int schueler_id, Vector vec){
+		boolean result = false;
+		String query = " insert into sv_schueler (schueler_id, name, vorname, gebdatum, geschlecht, geloescht, selektiert, klasse)"
+		        + " values (?, ?, ?, ?, ?, ?, ?, ?)";
+		System.out.println((String)vec.get(5));
+		boolean boolGeloescht = false;
+		if(((String)vec.get(5)).equals("Ja"))boolGeloescht=true;
+		
+		try {
+			PreparedStatement preparedStmt = connect.prepareStatement(query);
+			preparedStmt.setInt (1, schueler_id);
+			preparedStmt.setString (2, (String)vec.get(1));
+			preparedStmt.setString (3, (String)vec.get(2));
+			preparedStmt.setString (4, (String)vec.get(3));
+			preparedStmt.setString (5, (String)vec.get(4));
+			preparedStmt.setBoolean(6, boolGeloescht);
+			preparedStmt.setBoolean(7, false);
+			preparedStmt.setString (8, (String)vec.get(6));
+			
+			// execute the preparedstatement
+			preparedStmt.execute();
+			
+			result = true;
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
+	public boolean sqlUpdate(int schueler_id, Vector vec)
+	{
+		boolean result = false;
+		try {
+			String query = "update users set ? = ? where schueler_id = ?";
+			PreparedStatement preparedStmt = connect.prepareStatement(query);
+			preparedStmt.setString(1, "Name");
+			preparedStmt.setString(2, "nix");
+			preparedStmt.setInt(4, schueler_id);
+			
+			// execute the java preparedstatement
+			//preparedStmt.executeUpdate();
+			result = true;
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return result;
 	}
 	
 	public boolean sqlUpdate(String query)

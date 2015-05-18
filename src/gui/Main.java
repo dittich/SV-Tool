@@ -893,8 +893,8 @@ public class Main{
 		btnCSV.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				dbDienste.setVisibleMenuePanel(pnlCSV);
-				XLSDienste xls = new XLSDienste();
-				xls.susUpdate("d:/sus72.xls");
+				XLSDienste xls = new XLSDienste(svtool);
+				xls.susSqlImport("d:/sus72.xls");
 			}
 		});
 		btnCSV.setBounds(300, 0, 34, 34);

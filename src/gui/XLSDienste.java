@@ -14,14 +14,18 @@ import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 
+import svt.SVTool;
+
 
 public class XLSDienste {
 	
+	private SVTool svtool;
 	private Vector<Vector<String>> xlsSheet;
 	private HashMap<String, String> xls2Db;
 	private HashMap<String, Integer> dbHeadline2xlsHeadlineIndex;
 	
-	public XLSDienste(){
+	public XLSDienste(SVTool svtool){
+		this.svtool = svtool;
 		this.xls2Db = zuordnungXls2DB();
 	}
 	
@@ -29,26 +33,28 @@ public class XLSDienste {
 		
 	}
 	
-	public void susUpdate(File filename){
-		this.susUpdate(filename.toString());
+	public void susSqlImport(File filename){
+		this.susSqlImport(filename.toString());
 	}
 	
-	public void susUpdate(String filename){
+	public void susSqlImport(String filename){
 		Vector vecSuS = this.readXLSFile(filename.toString());
 		vecSuS = this.filterVector(vecSuS);
 		
 		//SQL-Anweisung für Update in DB - Vector vecSuS ist gefiltert inc. Headline
-		
-		//Hier folgt eine Test-Ausgabe des Vectors vecSuS
-		String result = "";
-		
 		Iterator iter = vecSuS.iterator();
+		if(iter.hasNext())iter.next();
 		while(iter.hasNext()){
 			Vector vecRow = (Vector)iter.next();
-			result = result + this.vector2String(vecRow) + "\n";
+			int susId = Integer.parseInt((String)vecRow.get(0));
+			boolean isSet = svtool.checkId(susId);
+			if(isSet){
+				svtool.sqlUpdate(susId, vecRow);
+			}
+			else{
+				svtool.sqlInsert(susId, vecRow);
+			}
 		}
-		
-		System.out.println(result);
 	}
 	
 	private Vector<Vector<String>> readXLSFile(String fileName)
