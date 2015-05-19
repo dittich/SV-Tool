@@ -81,6 +81,7 @@ public class Main{
 	private JTextField txtEsMysqldumpFile;
 	private JTextField txtEsBilderOrdner;
 	private JTextField txtEsPDFDatei;
+	private JTextField txtEsXlsDatei;
 	
 
 	/**
@@ -122,137 +123,6 @@ public class Main{
 		frmSvausweise.getContentPane().setLayout(null);
 		
 		UIManager.put("FileChooser.readOnly", Boolean.TRUE);
-		
-		JPanel pnlBilder = new JPanel();
-		pnlBilder.setBounds(10, 45, 764, 495);
-		frmSvausweise.getContentPane().add(pnlBilder);
-		pnlBilder.setLayout(null);
-		pnlBilder.setVisible(false);
-		dbDienste.addMenuePanel(pnlBilder);
-		
-		JPanel pnlImgDirectory = new JPanel();
-		pnlImgDirectory.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
-		pnlImgDirectory.setBounds(0, 0, 220, 495);
-		pnlBilder.add(pnlImgDirectory);
-		pnlImgDirectory.setLayout(null);
-		
-		JPanel pnlImgBearbeiten = new JPanel();
-		pnlImgBearbeiten.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
-		pnlImgBearbeiten.setBounds(225, 0, 540, 495);
-		pnlBilder.add(pnlImgBearbeiten);
-		pnlImgBearbeiten.setLayout(null);
-		
-		JPanel pnlImgBild = new JPanel();
-		pnlImgBild.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
-		pnlImgBild.setBounds(10, 10, 370, 475);
-		pnlImgBearbeiten.add(pnlImgBild);
-		pnlImgBild.setLayout(null);
-		
-		pnlImgWork = new DragPanel(this);
-		pnlImgWork.setBounds(10, 10, 350, 450);
-		pnlImgBild.add(pnlImgWork);
-		
-		JPanel pnlImgZuweisen = new JPanel();
-		pnlImgZuweisen.setBounds(390, 10, 150, 475);
-		pnlImgBearbeiten.add(pnlImgZuweisen);
-		pnlImgZuweisen.setLayout(null);
-		
-		lblImgNewImage = new JLabel("");
-		lblImgNewImage.setBounds(23, 10, 105, 135);
-		pnlImgZuweisen.add(lblImgNewImage);
-		
-		JComboBox cboImgKlasse = new JComboBox();
-		cboImgKlasse.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-            	if(cboImgKlasse.getSelectedItem()!=null){
-            		String klasse = cboImgKlasse.getSelectedItem().toString();
-                	if(!klasse.equals("")){
-                		String sqlQuery = "SELECT * FROM sv_schueler WHERE klasse='"+klasse+"'";
-                        JTable t = dbDienste.resultSetToTableZuweisen(sqlQuery);
-                        scrollPaneZuweisen.setViewportView(t);
-                	}
-            	}
-            }
-        });
-		cboImgKlasse.setBounds(10, 155, 130, 19);
-		pnlImgZuweisen.add(cboImgKlasse);
-		
-		scrollPaneZuweisen = new JScrollPane();
-		scrollPaneZuweisen.setViewportBorder(null);
-		scrollPaneZuweisen.setBounds(10, 185, 130, 230);
-		pnlImgZuweisen.add(scrollPaneZuweisen);
-		
-		JTable tblImgSuS = new JTable();
-		tblImgSuS.setBounds(0, 0, 0, 0);
-		scrollPaneZuweisen.add(tblImgSuS);
-		
-		JButton btnImgZuweisen = new JButton("Zuweisen");
-		btnImgZuweisen.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				JTable tbl = (JTable)scrollPaneZuweisen.getViewport().getComponent(0);
-				int idIndex = (int)tbl.getModel().getValueAt(tbl.getSelectedRow(),tbl.getColumn("id").getModelIndex());
-				svtool.updateSqlImg(idIndex, imgDbCut);
-			}
-		});
-		btnImgZuweisen.setBounds(10, 426, 130, 38);
-		pnlImgZuweisen.add(btnImgZuweisen);
-		
-		JFileChooser fileChooser = new JFileChooser();
-		
-		fileChooser.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent actionEvent) {
-				JFileChooser theFileChooser = (JFileChooser) actionEvent.getSource();
-				String command = actionEvent.getActionCommand();
-				
-				if (command.equals(JFileChooser.APPROVE_SELECTION)) {
-					File selectedFile = theFileChooser.getSelectedFile();
-					BufferedImage image;
-					try {
-						image = ImageIO.read(new File(selectedFile.getParent()+"\\"+selectedFile.getName()));
-						BufferedImage image1 = new ImageScaler().scaleImage(image, new Dimension(350,450));
-						pnlImgWork.setImage(image1);
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				}
-				else if (command.equals(JFileChooser.SELECTED_FILE_CHANGED_PROPERTY)) {
-					File selectedFile = theFileChooser.getSelectedFile();
-					BufferedImage image;
-					try {
-						image = ImageIO.read(new File(selectedFile.getParent()+"\\"+selectedFile.getName()));
-						BufferedImage image1 = new ImageScaler().scaleImage(image, new Dimension(350,450));
-						pnlImgWork.setImage(image1);
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					
-					//Image image = Toolkit.getDefaultToolkit().getImage(selectedFile.getParent()+"\\"+selectedFile.getName());
-					//Image image1 = new ImageScaler().scaleImage(image, new Dimension(210,270));
-					
-				}
-				else if (command.equals(JFileChooser.CANCEL_SELECTION)) {
-					theFileChooser.setCurrentDirectory(svtool.getImportOrdner());
-				}
-			}
-		});
-		fileChooser.setCurrentDirectory(svtool.getBilderOrdner());
-		fileChooser.setBounds(0, 10, 220, 475);
-		pnlImgDirectory.add(fileChooser);
-		
-		JPanel pnlPDF = new JPanel();
-		pnlPDF.setBounds(10, 45, 764, 495);
-		frmSvausweise.getContentPane().add(pnlPDF);
-		pnlPDF.setLayout(null);
-		pnlPDF.setVisible(false);
-		dbDienste.addMenuePanel(pnlPDF);
-		
-		JPanel pnlPDFViewer = new JPanel();
-		pnlPDFViewer.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
-		pnlPDFViewer.setBounds(-3, 0, 770, 470);
-		pnlPDF.add(pnlPDFViewer);
-		pnlPDFViewer.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 		
 		JPanel pnlEinstellungen = new JPanel();
 		pnlEinstellungen.setBounds(10, 45, 764, 495);
@@ -414,21 +284,21 @@ public class Main{
 		
 		JPanel lblEsSQLDateien = new JPanel();
 		lblEsSQLDateien.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
-		lblEsSQLDateien.setBounds(430, 0, 334, 140);
+		lblEsSQLDateien.setBounds(430, 0, 330, 140);
 		pnlEinstellungen.add(lblEsSQLDateien);
 		lblEsSQLDateien.setLayout(null);
 		
 		JLabel lblSqlDateien = new JLabel("SQL - Dateien");
-		lblSqlDateien.setHorizontalAlignment(SwingConstants.CENTER);
+		lblSqlDateien.setHorizontalAlignment(SwingConstants.LEFT);
 		lblSqlDateien.setFont(new Font("Tahoma", Font.BOLD, 16));
-		lblSqlDateien.setBounds(100, 10, 129, 20);
+		lblSqlDateien.setBounds(10, 10, 129, 20);
 		lblEsSQLDateien.add(lblSqlDateien);
 		
 		txtEsMysqlFile = new JTextField();
 		txtEsMysqlFile.setText(svtool.getMysqlFile().toString());
 		txtEsMysqlFile.setEditable(false);
 		txtEsMysqlFile.setColumns(10);
-		txtEsMysqlFile.setBounds(10, 40, 315, 19);
+		txtEsMysqlFile.setBounds(10, 40, 310, 19);
 		lblEsSQLDateien.add(txtEsMysqlFile);
 		
 		JButton btnEsMysqlFile = new JButton("mysql - Datei");
@@ -453,10 +323,23 @@ public class Main{
 		txtEsMysqldumpFile.setText(svtool.getMysqldumpFile().toString());
 		txtEsMysqldumpFile.setEditable(false);
 		txtEsMysqldumpFile.setColumns(10);
-		txtEsMysqldumpFile.setBounds(10, 90, 315, 19);
+		txtEsMysqldumpFile.setBounds(10, 90, 310, 19);
 		lblEsSQLDateien.add(txtEsMysqldumpFile);
 		
 		JButton btnEsMysqldumpFile = new JButton("mysqldump - Datei");
+		btnEsMysqldumpFile.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				FilenameFilter filter = new FilenameFilter() {
+			        public boolean accept(File directory, String fileName) {
+			            return fileName.endsWith(".exe");
+			        }
+		        };
+				
+				File mysqlFile = SwingUtil.getFileChoice(new JDialog(), txtEsMysqldumpFile.getText(), null, "mysql - Datei");
+				txtEsMysqldumpFile.setText(mysqlFile.toString());
+				svtool.setMysqldumpFile(mysqlFile);
+			}
+		});
 		btnEsMysqldumpFile.setBounds(10, 110, 150, 19);
 		lblEsSQLDateien.add(btnEsMysqldumpFile);
 		
@@ -495,20 +378,20 @@ public class Main{
 		JPanel pnlEsPDFOrdner = new JPanel();
 		pnlEsPDFOrdner.setLayout(null);
 		pnlEsPDFOrdner.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
-		pnlEsPDFOrdner.setBounds(430, 151, 334, 90);
+		pnlEsPDFOrdner.setBounds(430, 150, 330, 90);
 		pnlEinstellungen.add(pnlEsPDFOrdner);
 		
 		JLabel lblPDFDatei = new JLabel("PDF - Datei");
-		lblPDFDatei.setHorizontalAlignment(SwingConstants.CENTER);
+		lblPDFDatei.setHorizontalAlignment(SwingConstants.LEFT);
 		lblPDFDatei.setFont(new Font("Tahoma", Font.BOLD, 16));
-		lblPDFDatei.setBounds(77, 9, 150, 20);
+		lblPDFDatei.setBounds(10, 10, 150, 20);
 		pnlEsPDFOrdner.add(lblPDFDatei);
 		
 		txtEsPDFDatei = new JTextField();
 		txtEsPDFDatei.setText(svtool.getPDFFile().toString());
 		txtEsPDFDatei.setEditable(false);
 		txtEsPDFDatei.setColumns(10);
-		txtEsPDFDatei.setBounds(10, 40, 314, 19);
+		txtEsPDFDatei.setBounds(10, 40, 310, 19);
 		pnlEsPDFOrdner.add(txtEsPDFDatei);
 		
 		JButton btnEsPDFDatei = new JButton("Datei w\u00E4hlen");
@@ -529,6 +412,173 @@ public class Main{
 		});
 		btnEsPDFDatei.setBounds(10, 60, 150, 19);
 		pnlEsPDFOrdner.add(btnEsPDFDatei);
+		
+		JPanel pnlEsXLSOrdner = new JPanel();
+		pnlEsXLSOrdner.setLayout(null);
+		pnlEsXLSOrdner.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
+		pnlEsXLSOrdner.setBounds(430, 250, 330, 90);
+		pnlEinstellungen.add(pnlEsXLSOrdner);
+		
+		JLabel lblEsXLSOrdner = new JLabel("XLS - Datei");
+		lblEsXLSOrdner.setHorizontalAlignment(SwingConstants.LEFT);
+		lblEsXLSOrdner.setFont(new Font("Tahoma", Font.BOLD, 16));
+		lblEsXLSOrdner.setBounds(10, 10, 150, 20);
+		pnlEsXLSOrdner.add(lblEsXLSOrdner);
+		
+		txtEsXlsDatei = new JTextField();
+		txtEsXlsDatei.setText(svtool.getXlsFile().toString());
+		txtEsXlsDatei.setEditable(false);
+		txtEsXlsDatei.setColumns(10);
+		txtEsXlsDatei.setBounds(10, 40, 310, 19);
+		pnlEsXLSOrdner.add(txtEsXlsDatei);
+		
+		JButton btnEsXLSOrdner = new JButton("Datei w\u00E4hlen");
+		btnEsXLSOrdner.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				FilenameFilter filter = new FilenameFilter() {
+			        public boolean accept(File directory, String fileName) {
+			            return fileName.endsWith(".xls");
+			        }
+		        };
+				
+				File xlsFile = SwingUtil.getFileChoice(new JDialog(), txtEsXlsDatei.getText(), null, "xls - Datei");
+				txtEsXlsDatei.setText(xlsFile.toString());
+				svtool.setXlsFile(xlsFile);
+			}
+		});
+		btnEsXLSOrdner.setBounds(10, 60, 150, 19);
+		pnlEsXLSOrdner.add(btnEsXLSOrdner);
+		
+		JPanel pnlBilder = new JPanel();
+		pnlBilder.setBounds(10, 45, 764, 495);
+		frmSvausweise.getContentPane().add(pnlBilder);
+		pnlBilder.setLayout(null);
+		pnlBilder.setVisible(false);
+		dbDienste.addMenuePanel(pnlBilder);
+		
+		JPanel pnlImgDirectory = new JPanel();
+		pnlImgDirectory.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
+		pnlImgDirectory.setBounds(0, 0, 220, 495);
+		pnlBilder.add(pnlImgDirectory);
+		pnlImgDirectory.setLayout(null);
+		
+		JPanel pnlImgBearbeiten = new JPanel();
+		pnlImgBearbeiten.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
+		pnlImgBearbeiten.setBounds(225, 0, 540, 495);
+		pnlBilder.add(pnlImgBearbeiten);
+		pnlImgBearbeiten.setLayout(null);
+		
+		JPanel pnlImgBild = new JPanel();
+		pnlImgBild.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
+		pnlImgBild.setBounds(10, 10, 370, 475);
+		pnlImgBearbeiten.add(pnlImgBild);
+		pnlImgBild.setLayout(null);
+		
+		pnlImgWork = new DragPanel(this);
+		pnlImgWork.setBounds(10, 10, 350, 450);
+		pnlImgBild.add(pnlImgWork);
+		
+		JPanel pnlImgZuweisen = new JPanel();
+		pnlImgZuweisen.setBounds(390, 10, 150, 475);
+		pnlImgBearbeiten.add(pnlImgZuweisen);
+		pnlImgZuweisen.setLayout(null);
+		
+		lblImgNewImage = new JLabel("");
+		lblImgNewImage.setBounds(23, 10, 105, 135);
+		pnlImgZuweisen.add(lblImgNewImage);
+		
+		JComboBox cboImgKlasse = new JComboBox();
+		cboImgKlasse.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+            	if(cboImgKlasse.getSelectedItem()!=null){
+            		String klasse = cboImgKlasse.getSelectedItem().toString();
+                	if(!klasse.equals("")){
+                		String sqlQuery = "SELECT * FROM sv_schueler WHERE klasse='"+klasse+"'";
+                        JTable t = dbDienste.resultSetToTableZuweisen(sqlQuery);
+                        scrollPaneZuweisen.setViewportView(t);
+                	}
+            	}
+            }
+        });
+		cboImgKlasse.setBounds(10, 155, 130, 19);
+		pnlImgZuweisen.add(cboImgKlasse);
+		
+		scrollPaneZuweisen = new JScrollPane();
+		scrollPaneZuweisen.setViewportBorder(null);
+		scrollPaneZuweisen.setBounds(10, 185, 130, 230);
+		pnlImgZuweisen.add(scrollPaneZuweisen);
+		
+		JTable tblImgSuS = new JTable();
+		tblImgSuS.setBounds(0, 0, 0, 0);
+		scrollPaneZuweisen.add(tblImgSuS);
+		
+		JButton btnImgZuweisen = new JButton("Zuweisen");
+		btnImgZuweisen.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				JTable tbl = (JTable)scrollPaneZuweisen.getViewport().getComponent(0);
+				int idIndex = (int)tbl.getModel().getValueAt(tbl.getSelectedRow(),tbl.getColumn("id").getModelIndex());
+				svtool.updateSqlImg(idIndex, imgDbCut);
+			}
+		});
+		btnImgZuweisen.setBounds(10, 426, 130, 38);
+		pnlImgZuweisen.add(btnImgZuweisen);
+		
+		JFileChooser fileChooser = new JFileChooser();
+		
+		fileChooser.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent actionEvent) {
+				JFileChooser theFileChooser = (JFileChooser) actionEvent.getSource();
+				String command = actionEvent.getActionCommand();
+				
+				if (command.equals(JFileChooser.APPROVE_SELECTION)) {
+					File selectedFile = theFileChooser.getSelectedFile();
+					BufferedImage image;
+					try {
+						image = ImageIO.read(new File(selectedFile.getParent()+"\\"+selectedFile.getName()));
+						BufferedImage image1 = new ImageScaler().scaleImage(image, new Dimension(350,450));
+						pnlImgWork.setImage(image1);
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+				else if (command.equals(JFileChooser.SELECTED_FILE_CHANGED_PROPERTY)) {
+					File selectedFile = theFileChooser.getSelectedFile();
+					BufferedImage image;
+					try {
+						image = ImageIO.read(new File(selectedFile.getParent()+"\\"+selectedFile.getName()));
+						BufferedImage image1 = new ImageScaler().scaleImage(image, new Dimension(350,450));
+						pnlImgWork.setImage(image1);
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					
+					//Image image = Toolkit.getDefaultToolkit().getImage(selectedFile.getParent()+"\\"+selectedFile.getName());
+					//Image image1 = new ImageScaler().scaleImage(image, new Dimension(210,270));
+					
+				}
+				else if (command.equals(JFileChooser.CANCEL_SELECTION)) {
+					theFileChooser.setCurrentDirectory(svtool.getImportOrdner());
+				}
+			}
+		});
+		fileChooser.setCurrentDirectory(svtool.getBilderOrdner());
+		fileChooser.setBounds(0, 10, 220, 475);
+		pnlImgDirectory.add(fileChooser);
+		
+		JPanel pnlPDF = new JPanel();
+		pnlPDF.setBounds(10, 45, 764, 495);
+		frmSvausweise.getContentPane().add(pnlPDF);
+		pnlPDF.setLayout(null);
+		pnlPDF.setVisible(false);
+		dbDienste.addMenuePanel(pnlPDF);
+		
+		JPanel pnlPDFViewer = new JPanel();
+		pnlPDFViewer.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
+		pnlPDFViewer.setBounds(-3, 0, 770, 470);
+		pnlPDF.add(pnlPDFViewer);
+		pnlPDFViewer.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 		
 		JPanel pnlCSV = new JPanel();
 		pnlCSV.setBounds(10, 45, 764, 495);
@@ -894,7 +944,7 @@ public class Main{
 			public void actionPerformed(ActionEvent e) {
 				dbDienste.setVisibleMenuePanel(pnlCSV);
 				XLSDienste xls = new XLSDienste(svtool);
-				xls.susSqlImport("d:/sus72.xls");
+				xls.susSqlImport(svtool.getXlsFile().toString());
 			}
 		});
 		btnCSV.setBounds(300, 0, 34, 34);

@@ -123,6 +123,17 @@ public class SVTool {
 		return einstellungen.getMysqldumpFile();
 	}
 	
+	public void setXlsFile(File xlsFile)
+	{
+		einstellungen.setXlsFile(xlsFile);
+		einstellungenSpeichern();
+	}
+	
+	public File getXlsFile()
+	{
+		return einstellungen.getXlsFile();
+	}
+	
 	public File getExportOrdner()
 	{
 		File exportOrdner = einstellungen.getExportOrdner();

@@ -28,6 +28,7 @@ public class Einstellungen implements Serializable{
 	private File mysqlFile = new File("C:/xampp/mysql/bin/mysql.exe");
 	private File mysqlimportFile = new File("C:/xampp/mysql/bin/mysqlimport.exe");
 	private File pdfFile = new File("C:/ausweise.pdf");
+	private File xlsFile = new File("C:/2015-05.xls");
 	
 	public Einstellungen()
 	{
@@ -152,5 +153,13 @@ public class Einstellungen implements Serializable{
 
 	public void setPdfFile(File pdfFile) {
 		this.pdfFile = pdfFile;
+	}
+
+	public File getXlsFile() {
+		return xlsFile;
+	}
+
+	public void setXlsFile(File xlsFile) {
+		this.xlsFile = xlsFile;
 	}
 }
