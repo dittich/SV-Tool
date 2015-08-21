@@ -125,6 +125,65 @@ public class Main{
 		
 		UIManager.put("FileChooser.readOnly", Boolean.TRUE);
 		
+		JPanel pnlDB = new JPanel();
+		pnlDB.setBounds(10, 45, 764, 495);
+		frmSvausweise.getContentPane().add(pnlDB);
+		pnlDB.setLayout(null);
+		pnlDB.setVisible(false);
+		
+		JPanel pnlDbConnect = new JPanel();
+		pnlDbConnect.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
+		pnlDbConnect.setBounds(10, 11, 227, 133);
+		pnlDB.add(pnlDbConnect);
+		pnlDbConnect.setLayout(null);
+		
+		JLabel lblDbName = new JLabel("Db-Name");
+		lblDbName.setBounds(10, 10, 100, 19);
+		pnlDbConnect.add(lblDbName);
+		
+		txtDbName = new JTextField();
+		txtDbName.setEnabled(false);
+		txtDbName.setEditable(false);
+		txtDbName.setBounds(10, 30, 100, 19);
+		pnlDbConnect.add(txtDbName);
+		txtDbName.setColumns(10);
+		
+		btnDbConnect = new JButton();
+		btnDbConnect.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if(svtool.isDbConnected())svtool.dbClose();
+				else svtool.dbConnect();
+				dbDienste.setBtnDbConnect(btnDbConnect, pnlDbTableAuswahl, cboDbTable);
+				dbDienste.setEnableDbButton();
+			}
+		});
+		btnDbConnect.setBounds(120, 30, 100, 19);
+		pnlDbConnect.add(btnDbConnect);
+		
+		pnlDbTableAuswahl = new JPanel();
+		pnlDbTableAuswahl.setBounds(10, 60, 210, 66);
+		pnlDbConnect.add(pnlDbTableAuswahl);
+		pnlDbTableAuswahl.setLayout(null);
+		pnlDbTableAuswahl.setVisible(false);
+		
+		JLabel lblDbTable = new JLabel("Tableauswahl");
+		lblDbTable.setBounds(0, 0, 100, 19);
+		pnlDbTableAuswahl.add(lblDbTable);
+		
+		cboDbTable = new JComboBox<String>();
+		cboDbTable.setBounds(0, 20, 210, 19);
+		pnlDbTableAuswahl.add(cboDbTable);
+		
+		JButton btnDbTable = new JButton("Set");
+		btnDbTable.setBounds(0, 45, 210, 19);
+		pnlDbTableAuswahl.add(btnDbTable);
+		btnDbTable.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				svtool.setDbTable((String)cboDbTable.getSelectedItem());
+			}
+		});
+		dbDienste.addMenuePanel(pnlDB);
+		
 		JPanel pnlCSV = new JPanel();
 		pnlCSV.setBounds(10, 45, 764, 495);
 		frmSvausweise.getContentPane().add(pnlCSV);
@@ -824,64 +883,6 @@ public class Main{
 		lblInfoImage.setBounds(10, 142, 215, 286);
 		pnlListInfo.add(lblInfoImage);
 		
-		JPanel pnlDB = new JPanel();
-		pnlDB.setBounds(10, 45, 764, 495);
-		frmSvausweise.getContentPane().add(pnlDB);
-		pnlDB.setLayout(null);
-		pnlDB.setVisible(false);
-		
-		JPanel pnlDbConnect = new JPanel();
-		pnlDbConnect.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
-		pnlDbConnect.setBounds(10, 11, 227, 133);
-		pnlDB.add(pnlDbConnect);
-		pnlDbConnect.setLayout(null);
-		
-		JLabel lblDbName = new JLabel("Db-Name");
-		lblDbName.setBounds(10, 10, 100, 19);
-		pnlDbConnect.add(lblDbName);
-		
-		txtDbName = new JTextField();
-		txtDbName.setEnabled(false);
-		txtDbName.setEditable(false);
-		txtDbName.setBounds(10, 30, 100, 19);
-		pnlDbConnect.add(txtDbName);
-		txtDbName.setColumns(10);
-		
-		btnDbConnect = new JButton();
-		btnDbConnect.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				if(svtool.isDbConnected())svtool.dbClose();
-				else svtool.dbConnect();
-				dbDienste.setBtnDbConnect(btnDbConnect, pnlDbTableAuswahl, cboDbTable);
-				dbDienste.setEnableDbButton();
-			}
-		});
-		btnDbConnect.setBounds(120, 30, 100, 19);
-		pnlDbConnect.add(btnDbConnect);
-		
-		pnlDbTableAuswahl = new JPanel();
-		pnlDbTableAuswahl.setBounds(10, 60, 210, 66);
-		pnlDbConnect.add(pnlDbTableAuswahl);
-		pnlDbTableAuswahl.setLayout(null);
-		pnlDbTableAuswahl.setVisible(false);
-		
-		JLabel lblDbTable = new JLabel("Tableauswahl");
-		lblDbTable.setBounds(0, 0, 100, 19);
-		pnlDbTableAuswahl.add(lblDbTable);
-		
-		cboDbTable = new JComboBox<String>();
-		cboDbTable.setBounds(0, 20, 210, 19);
-		pnlDbTableAuswahl.add(cboDbTable);
-		
-		JButton btnDbTable = new JButton("Set");
-		btnDbTable.setBounds(0, 45, 210, 19);
-		pnlDbTableAuswahl.add(btnDbTable);
-		btnDbTable.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				svtool.setDbTable((String)cboDbTable.getSelectedItem());
-			}
-		});
-		
 		JPanel pnl_buttonMenue = new JPanel();
 		pnl_buttonMenue.setBounds(0, 0, 571, 34);
 		frmSvausweise.getContentPane().add(pnl_buttonMenue);
@@ -937,7 +938,7 @@ public class Main{
 		dbDienste.addMenuButton(btnExport);
 		btnExport.setEnabled(false);
 		
-		JButton btnCSV = new JButton(new ImageIcon(Toolkit.getDefaultToolkit().getImage(Main.class.getResource("sv_csv.png"))));
+		JButton btnCSV = new JButton(new ImageIcon(Toolkit.getDefaultToolkit().getImage(Main.class.getResource("sv_xls.png"))));
 		btnCSV.setToolTipText("SuS Import aus Schild");
 		btnCSV.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -995,7 +996,6 @@ public class Main{
 				dbDienste.setVisibleMenuePanel(pnlListe);
 			}
 		});
-		dbDienste.addMenuePanel(pnlDB);
 	}
 	
 	public void updateTable(String sqlQuery){
