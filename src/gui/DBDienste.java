@@ -100,15 +100,15 @@ public class DBDienste{
 	{
 		if(svtool.isDbConnected())
 		{
-			btn.setText("Connect");
-			btn.setForeground(new Color(0, 128, 0));
+			btn.setText("Disconnect");
+			btn.setForeground(Color.RED);
 			pnl.setVisible(true);
 			fuelleCombobox(cbo, "SHOW TABLES");
 		}
 		else
 		{
-			btn.setText("Disconnect");
-			btn.setForeground(Color.RED);
+			btn.setText("Connect");
+			btn.setForeground(new Color(0, 128, 0));
 			pnl.setVisible(false);
 		}
 	}
