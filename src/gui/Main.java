@@ -39,6 +39,7 @@ import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 
 import javax.swing.JScrollPane;
+
 import java.awt.FlowLayout;
 
 public class Main{
@@ -54,8 +55,8 @@ public class Main{
 	private JTextField txtEsDbName;
 	private JTextField txtDbName;
 	private JButton btnDbConnect;
-	private JComboBox cboDbTable;
-	private JComboBox cboListKlasse;
+	private JComboBox<String> cboDbTable;
+	private JComboBox<String> cboListKlasse;
 	private JPanel pnlDbTableAuswahl;
 	private JButton btnListe;
 	private JButton btnBilder;
@@ -81,7 +82,7 @@ public class Main{
 	private JTextField txtEsMysqldumpFile;
 	private JTextField txtEsBilderOrdner;
 	private JTextField txtEsPDFDatei;
-	private JTextField txtEsXlsDatei;
+	private JTextField txtXLSImport;
 	
 
 	/**
@@ -116,13 +117,65 @@ public class Main{
 	 */
 	private void initializeGUI(){
 		frmSvausweise = new JFrame("");
-		frmSvausweise.setIconImage(Toolkit.getDefaultToolkit().getImage(Main.class.getResource("../IMG/sv_ad.png")));
-		frmSvausweise.setTitle("SV-Ausweise 0.1");
+		frmSvausweise.setIconImage(Toolkit.getDefaultToolkit().getImage(Main.class.getResource("sv_ad.png")));
+		frmSvausweise.setTitle("SV-Ausweise 0.2");
 		frmSvausweise.setBounds(100, 100, 797, 582);
 		frmSvausweise.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frmSvausweise.getContentPane().setLayout(null);
 		
 		UIManager.put("FileChooser.readOnly", Boolean.TRUE);
+		
+		JPanel pnlCSV = new JPanel();
+		pnlCSV.setBounds(10, 45, 764, 495);
+		frmSvausweise.getContentPane().add(pnlCSV);
+		pnlCSV.setLayout(null);
+		pnlCSV.setVisible(false);
+		dbDienste.addMenuePanel(pnlCSV);
+		
+		JPanel pnlXLSImport = new JPanel();
+		pnlXLSImport.setBounds(0, 0, 254, 155);
+		pnlCSV.add(pnlXLSImport);
+		pnlXLSImport.setLayout(null);
+		
+		JLabel lblXlSImport = new JLabel("XLS-Datei");
+		lblXlSImport.setFont(new Font("Tahoma", Font.BOLD, 16));
+		lblXlSImport.setBounds(10, 10, 150, 19);
+		pnlXLSImport.add(lblXlSImport);
+		
+		txtXLSImport = new JTextField();
+		txtXLSImport.setBounds(10, 40, 220, 19);
+		pnlXLSImport.add(txtXLSImport);
+		txtXLSImport.setColumns(10);
+		
+		JButton btnXLSImport = new JButton("Ausw\u00E4hlen");
+		btnXLSImport.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				//FilenameFilter filter = 
+				new FilenameFilter() {
+			        public boolean accept(File directory, String fileName) {
+			            return fileName.endsWith(".xls");
+			        }
+		        };
+				
+				File xlsFile = SwingUtil.getFileChoice(new JDialog(), "c:", null, "XLS-Import Datei");
+				txtXLSImport.setText(xlsFile.toString());
+				svtool.setXlsFile(xlsFile);
+			}
+		});
+		btnXLSImport.setBounds(10, 60, 220, 19);
+		pnlXLSImport.add(btnXLSImport);
+		
+		JButton btnImportStarten = new JButton("Import starten");
+		btnImportStarten.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				XLSDienste xls = new XLSDienste(svtool);
+				String xlsDateiName = svtool.getXlsFile().toString();
+				System.out.println("XLS-Import von "+xlsDateiName);
+				xls.susSqlImport(xlsDateiName);
+			}
+		});
+		btnImportStarten.setBounds(10, 90, 220, 19);
+		pnlXLSImport.add(btnImportStarten);
 		
 		JPanel pnlEinstellungen = new JPanel();
 		pnlEinstellungen.setBounds(10, 45, 764, 495);
@@ -284,28 +337,29 @@ public class Main{
 		
 		JPanel lblEsSQLDateien = new JPanel();
 		lblEsSQLDateien.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
-		lblEsSQLDateien.setBounds(430, 0, 330, 140);
+		lblEsSQLDateien.setBounds(430, 0, 334, 140);
 		pnlEinstellungen.add(lblEsSQLDateien);
 		lblEsSQLDateien.setLayout(null);
 		
 		JLabel lblSqlDateien = new JLabel("SQL - Dateien");
-		lblSqlDateien.setHorizontalAlignment(SwingConstants.LEFT);
+		lblSqlDateien.setHorizontalAlignment(SwingConstants.CENTER);
 		lblSqlDateien.setFont(new Font("Tahoma", Font.BOLD, 16));
-		lblSqlDateien.setBounds(10, 10, 129, 20);
+		lblSqlDateien.setBounds(100, 10, 129, 20);
 		lblEsSQLDateien.add(lblSqlDateien);
 		
 		txtEsMysqlFile = new JTextField();
 		txtEsMysqlFile.setText(svtool.getMysqlFile().toString());
 		txtEsMysqlFile.setEditable(false);
 		txtEsMysqlFile.setColumns(10);
-		txtEsMysqlFile.setBounds(10, 40, 310, 19);
+		txtEsMysqlFile.setBounds(10, 40, 315, 19);
 		lblEsSQLDateien.add(txtEsMysqlFile);
 		
 		JButton btnEsMysqlFile = new JButton("mysql - Datei");
 		btnEsMysqlFile.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
-				FilenameFilter filter = new FilenameFilter() {
+				//FilenameFilter filter = 
+				new FilenameFilter() {
 			        public boolean accept(File directory, String fileName) {
 			            return fileName.endsWith(".exe");
 			        }
@@ -323,23 +377,10 @@ public class Main{
 		txtEsMysqldumpFile.setText(svtool.getMysqldumpFile().toString());
 		txtEsMysqldumpFile.setEditable(false);
 		txtEsMysqldumpFile.setColumns(10);
-		txtEsMysqldumpFile.setBounds(10, 90, 310, 19);
+		txtEsMysqldumpFile.setBounds(10, 90, 315, 19);
 		lblEsSQLDateien.add(txtEsMysqldumpFile);
 		
 		JButton btnEsMysqldumpFile = new JButton("mysqldump - Datei");
-		btnEsMysqldumpFile.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				FilenameFilter filter = new FilenameFilter() {
-			        public boolean accept(File directory, String fileName) {
-			            return fileName.endsWith(".exe");
-			        }
-		        };
-				
-				File mysqlFile = SwingUtil.getFileChoice(new JDialog(), txtEsMysqldumpFile.getText(), null, "mysql - Datei");
-				txtEsMysqldumpFile.setText(mysqlFile.toString());
-				svtool.setMysqldumpFile(mysqlFile);
-			}
-		});
 		btnEsMysqldumpFile.setBounds(10, 110, 150, 19);
 		lblEsSQLDateien.add(btnEsMysqldumpFile);
 		
@@ -378,26 +419,27 @@ public class Main{
 		JPanel pnlEsPDFOrdner = new JPanel();
 		pnlEsPDFOrdner.setLayout(null);
 		pnlEsPDFOrdner.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
-		pnlEsPDFOrdner.setBounds(430, 150, 330, 90);
+		pnlEsPDFOrdner.setBounds(430, 151, 334, 90);
 		pnlEinstellungen.add(pnlEsPDFOrdner);
 		
 		JLabel lblPDFDatei = new JLabel("PDF - Datei");
-		lblPDFDatei.setHorizontalAlignment(SwingConstants.LEFT);
+		lblPDFDatei.setHorizontalAlignment(SwingConstants.CENTER);
 		lblPDFDatei.setFont(new Font("Tahoma", Font.BOLD, 16));
-		lblPDFDatei.setBounds(10, 10, 150, 20);
+		lblPDFDatei.setBounds(77, 9, 150, 20);
 		pnlEsPDFOrdner.add(lblPDFDatei);
 		
 		txtEsPDFDatei = new JTextField();
 		txtEsPDFDatei.setText(svtool.getPDFFile().toString());
 		txtEsPDFDatei.setEditable(false);
 		txtEsPDFDatei.setColumns(10);
-		txtEsPDFDatei.setBounds(10, 40, 310, 19);
+		txtEsPDFDatei.setBounds(10, 40, 314, 19);
 		pnlEsPDFOrdner.add(txtEsPDFDatei);
 		
 		JButton btnEsPDFDatei = new JButton("Datei w\u00E4hlen");
 		btnEsPDFDatei.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {				
-				FilenameFilter filter = new FilenameFilter() {
+				//FilenameFilter filter = 
+				new FilenameFilter() {
 			        public boolean accept(File directory, String fileName) {
 			            return fileName.endsWith(".pdf");
 			        }
@@ -413,41 +455,43 @@ public class Main{
 		btnEsPDFDatei.setBounds(10, 60, 150, 19);
 		pnlEsPDFOrdner.add(btnEsPDFDatei);
 		
-		JPanel pnlEsXLSOrdner = new JPanel();
-		pnlEsXLSOrdner.setLayout(null);
-		pnlEsXLSOrdner.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
-		pnlEsXLSOrdner.setBounds(430, 250, 330, 90);
-		pnlEinstellungen.add(pnlEsXLSOrdner);
+		JPanel pnlImport = new JPanel();
+		pnlImport.setBounds(10, 45, 764, 495);
+		frmSvausweise.getContentPane().add(pnlImport);
+		pnlImport.setLayout(null);
+		pnlImport.setVisible(false);
+		dbDienste.addMenuePanel(pnlImport);
 		
-		JLabel lblEsXLSOrdner = new JLabel("XLS - Datei");
-		lblEsXLSOrdner.setHorizontalAlignment(SwingConstants.LEFT);
-		lblEsXLSOrdner.setFont(new Font("Tahoma", Font.BOLD, 16));
-		lblEsXLSOrdner.setBounds(10, 10, 150, 20);
-		pnlEsXLSOrdner.add(lblEsXLSOrdner);
+		JLabel lblImport = new JLabel("Import");
+		lblImport.setBounds(659, 38, 64, 43);
+		pnlImport.add(lblImport);
 		
-		txtEsXlsDatei = new JTextField();
-		txtEsXlsDatei.setText(svtool.getXlsFile().toString());
-		txtEsXlsDatei.setEditable(false);
-		txtEsXlsDatei.setColumns(10);
-		txtEsXlsDatei.setBounds(10, 40, 310, 19);
-		pnlEsXLSOrdner.add(txtEsXlsDatei);
+		JPanel pnlImportFileChooser = new JPanel();
+		pnlImportFileChooser.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
+		pnlImportFileChooser.setBounds(0, 0, 417, 495);
+		pnlImport.add(pnlImportFileChooser);
+		pnlImportFileChooser.setLayout(null);
 		
-		JButton btnEsXLSOrdner = new JButton("Datei w\u00E4hlen");
-		btnEsXLSOrdner.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				FilenameFilter filter = new FilenameFilter() {
-			        public boolean accept(File directory, String fileName) {
-			            return fileName.endsWith(".xls");
-			        }
-		        };
+		JFileChooser importFileChooser = new JFileChooser();
+		importFileChooser.setApproveButtonText("Import");
+		importFileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+		importFileChooser.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent actionEvent) {
+				JFileChooser theFileChooser = (JFileChooser) actionEvent.getSource();
+				String command = actionEvent.getActionCommand();
 				
-				File xlsFile = SwingUtil.getFileChoice(new JDialog(), txtEsXlsDatei.getText(), null, "xls - Datei");
-				txtEsXlsDatei.setText(xlsFile.toString());
-				svtool.setXlsFile(xlsFile);
+				if (command.equals(JFileChooser.APPROVE_SELECTION)) {
+					File selectedFile = theFileChooser.getSelectedFile();
+					svtool.sqlImportBackup(selectedFile);
+				}
+				else if (command.equals(JFileChooser.CANCEL_SELECTION)) {
+					theFileChooser.setCurrentDirectory(svtool.getImportOrdner());
+				}
 			}
 		});
-		btnEsXLSOrdner.setBounds(10, 60, 150, 19);
-		pnlEsXLSOrdner.add(btnEsXLSOrdner);
+		importFileChooser.setCurrentDirectory(svtool.getImportOrdner());
+		importFileChooser.setBounds(10, 10, 397, 475);
+		pnlImportFileChooser.add(importFileChooser);
 		
 		JPanel pnlBilder = new JPanel();
 		pnlBilder.setBounds(10, 45, 764, 495);
@@ -487,7 +531,7 @@ public class Main{
 		lblImgNewImage.setBounds(23, 10, 105, 135);
 		pnlImgZuweisen.add(lblImgNewImage);
 		
-		JComboBox cboImgKlasse = new JComboBox();
+		JComboBox<String> cboImgKlasse = new JComboBox<String>();
 		cboImgKlasse.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
             	if(cboImgKlasse.getSelectedItem()!=null){
@@ -580,51 +624,6 @@ public class Main{
 		pnlPDF.add(pnlPDFViewer);
 		pnlPDFViewer.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 		
-		JPanel pnlCSV = new JPanel();
-		pnlCSV.setBounds(10, 45, 764, 495);
-		frmSvausweise.getContentPane().add(pnlCSV);
-		pnlCSV.setLayout(null);
-		pnlCSV.setVisible(false);
-		dbDienste.addMenuePanel(pnlCSV);
-		
-		JPanel pnlImport = new JPanel();
-		pnlImport.setBounds(10, 45, 764, 495);
-		frmSvausweise.getContentPane().add(pnlImport);
-		pnlImport.setLayout(null);
-		pnlImport.setVisible(false);
-		dbDienste.addMenuePanel(pnlImport);
-		
-		JLabel lblImport = new JLabel("Import");
-		lblImport.setBounds(659, 38, 64, 43);
-		pnlImport.add(lblImport);
-		
-		JPanel pnlImportFileChooser = new JPanel();
-		pnlImportFileChooser.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
-		pnlImportFileChooser.setBounds(0, 0, 417, 495);
-		pnlImport.add(pnlImportFileChooser);
-		pnlImportFileChooser.setLayout(null);
-		
-		JFileChooser importFileChooser = new JFileChooser();
-		importFileChooser.setApproveButtonText("Import");
-		importFileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-		importFileChooser.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent actionEvent) {
-				JFileChooser theFileChooser = (JFileChooser) actionEvent.getSource();
-				String command = actionEvent.getActionCommand();
-				
-				if (command.equals(JFileChooser.APPROVE_SELECTION)) {
-					File selectedFile = theFileChooser.getSelectedFile();
-					svtool.sqlImportBackup(selectedFile);
-				}
-				else if (command.equals(JFileChooser.CANCEL_SELECTION)) {
-					theFileChooser.setCurrentDirectory(svtool.getImportOrdner());
-				}
-			}
-		});
-		importFileChooser.setCurrentDirectory(svtool.getImportOrdner());
-		importFileChooser.setBounds(10, 10, 397, 475);
-		pnlImportFileChooser.add(importFileChooser);
-		
 		JPanel pnlExport = new JPanel();
 		pnlExport.setBounds(10, 45, 764, 495);
 		frmSvausweise.getContentPane().add(pnlExport);
@@ -652,7 +651,7 @@ public class Main{
 				
 				if (command.equals(JFileChooser.APPROVE_SELECTION)) {
 					File selectedFile = theFileChooser.getSelectedFile();
-					boolean check = svtool.sqlDump(selectedFile);
+					svtool.sqlDump(selectedFile);
 				}
 				else if (command.equals(JFileChooser.CANCEL_SELECTION)) {
 					theFileChooser.setCurrentDirectory(svtool.getImportOrdner());
@@ -696,7 +695,7 @@ public class Main{
 		btnListSelektiert.setBounds(0, 0, 69, 34);
 		pnlListMenue.add(btnListSelektiert);
 		
-		cboListKlasse = new JComboBox();
+		cboListKlasse = new JComboBox<String>();
 		cboListKlasse.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
             	if(cboListKlasse.getSelectedItem()!=null){
@@ -870,7 +869,7 @@ public class Main{
 		lblDbTable.setBounds(0, 0, 100, 19);
 		pnlDbTableAuswahl.add(lblDbTable);
 		
-		cboDbTable = new JComboBox();
+		cboDbTable = new JComboBox<String>();
 		cboDbTable.setBounds(0, 20, 210, 19);
 		pnlDbTableAuswahl.add(cboDbTable);
 		
@@ -888,45 +887,45 @@ public class Main{
 		frmSvausweise.getContentPane().add(pnl_buttonMenue);
 		pnl_buttonMenue.setLayout(null);
 		
-		btnListe = new JButton(new ImageIcon(Main.class.getResource("../IMG/sv_list.png")));
+		btnListe = new JButton(new ImageIcon(Toolkit.getDefaultToolkit().getImage(Main.class.getResource("sv_list.png"))));
 		btnListe.setBounds(0, 0, 34, 34);
 		pnl_buttonMenue.add(btnListe);
 		btnListe.setToolTipText("Sch\u00FClerliste");
 		dbDienste.addMenuButton(btnListe);
 		btnListe.setEnabled(false);
 		
-		btnBilder = new JButton(new ImageIcon(Main.class.getResource("../IMG/sv_userfoto.png")));
+		btnBilder = new JButton(new ImageIcon(Toolkit.getDefaultToolkit().getImage(Main.class.getResource("sv_userfoto.png"))));
 		btnBilder.setBounds(35, 0, 34, 34);
 		pnl_buttonMenue.add(btnBilder);
 		btnBilder.setToolTipText("Bildbearbeitung");
 		dbDienste.addMenuButton(btnBilder);
 		btnBilder.setEnabled(false);
 		
-		btnImport = new JButton(new ImageIcon(Main.class.getResource("../IMG/sv_import.png")));
+		btnImport = new JButton(new ImageIcon(Toolkit.getDefaultToolkit().getImage(Main.class.getResource("sv_import.png"))));
 		btnImport.setBounds(70, 0, 34, 34);
 		pnl_buttonMenue.add(btnImport);
 		btnImport.setToolTipText("SQL Import");
 		dbDienste.addMenuButton(btnImport);
 		btnImport.setEnabled(false);
 		
-		btnPDF = new JButton(new ImageIcon(Main.class.getResource("../IMG/sv_pdf.png")));
+		btnPDF = new JButton(new ImageIcon(Toolkit.getDefaultToolkit().getImage(Main.class.getResource("sv_pdf.png"))));
 		btnPDF.setBounds(140, 0, 34, 34);
 		pnl_buttonMenue.add(btnPDF);
 		btnPDF.setToolTipText("PDF erstellen");
 		dbDienste.addMenuButton(btnPDF);
 		btnPDF.setEnabled(false);
 		
-		JButton btnDB = new JButton(new ImageIcon(Main.class.getResource("../IMG/sv_db.png")));
+		JButton btnDB = new JButton(new ImageIcon(Toolkit.getDefaultToolkit().getImage(Main.class.getResource("sv_db.png"))));
 		btnDB.setBounds(175, 0, 34, 34);
 		pnl_buttonMenue.add(btnDB);
 		btnDB.setToolTipText("Datenbank Optionen");
 		
-		JButton btnEinstellungen = new JButton(new ImageIcon(Main.class.getResource("../IMG/sv_einstellungen.png")));
+		JButton btnEinstellungen = new JButton(new ImageIcon(Toolkit.getDefaultToolkit().getImage(Main.class.getResource("sv_einstellungen.png"))));
 		btnEinstellungen.setToolTipText("Einstellungen");
 		btnEinstellungen.setBounds(225, 0, 34, 34);
 		pnl_buttonMenue.add(btnEinstellungen);
 		
-		JButton btnExport = new JButton(new ImageIcon(Main.class.getResource("../IMG/sv_export.png")));
+		JButton btnExport = new JButton(new ImageIcon(Toolkit.getDefaultToolkit().getImage(Main.class.getResource("sv_export.png"))));
 		btnExport.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				dbDienste.setVisibleMenuePanel(pnlExport);
@@ -938,13 +937,14 @@ public class Main{
 		dbDienste.addMenuButton(btnExport);
 		btnExport.setEnabled(false);
 		
-		JButton btnCSV = new JButton(new ImageIcon(Main.class.getResource("../IMG/sv_csv.png")));
+		JButton btnCSV = new JButton(new ImageIcon(Toolkit.getDefaultToolkit().getImage(Main.class.getResource("sv_csv.png"))));
 		btnCSV.setToolTipText("SuS Import aus Schild");
 		btnCSV.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				dbDienste.setVisibleMenuePanel(pnlCSV);
-				XLSDienste xls = new XLSDienste(svtool);
-				xls.susSqlImport(svtool.getXlsFile().toString());
+				//XLSDienste xls = new XLSDienste(svtool);
+				//System.out.println("XLS-Import");
+				//xls.susSqlImport("d:/SuS2015-2016.xls");
 			}
 		});
 		btnCSV.setBounds(300, 0, 34, 34);

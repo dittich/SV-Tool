@@ -41,6 +41,8 @@ public class XLSDienste {
 		Vector vecSuS = this.readXLSFile(filename.toString());
 		vecSuS = this.filterVector(vecSuS);
 		
+		svtool.sqlUpdate("UPDATE sv_schueler SET klasse=\"\"");
+		
 		//SQL-Anweisung für Update in DB - Vector vecSuS ist gefiltert inc. Headline
 		Iterator iter = vecSuS.iterator();
 		if(iter.hasNext())iter.next();
@@ -49,10 +51,12 @@ public class XLSDienste {
 			int susId = Integer.parseInt((String)vecRow.get(0));
 			boolean isSet = svtool.checkId(susId);
 			if(isSet){
+				System.out.println("SQLUpdate - "+susId);
 				svtool.sqlUpdate(susId, vecRow);
 			}
 			else{
 				svtool.sqlInsert(susId, vecRow);
+				System.out.println("SQLInsert - "+susId);
 			}
 		}
 	}

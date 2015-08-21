@@ -47,18 +47,19 @@ public class Datenverwaltung {
 		
 		Process runtimeProcess;
 		try {
+			System.out.print("Starte Prozess SQL-Import...");
 			runtimeProcess = Runtime.getRuntime().exec(executeCmd);
 			int processComplete = runtimeProcess.waitFor();  
 			if (processComplete == 0) {
-				//System.out.println("Backup restored successfully");  
+				System.out.println("Backup restored successfully");  
 				wert = true;  
 			}
 			else{  
-				//System.out.println("Could not restore the backup"); 
+				System.out.println("Could not restore the backup"); 
 			} 
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			//e.printStackTrace();
+			e.printStackTrace();
 		}  
 		return wert;
 	}

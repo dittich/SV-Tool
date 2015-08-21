@@ -26,9 +26,9 @@ public class Einstellungen implements Serializable{
 	private File cmdFile = new File("cmd.exe");
 	private File mysqldumpFile = new File("C:/xampp/mysql/bin/mysqldump.exe");
 	private File mysqlFile = new File("C:/xampp/mysql/bin/mysql.exe");
+	private File xlsFile = new File("C:/sus.xls");
 	private File mysqlimportFile = new File("C:/xampp/mysql/bin/mysqlimport.exe");
 	private File pdfFile = new File("C:/ausweise.pdf");
-	private File xlsFile = new File("C:/2015-05.xls");
 	
 	public Einstellungen()
 	{

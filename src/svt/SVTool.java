@@ -107,6 +107,17 @@ public class SVTool {
 		einstellungenSpeichern();
 	}
 	
+	public void setXlsFile(File xlsFile)
+	{
+		einstellungen.setXlsFile(xlsFile);
+		einstellungenSpeichern();
+	}
+	
+	public File getXlsFile()
+	{
+		return einstellungen.getXlsFile();
+	}
+	
 	public File getMysqlFile()
 	{
 		return einstellungen.getMysqlFile();
@@ -121,17 +132,6 @@ public class SVTool {
 	public File getMysqldumpFile()
 	{
 		return einstellungen.getMysqldumpFile();
-	}
-	
-	public void setXlsFile(File xlsFile)
-	{
-		einstellungen.setXlsFile(xlsFile);
-		einstellungenSpeichern();
-	}
-	
-	public File getXlsFile()
-	{
-		return einstellungen.getXlsFile();
 	}
 	
 	public File getExportOrdner()
