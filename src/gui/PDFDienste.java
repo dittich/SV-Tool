@@ -120,8 +120,8 @@ public class PDFDienste {
 	            String gebDatum = rs.getString("gebdatum");
 	            this.setText(cb, gebDatum, 10, 4, 37.5f, bf[0], bc[0]);
 	            
-	            this.setImage(cb, "../IMG/sv_nrw_logo.png", 14.2f, 3, 3);
-	            this.setImage(cb, "../IMG/sv_ad_logo.png", 20, 63, 3);
+	            this.setImage(cb, "sv_nrw_logo.png", 14.2f, 3, 3);
+	            this.setImage(cb, "sv_ad_logo.png", 20, 63, 3);
 	            
 	            BufferedImage buffImg;
 	            try{
