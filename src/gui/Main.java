@@ -229,7 +229,6 @@ public class Main{
 			public void actionPerformed(ActionEvent arg0) {
 				XLSDienste xls = new XLSDienste(svtool);
 				String xlsDateiName = svtool.getXlsFile().toString();
-				System.out.println("XLS-Import von "+xlsDateiName);
 				xls.susSqlImport(xlsDateiName);
 			}
 		});
@@ -943,9 +942,6 @@ public class Main{
 		btnCSV.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				dbDienste.setVisibleMenuePanel(pnlCSV);
-				//XLSDienste xls = new XLSDienste(svtool);
-				//System.out.println("XLS-Import");
-				//xls.susSqlImport("d:/SuS2015-2016.xls");
 			}
 		});
 		btnCSV.setBounds(300, 0, 34, 34);
@@ -974,7 +970,9 @@ public class Main{
 		btnPDF.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				dbDienste.setVisibleMenuePanel(pnlPDF);
-				PDFDienste pdfDienst = new PDFDienste(svtool.getPDFFile(),svtool.sqlQuery("SELECT * FROM sv_schueler WHERE selektiert=1"));
+				PDFDienste pdfDienst = new PDFDienste(svtool.getPDFFile(),svtool.sqlQuery("SELECT schueler_id, name, vorname, gebdatum, klasse, selektiert, bild AS foto, "
+						+ "																			nrw_logo AS nrwlogo, ad_logo AS adlogo, no_foto AS nofoto "
+						+ "																			FROM sv_schueler, sv_config WHERE selektiert=1"));
 				pdfDienst.makePDF(svtool.getPDFFile());
 				pdfDienst.viewPDF(svtool.getPDFFile(), pnlPDFViewer);
 			}
