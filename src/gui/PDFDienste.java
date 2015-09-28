@@ -70,9 +70,9 @@ public class PDFDienste {
 		
 		BaseFont[] bf = new BaseFont[3];
 		try {
-			bf[0] = BaseFont.createFont("fonts/arial.ttf", BaseFont.WINANSI, false);
-			bf[1] = BaseFont.createFont("fonts/arialbd.ttf", BaseFont.WINANSI, false);
-			bf[2] = BaseFont.createFont("fonts/ariali.ttf", BaseFont.WINANSI, false);
+			bf[0] = BaseFont.createFont("src/fonts/arial.ttf", BaseFont.WINANSI, false);
+			bf[1] = BaseFont.createFont("src/fonts/arialbd.ttf", BaseFont.WINANSI, false);
+			bf[2] = BaseFont.createFont("src/fonts/ariali.ttf", BaseFont.WINANSI, false);
 		} catch (DocumentException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
