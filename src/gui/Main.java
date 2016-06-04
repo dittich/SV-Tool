@@ -125,116 +125,6 @@ public class Main{
 		
 		UIManager.put("FileChooser.readOnly", Boolean.TRUE);
 		
-		JPanel pnlDB = new JPanel();
-		pnlDB.setBounds(10, 45, 764, 495);
-		frmSvausweise.getContentPane().add(pnlDB);
-		pnlDB.setLayout(null);
-		pnlDB.setVisible(false);
-		
-		JPanel pnlDbConnect = new JPanel();
-		pnlDbConnect.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
-		pnlDbConnect.setBounds(10, 11, 227, 133);
-		pnlDB.add(pnlDbConnect);
-		pnlDbConnect.setLayout(null);
-		
-		JLabel lblDbName = new JLabel("Db-Name");
-		lblDbName.setBounds(10, 10, 100, 19);
-		pnlDbConnect.add(lblDbName);
-		
-		txtDbName = new JTextField();
-		txtDbName.setEnabled(false);
-		txtDbName.setEditable(false);
-		txtDbName.setBounds(10, 30, 100, 19);
-		pnlDbConnect.add(txtDbName);
-		txtDbName.setColumns(10);
-		
-		btnDbConnect = new JButton();
-		btnDbConnect.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				if(svtool.isDbConnected())svtool.dbClose();
-				else svtool.dbConnect();
-				dbDienste.setBtnDbConnect(btnDbConnect, pnlDbTableAuswahl, cboDbTable);
-				dbDienste.setEnableDbButton();
-			}
-		});
-		btnDbConnect.setBounds(120, 30, 100, 19);
-		pnlDbConnect.add(btnDbConnect);
-		
-		pnlDbTableAuswahl = new JPanel();
-		pnlDbTableAuswahl.setBounds(10, 60, 210, 66);
-		pnlDbConnect.add(pnlDbTableAuswahl);
-		pnlDbTableAuswahl.setLayout(null);
-		pnlDbTableAuswahl.setVisible(false);
-		
-		JLabel lblDbTable = new JLabel("Tableauswahl");
-		lblDbTable.setBounds(0, 0, 100, 19);
-		pnlDbTableAuswahl.add(lblDbTable);
-		
-		cboDbTable = new JComboBox<String>();
-		cboDbTable.setBounds(0, 20, 210, 19);
-		pnlDbTableAuswahl.add(cboDbTable);
-		
-		JButton btnDbTable = new JButton("Set");
-		btnDbTable.setBounds(0, 45, 210, 19);
-		pnlDbTableAuswahl.add(btnDbTable);
-		btnDbTable.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				svtool.setDbTable((String)cboDbTable.getSelectedItem());
-			}
-		});
-		dbDienste.addMenuePanel(pnlDB);
-		
-		JPanel pnlCSV = new JPanel();
-		pnlCSV.setBounds(10, 45, 764, 495);
-		frmSvausweise.getContentPane().add(pnlCSV);
-		pnlCSV.setLayout(null);
-		pnlCSV.setVisible(false);
-		dbDienste.addMenuePanel(pnlCSV);
-		
-		JPanel pnlXLSImport = new JPanel();
-		pnlXLSImport.setBounds(0, 0, 254, 155);
-		pnlCSV.add(pnlXLSImport);
-		pnlXLSImport.setLayout(null);
-		
-		JLabel lblXlSImport = new JLabel("XLS-Datei");
-		lblXlSImport.setFont(new Font("Tahoma", Font.BOLD, 16));
-		lblXlSImport.setBounds(10, 10, 150, 19);
-		pnlXLSImport.add(lblXlSImport);
-		
-		txtXLSImport = new JTextField();
-		txtXLSImport.setBounds(10, 40, 220, 19);
-		pnlXLSImport.add(txtXLSImport);
-		txtXLSImport.setColumns(10);
-		
-		JButton btnXLSImport = new JButton("Ausw\u00E4hlen");
-		btnXLSImport.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				//FilenameFilter filter = 
-				new FilenameFilter() {
-			        public boolean accept(File directory, String fileName) {
-			            return fileName.endsWith(".xls");
-			        }
-		        };
-				
-				File xlsFile = SwingUtil.getFileChoice(new JDialog(), "c:", null, "XLS-Import Datei");
-				txtXLSImport.setText(xlsFile.toString());
-				svtool.setXlsFile(xlsFile);
-			}
-		});
-		btnXLSImport.setBounds(10, 60, 220, 19);
-		pnlXLSImport.add(btnXLSImport);
-		
-		JButton btnImportStarten = new JButton("Import starten");
-		btnImportStarten.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				XLSDienste xls = new XLSDienste(svtool);
-				String xlsDateiName = svtool.getXlsFile().toString();
-				xls.susSqlImport(xlsDateiName);
-			}
-		});
-		btnImportStarten.setBounds(10, 90, 220, 19);
-		pnlXLSImport.add(btnImportStarten);
-		
 		JPanel pnlEinstellungen = new JPanel();
 		pnlEinstellungen.setBounds(10, 45, 764, 495);
 		frmSvausweise.getContentPane().add(pnlEinstellungen);
@@ -513,6 +403,278 @@ public class Main{
 		btnEsPDFDatei.setBounds(10, 60, 150, 19);
 		pnlEsPDFOrdner.add(btnEsPDFDatei);
 		
+		JPanel pnlListe = new JPanel();
+		pnlListe.setBounds(10, 45, 764, 495);
+		frmSvausweise.getContentPane().add(pnlListe);
+		pnlListe.setLayout(null);
+		pnlListe.setVisible(false);
+		
+		JPanel pnlListMenue = new JPanel();
+		pnlListMenue.setBounds(0, 0, 764, 34);
+		pnlListe.add(pnlListMenue);
+		pnlListMenue.setLayout(null);
+		
+		JButton btnListAlle = new JButton("A");
+		btnListAlle.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String sqlQuery = "SELECT * FROM sv_schueler WHERE geloescht=0";
+				JTable t = dbDienste.resultSetToTable(sqlQuery);
+				scrollPane.setViewportView(t);
+			}
+		});
+		btnListAlle.setBounds(100, 0, 69, 34);
+		pnlListMenue.add(btnListAlle);
+		
+		JButton btnListSelektiert = new JButton("S");
+		btnListSelektiert.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String sqlQuery = "SELECT * FROM sv_schueler WHERE selektiert=1";
+				JTable t = dbDienste.resultSetToTable(sqlQuery);
+				scrollPane.setViewportView(t);
+			}
+		});
+		btnListSelektiert.setBounds(0, 0, 69, 34);
+		pnlListMenue.add(btnListSelektiert);
+		
+		cboListKlasse = new JComboBox<String>();
+		cboListKlasse.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+            	if(cboListKlasse.getSelectedItem()!=null){
+            		String klasse = cboListKlasse.getSelectedItem().toString();
+            		if(!klasse.equals("")){
+                		String sqlQuery = "SELECT * FROM sv_schueler WHERE klasse='"+klasse+"'";
+                        JTable t = dbDienste.resultSetToTable(sqlQuery);
+        				scrollPane.setViewportView(t);
+                	}
+            	}
+            }
+        });
+		cboListKlasse.setBounds(175, 0, 69, 34);
+		pnlListMenue.add(cboListKlasse);
+		
+		txtSuche = new JTextField();
+		txtSuche.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent arg0) {
+				String suchText = dbDienste.suchText(txtSuche.getText(),arg0);
+				String sqlQuery = "SELECT * FROM sv_schueler WHERE name LIKE '%"+suchText+"%' OR vorname LIKE '%"+suchText+"%'";
+				JTable t = dbDienste.resultSetToTable(sqlQuery);
+				scrollPane.setViewportView(t);
+			}
+		});
+		txtSuche.setText("");
+		txtSuche.setBounds(250, 0, 139, 34);
+		pnlListMenue.add(txtSuche);
+		txtSuche.setColumns(10);
+		
+		JPanel pnlWaehlen = new JPanel();
+		pnlWaehlen.setBounds(450, 0, 305, 34);
+		pnlListMenue.add(pnlWaehlen);
+		pnlWaehlen.setLayout(null);
+		
+		JButton btnAuswaehlen = new JButton("Alle ausw\u00E4hlen");
+		btnAuswaehlen.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				dbDienste.alleAuswaehlen((JTable)scrollPane.getViewport().getComponent(0));
+			}
+		});
+		btnAuswaehlen.setBounds(0, 0, 150, 34);
+		pnlWaehlen.add(btnAuswaehlen);
+		
+		JButton btnAbwaehlen = new JButton("Alle abw\u00E4hlen");
+		btnAbwaehlen.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				dbDienste.alleAbwaehlen((JTable)scrollPane.getViewport().getComponent(0));
+			}
+		});
+		btnAbwaehlen.setBounds(155, 0, 150, 34);
+		pnlWaehlen.add(btnAbwaehlen);
+		
+		pnlListTable = new JPanel();
+		pnlListTable.setBounds(10, 44, 500, 440);
+		pnlListe.add(pnlListTable);
+		pnlListTable.setLayout(null);
+		
+		scrollPane = new JScrollPane();
+		scrollPane.setViewportBorder(null);
+		scrollPane.setBounds(0, 0, 500, 440);
+		pnlListTable.add(scrollPane);
+		dbDienste.addMenuePanel(pnlListe);
+		
+		JPanel pnlListInfo = new JPanel();
+		pnlListInfo.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
+		pnlListInfo.setBounds(520, 45, 234, 439);
+		pnlListe.add(pnlListInfo);
+		pnlListInfo.setLayout(null);
+		
+		JLabel lblInfoId = new JLabel("ID");
+		lblInfoId.setBounds(10, 10, 80, 19);
+		pnlListInfo.add(lblInfoId);
+		
+		JLabel lblInfoSchuelerId = new JLabel("Sch\u00FCler ID");
+		lblInfoSchuelerId.setBounds(10, 30, 80, 19);
+		pnlListInfo.add(lblInfoSchuelerId);
+		
+		JLabel lblInfoNameVorname = new JLabel("Name, Vorname");
+		lblInfoNameVorname.setBounds(10, 50, 80, 19);
+		pnlListInfo.add(lblInfoNameVorname);
+		
+		JLabel lblInfoGebDatum = new JLabel("Geburtsdatum");
+		lblInfoGebDatum.setBounds(10, 70, 80, 19);
+		pnlListInfo.add(lblInfoGebDatum);
+		
+		JLabel lblInfoGeschlecht = new JLabel("Geschlecht");
+		lblInfoGeschlecht.setBounds(10, 90, 80, 19);
+		pnlListInfo.add(lblInfoGeschlecht);
+		
+		JLabel lblInfoKlasse = new JLabel("Klasse");
+		lblInfoKlasse.setBounds(10, 110, 80, 19);
+		pnlListInfo.add(lblInfoKlasse);
+		
+		txtInfoId = new JTextField();
+		txtInfoId.setBounds(100, 10, 125, 19);
+		pnlListInfo.add(txtInfoId);
+		txtInfoId.setColumns(10);
+		
+		txtInfoSchuelerId = new JTextField();
+		txtInfoSchuelerId.setBounds(100, 30, 125, 19);
+		pnlListInfo.add(txtInfoSchuelerId);
+		txtInfoSchuelerId.setColumns(10);
+		
+		txtInfoNameVorname = new JTextField();
+		txtInfoNameVorname.setBounds(100, 50, 125, 19);
+		pnlListInfo.add(txtInfoNameVorname);
+		txtInfoNameVorname.setColumns(10);
+		
+		txtInfoGebDatum = new JTextField();
+		txtInfoGebDatum.setBounds(100, 70, 125, 19);
+		pnlListInfo.add(txtInfoGebDatum);
+		txtInfoGebDatum.setColumns(10);
+		
+		txtInfoGeschlecht = new JTextField();
+		txtInfoGeschlecht.setBounds(100, 90, 125, 19);
+		pnlListInfo.add(txtInfoGeschlecht);
+		txtInfoGeschlecht.setColumns(10);
+		
+		txtInfoKlasse = new JTextField();
+		txtInfoKlasse.setBounds(100, 110, 125, 19);
+		pnlListInfo.add(txtInfoKlasse);
+		txtInfoKlasse.setColumns(10);
+		
+		lblInfoImage = new JLabel("");
+		lblInfoImage.setBounds(10, 142, 215, 286);
+		pnlListInfo.add(lblInfoImage);
+		
+		JPanel pnlDB = new JPanel();
+		pnlDB.setBounds(10, 45, 764, 495);
+		frmSvausweise.getContentPane().add(pnlDB);
+		pnlDB.setLayout(null);
+		pnlDB.setVisible(false);
+		
+		JPanel pnlDbConnect = new JPanel();
+		pnlDbConnect.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
+		pnlDbConnect.setBounds(10, 11, 227, 133);
+		pnlDB.add(pnlDbConnect);
+		pnlDbConnect.setLayout(null);
+		
+		JLabel lblDbName = new JLabel("Db-Name");
+		lblDbName.setBounds(10, 10, 100, 19);
+		pnlDbConnect.add(lblDbName);
+		
+		txtDbName = new JTextField();
+		txtDbName.setEnabled(false);
+		txtDbName.setEditable(false);
+		txtDbName.setBounds(10, 30, 100, 19);
+		pnlDbConnect.add(txtDbName);
+		txtDbName.setColumns(10);
+		
+		btnDbConnect = new JButton();
+		btnDbConnect.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if(svtool.isDbConnected())svtool.dbClose();
+				else svtool.dbConnect();
+				dbDienste.setBtnDbConnect(btnDbConnect, pnlDbTableAuswahl, cboDbTable);
+				dbDienste.setEnableDbButton();
+			}
+		});
+		btnDbConnect.setBounds(120, 30, 100, 19);
+		pnlDbConnect.add(btnDbConnect);
+		
+		pnlDbTableAuswahl = new JPanel();
+		pnlDbTableAuswahl.setBounds(10, 60, 210, 66);
+		pnlDbConnect.add(pnlDbTableAuswahl);
+		pnlDbTableAuswahl.setLayout(null);
+		pnlDbTableAuswahl.setVisible(false);
+		
+		JLabel lblDbTable = new JLabel("Tableauswahl");
+		lblDbTable.setBounds(0, 0, 100, 19);
+		pnlDbTableAuswahl.add(lblDbTable);
+		
+		cboDbTable = new JComboBox<String>();
+		cboDbTable.setBounds(0, 20, 210, 19);
+		pnlDbTableAuswahl.add(cboDbTable);
+		
+		JButton btnDbTable = new JButton("Set");
+		btnDbTable.setBounds(0, 45, 210, 19);
+		pnlDbTableAuswahl.add(btnDbTable);
+		btnDbTable.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				svtool.setDbTable((String)cboDbTable.getSelectedItem());
+			}
+		});
+		dbDienste.addMenuePanel(pnlDB);
+		
+		JPanel pnlCSV = new JPanel();
+		pnlCSV.setBounds(10, 45, 764, 495);
+		frmSvausweise.getContentPane().add(pnlCSV);
+		pnlCSV.setLayout(null);
+		pnlCSV.setVisible(false);
+		dbDienste.addMenuePanel(pnlCSV);
+		
+		JPanel pnlXLSImport = new JPanel();
+		pnlXLSImport.setBounds(0, 0, 254, 155);
+		pnlCSV.add(pnlXLSImport);
+		pnlXLSImport.setLayout(null);
+		
+		JLabel lblXlSImport = new JLabel("XLS-Datei");
+		lblXlSImport.setFont(new Font("Tahoma", Font.BOLD, 16));
+		lblXlSImport.setBounds(10, 10, 150, 19);
+		pnlXLSImport.add(lblXlSImport);
+		
+		txtXLSImport = new JTextField();
+		txtXLSImport.setBounds(10, 40, 220, 19);
+		pnlXLSImport.add(txtXLSImport);
+		txtXLSImport.setColumns(10);
+		
+		JButton btnXLSImport = new JButton("Ausw\u00E4hlen");
+		btnXLSImport.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				//FilenameFilter filter = 
+				new FilenameFilter() {
+			        public boolean accept(File directory, String fileName) {
+			            return fileName.endsWith(".xls");
+			        }
+		        };
+				
+				File xlsFile = SwingUtil.getFileChoice(new JDialog(), "c:", null, "XLS-Import Datei");
+				txtXLSImport.setText(xlsFile.toString());
+				svtool.setXlsFile(xlsFile);
+			}
+		});
+		btnXLSImport.setBounds(10, 60, 220, 19);
+		pnlXLSImport.add(btnXLSImport);
+		
+		JButton btnImportStarten = new JButton("Import starten");
+		btnImportStarten.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				XLSDienste xls = new XLSDienste(svtool);
+				String xlsDateiName = svtool.getXlsFile().toString();
+				xls.susSqlImport(xlsDateiName);
+			}
+		});
+		btnImportStarten.setBounds(10, 90, 220, 19);
+		pnlXLSImport.add(btnImportStarten);
+		
 		JPanel pnlImport = new JPanel();
 		pnlImport.setBounds(10, 45, 764, 495);
 		frmSvausweise.getContentPane().add(pnlImport);
@@ -719,168 +881,6 @@ public class Main{
 		exportFileChooser.setCurrentDirectory(svtool.getExportOrdner());
 		exportFileChooser.setBounds(10, 10, 397, 475);
 		pnlExportFileChooser.add(exportFileChooser);
-		
-		JPanel pnlListe = new JPanel();
-		pnlListe.setBounds(10, 45, 764, 495);
-		frmSvausweise.getContentPane().add(pnlListe);
-		pnlListe.setLayout(null);
-		pnlListe.setVisible(false);
-		
-		JPanel pnlListMenue = new JPanel();
-		pnlListMenue.setBounds(0, 0, 764, 34);
-		pnlListe.add(pnlListMenue);
-		pnlListMenue.setLayout(null);
-		
-		JButton btnListAlle = new JButton("A");
-		btnListAlle.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				String sqlQuery = "SELECT * FROM sv_schueler WHERE geloescht=0";
-				JTable t = dbDienste.resultSetToTable(sqlQuery);
-				scrollPane.setViewportView(t);
-			}
-		});
-		btnListAlle.setBounds(100, 0, 69, 34);
-		pnlListMenue.add(btnListAlle);
-		
-		JButton btnListSelektiert = new JButton("S");
-		btnListSelektiert.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				String sqlQuery = "SELECT * FROM sv_schueler WHERE selektiert=1";
-				JTable t = dbDienste.resultSetToTable(sqlQuery);
-				scrollPane.setViewportView(t);
-			}
-		});
-		btnListSelektiert.setBounds(0, 0, 69, 34);
-		pnlListMenue.add(btnListSelektiert);
-		
-		cboListKlasse = new JComboBox<String>();
-		cboListKlasse.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-            	if(cboListKlasse.getSelectedItem()!=null){
-            		String klasse = cboListKlasse.getSelectedItem().toString();
-            		if(!klasse.equals("")){
-                		String sqlQuery = "SELECT * FROM sv_schueler WHERE klasse='"+klasse+"'";
-                        JTable t = dbDienste.resultSetToTable(sqlQuery);
-        				scrollPane.setViewportView(t);
-                	}
-            	}
-            }
-        });
-		cboListKlasse.setBounds(175, 0, 69, 34);
-		pnlListMenue.add(cboListKlasse);
-		
-		txtSuche = new JTextField();
-		txtSuche.addKeyListener(new KeyAdapter() {
-			@Override
-			public void keyPressed(KeyEvent arg0) {
-				String suchText = dbDienste.suchText(txtSuche.getText(),arg0);
-				String sqlQuery = "SELECT * FROM sv_schueler WHERE name LIKE '%"+suchText+"%' OR vorname LIKE '%"+suchText+"%'";
-				JTable t = dbDienste.resultSetToTable(sqlQuery);
-				scrollPane.setViewportView(t);
-			}
-		});
-		txtSuche.setText("");
-		txtSuche.setBounds(250, 0, 139, 34);
-		pnlListMenue.add(txtSuche);
-		txtSuche.setColumns(10);
-		
-		JPanel pnlWaehlen = new JPanel();
-		pnlWaehlen.setBounds(450, 0, 305, 34);
-		pnlListMenue.add(pnlWaehlen);
-		pnlWaehlen.setLayout(null);
-		
-		JButton btnAuswaehlen = new JButton("Alle ausw\u00E4hlen");
-		btnAuswaehlen.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				dbDienste.alleAuswaehlen((JTable)scrollPane.getViewport().getComponent(0));
-			}
-		});
-		btnAuswaehlen.setBounds(0, 0, 150, 34);
-		pnlWaehlen.add(btnAuswaehlen);
-		
-		JButton btnAbwaehlen = new JButton("Alle abw\u00E4hlen");
-		btnAbwaehlen.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				dbDienste.alleAbwaehlen((JTable)scrollPane.getViewport().getComponent(0));
-			}
-		});
-		btnAbwaehlen.setBounds(155, 0, 150, 34);
-		pnlWaehlen.add(btnAbwaehlen);
-		
-		pnlListTable = new JPanel();
-		pnlListTable.setBounds(10, 44, 500, 440);
-		pnlListe.add(pnlListTable);
-		pnlListTable.setLayout(null);
-		
-		scrollPane = new JScrollPane();
-		scrollPane.setViewportBorder(null);
-		scrollPane.setBounds(0, 0, 500, 440);
-		pnlListTable.add(scrollPane);
-		dbDienste.addMenuePanel(pnlListe);
-		
-		JPanel pnlListInfo = new JPanel();
-		pnlListInfo.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
-		pnlListInfo.setBounds(520, 45, 234, 439);
-		pnlListe.add(pnlListInfo);
-		pnlListInfo.setLayout(null);
-		
-		JLabel lblInfoId = new JLabel("ID");
-		lblInfoId.setBounds(10, 10, 80, 19);
-		pnlListInfo.add(lblInfoId);
-		
-		JLabel lblInfoSchuelerId = new JLabel("Sch\u00FCler ID");
-		lblInfoSchuelerId.setBounds(10, 30, 80, 19);
-		pnlListInfo.add(lblInfoSchuelerId);
-		
-		JLabel lblInfoNameVorname = new JLabel("Name, Vorname");
-		lblInfoNameVorname.setBounds(10, 50, 80, 19);
-		pnlListInfo.add(lblInfoNameVorname);
-		
-		JLabel lblInfoGebDatum = new JLabel("Geburtsdatum");
-		lblInfoGebDatum.setBounds(10, 70, 80, 19);
-		pnlListInfo.add(lblInfoGebDatum);
-		
-		JLabel lblInfoGeschlecht = new JLabel("Geschlecht");
-		lblInfoGeschlecht.setBounds(10, 90, 80, 19);
-		pnlListInfo.add(lblInfoGeschlecht);
-		
-		JLabel lblInfoKlasse = new JLabel("Klasse");
-		lblInfoKlasse.setBounds(10, 110, 80, 19);
-		pnlListInfo.add(lblInfoKlasse);
-		
-		txtInfoId = new JTextField();
-		txtInfoId.setBounds(100, 10, 125, 19);
-		pnlListInfo.add(txtInfoId);
-		txtInfoId.setColumns(10);
-		
-		txtInfoSchuelerId = new JTextField();
-		txtInfoSchuelerId.setBounds(100, 30, 125, 19);
-		pnlListInfo.add(txtInfoSchuelerId);
-		txtInfoSchuelerId.setColumns(10);
-		
-		txtInfoNameVorname = new JTextField();
-		txtInfoNameVorname.setBounds(100, 50, 125, 19);
-		pnlListInfo.add(txtInfoNameVorname);
-		txtInfoNameVorname.setColumns(10);
-		
-		txtInfoGebDatum = new JTextField();
-		txtInfoGebDatum.setBounds(100, 70, 125, 19);
-		pnlListInfo.add(txtInfoGebDatum);
-		txtInfoGebDatum.setColumns(10);
-		
-		txtInfoGeschlecht = new JTextField();
-		txtInfoGeschlecht.setBounds(100, 90, 125, 19);
-		pnlListInfo.add(txtInfoGeschlecht);
-		txtInfoGeschlecht.setColumns(10);
-		
-		txtInfoKlasse = new JTextField();
-		txtInfoKlasse.setBounds(100, 110, 125, 19);
-		pnlListInfo.add(txtInfoKlasse);
-		txtInfoKlasse.setColumns(10);
-		
-		lblInfoImage = new JLabel("");
-		lblInfoImage.setBounds(10, 142, 215, 286);
-		pnlListInfo.add(lblInfoImage);
 		
 		JPanel pnl_buttonMenue = new JPanel();
 		pnl_buttonMenue.setBounds(0, 0, 571, 34);
