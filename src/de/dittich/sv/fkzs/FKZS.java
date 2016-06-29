@@ -19,4 +19,8 @@ public class FKZS {
 	public ResultSet sqlQuery(String query){
 		return DBDienste.getInstance().sqlQuery(query);
 	}
+	
+	public boolean sqlUpdate(String query){
+		return DBDienste.getInstance().sqlUpdate(query);
+	}
 }

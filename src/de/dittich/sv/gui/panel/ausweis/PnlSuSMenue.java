@@ -40,8 +40,8 @@ public class PnlSuSMenue extends JPanel {
 				if(cboSuSKlasse.getSelectedItem()!=null){
 					String klasse = cboSuSKlasse.getSelectedItem().toString();
 					if(!klasse.equals("")){
-						rs = FKZS.getInstance().sqlQuery("SELECT * FROM sv_schueler WHERE klasse='"+klasse+"'");
-						ScrollPaneTable.getInstance().showResultSet(rs);
+						//rs = FKZS.getInstance().sqlQuery("SELECT * FROM sv_schueler WHERE klasse='"+klasse+"'");
+						ScrollPaneTable.getInstance().showTable("SELECT * FROM sv_schueler WHERE klasse='"+klasse+"'");
 					}
 				}
 			}
@@ -50,7 +50,8 @@ public class PnlSuSMenue extends JPanel {
 		rs = FKZS.getInstance().sqlQuery("SELECT klasse FROM sv_schueler GROUP BY klasse ORDER BY klasse");
 		try {
 			while(rs.next()){
-				cboSuSKlasse.addItem(rs.getString("klasse"));
+				String kl = rs.getString("klasse");
+				cboSuSKlasse.addItem(kl);
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block

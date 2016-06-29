@@ -3,16 +3,15 @@ package de.dittich.sv.gui.panel.ausweis;
 import java.sql.ResultSet;
 
 import javax.swing.JScrollPane;
+import javax.swing.JTable;
 
 public class ScrollPaneTable extends JScrollPane{
 	
-	private static final ScrollPaneTable OBJ = new ScrollPaneTable(); 
-	
-	private TableConverter tblConv;
+	private static final ScrollPaneTable OBJ = new ScrollPaneTable();
 
 	private ScrollPaneTable() {
 		System.out.println("ScrollPaneTable gebildet..."); 
-		tblConv = new TableConverter();
+		TableConverter.getInstance().setScrPane(this);
 		
     }
 	
@@ -20,8 +19,8 @@ public class ScrollPaneTable extends JScrollPane{
 		return OBJ;
 	}
 	
-	public void showResultSet(ResultSet rs){
-		tblConv.showResultSet(rs);
-		setViewportView(tblConv);
+	public void showTable(String query){
+		JTable tbl = TableConverter.getInstance().showTable(query);
+		setViewportView(tbl);
 	}
 }
