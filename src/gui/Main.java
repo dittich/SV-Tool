@@ -125,6 +125,168 @@ public class Main{
 		
 		UIManager.put("FileChooser.readOnly", Boolean.TRUE);
 		
+		JPanel pnlListe = new JPanel();
+		pnlListe.setBounds(10, 45, 764, 495);
+		frmSvausweise.getContentPane().add(pnlListe);
+		pnlListe.setLayout(null);
+		pnlListe.setVisible(false);
+		
+		JPanel pnlListMenue = new JPanel();
+		pnlListMenue.setBounds(0, 0, 764, 34);
+		pnlListe.add(pnlListMenue);
+		pnlListMenue.setLayout(null);
+		
+		JButton btnListAlle = new JButton("A");
+		btnListAlle.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String sqlQuery = "SELECT * FROM sv_schueler WHERE geloescht=0";
+				JTable t = dbDienste.resultSetToTable(sqlQuery);
+				scrollPane.setViewportView(t);
+			}
+		});
+		btnListAlle.setBounds(100, 0, 69, 34);
+		pnlListMenue.add(btnListAlle);
+		
+		JButton btnListSelektiert = new JButton("S");
+		btnListSelektiert.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String sqlQuery = "SELECT * FROM sv_schueler WHERE selektiert=1";
+				JTable t = dbDienste.resultSetToTable(sqlQuery);
+				scrollPane.setViewportView(t);
+			}
+		});
+		btnListSelektiert.setBounds(0, 0, 69, 34);
+		pnlListMenue.add(btnListSelektiert);
+		
+		cboListKlasse = new JComboBox<String>();
+		cboListKlasse.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+            	if(cboListKlasse.getSelectedItem()!=null){
+            		String klasse = cboListKlasse.getSelectedItem().toString();
+            		if(!klasse.equals("")){
+                		String sqlQuery = "SELECT * FROM sv_schueler WHERE klasse='"+klasse+"'";
+                        JTable t = dbDienste.resultSetToTable(sqlQuery);
+        				scrollPane.setViewportView(t);
+                	}
+            	}
+            }
+        });
+		cboListKlasse.setBounds(175, 0, 69, 34);
+		pnlListMenue.add(cboListKlasse);
+		
+		txtSuche = new JTextField();
+		txtSuche.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent arg0) {
+				String suchText = dbDienste.suchText(txtSuche.getText(),arg0);
+				String sqlQuery = "SELECT * FROM sv_schueler WHERE name LIKE '%"+suchText+"%' OR vorname LIKE '%"+suchText+"%'";
+				JTable t = dbDienste.resultSetToTable(sqlQuery);
+				scrollPane.setViewportView(t);
+			}
+		});
+		txtSuche.setText("");
+		txtSuche.setBounds(250, 0, 139, 34);
+		pnlListMenue.add(txtSuche);
+		txtSuche.setColumns(10);
+		
+		JPanel pnlWaehlen = new JPanel();
+		pnlWaehlen.setBounds(450, 0, 305, 34);
+		pnlListMenue.add(pnlWaehlen);
+		pnlWaehlen.setLayout(null);
+		
+		JButton btnAuswaehlen = new JButton("Alle ausw\u00E4hlen");
+		btnAuswaehlen.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				dbDienste.alleAuswaehlen((JTable)scrollPane.getViewport().getComponent(0));
+			}
+		});
+		btnAuswaehlen.setBounds(0, 0, 150, 34);
+		pnlWaehlen.add(btnAuswaehlen);
+		
+		JButton btnAbwaehlen = new JButton("Alle abw\u00E4hlen");
+		btnAbwaehlen.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				dbDienste.alleAbwaehlen((JTable)scrollPane.getViewport().getComponent(0));
+			}
+		});
+		btnAbwaehlen.setBounds(155, 0, 150, 34);
+		pnlWaehlen.add(btnAbwaehlen);
+		
+		pnlListTable = new JPanel();
+		pnlListTable.setBounds(10, 44, 500, 440);
+		pnlListe.add(pnlListTable);
+		pnlListTable.setLayout(null);
+		
+		scrollPane = new JScrollPane();
+		scrollPane.setViewportBorder(null);
+		scrollPane.setBounds(0, 0, 500, 440);
+		pnlListTable.add(scrollPane);
+		dbDienste.addMenuePanel(pnlListe);
+		
+		JPanel pnlListInfo = new JPanel();
+		pnlListInfo.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
+		pnlListInfo.setBounds(520, 45, 234, 439);
+		pnlListe.add(pnlListInfo);
+		pnlListInfo.setLayout(null);
+		
+		JLabel lblInfoId = new JLabel("ID");
+		lblInfoId.setBounds(10, 10, 80, 19);
+		pnlListInfo.add(lblInfoId);
+		
+		JLabel lblInfoSchuelerId = new JLabel("Sch\u00FCler ID");
+		lblInfoSchuelerId.setBounds(10, 30, 80, 19);
+		pnlListInfo.add(lblInfoSchuelerId);
+		
+		JLabel lblInfoNameVorname = new JLabel("Name, Vorname");
+		lblInfoNameVorname.setBounds(10, 50, 80, 19);
+		pnlListInfo.add(lblInfoNameVorname);
+		
+		JLabel lblInfoGebDatum = new JLabel("Geburtsdatum");
+		lblInfoGebDatum.setBounds(10, 70, 80, 19);
+		pnlListInfo.add(lblInfoGebDatum);
+		
+		JLabel lblInfoGeschlecht = new JLabel("Geschlecht");
+		lblInfoGeschlecht.setBounds(10, 90, 80, 19);
+		pnlListInfo.add(lblInfoGeschlecht);
+		
+		JLabel lblInfoKlasse = new JLabel("Klasse");
+		lblInfoKlasse.setBounds(10, 110, 80, 19);
+		pnlListInfo.add(lblInfoKlasse);
+		
+		txtInfoId = new JTextField();
+		txtInfoId.setBounds(100, 10, 125, 19);
+		pnlListInfo.add(txtInfoId);
+		txtInfoId.setColumns(10);
+		
+		txtInfoSchuelerId = new JTextField();
+		txtInfoSchuelerId.setBounds(100, 30, 125, 19);
+		pnlListInfo.add(txtInfoSchuelerId);
+		txtInfoSchuelerId.setColumns(10);
+		
+		txtInfoNameVorname = new JTextField();
+		txtInfoNameVorname.setBounds(100, 50, 125, 19);
+		pnlListInfo.add(txtInfoNameVorname);
+		txtInfoNameVorname.setColumns(10);
+		
+		txtInfoGebDatum = new JTextField();
+		txtInfoGebDatum.setBounds(100, 70, 125, 19);
+		pnlListInfo.add(txtInfoGebDatum);
+		txtInfoGebDatum.setColumns(10);
+		
+		txtInfoGeschlecht = new JTextField();
+		txtInfoGeschlecht.setBounds(100, 90, 125, 19);
+		pnlListInfo.add(txtInfoGeschlecht);
+		txtInfoGeschlecht.setColumns(10);
+		
+		txtInfoKlasse = new JTextField();
+		txtInfoKlasse.setBounds(100, 110, 125, 19);
+		pnlListInfo.add(txtInfoKlasse);
+		txtInfoKlasse.setColumns(10);
+		
+		lblInfoImage = new JLabel("");
+		lblInfoImage.setBounds(10, 142, 215, 286);
+		pnlListInfo.add(lblInfoImage);
+		
 		JPanel pnlEinstellungen = new JPanel();
 		pnlEinstellungen.setBounds(10, 45, 764, 495);
 		frmSvausweise.getContentPane().add(pnlEinstellungen);
@@ -402,168 +564,6 @@ public class Main{
 		});
 		btnEsPDFDatei.setBounds(10, 60, 150, 19);
 		pnlEsPDFOrdner.add(btnEsPDFDatei);
-		
-		JPanel pnlListe = new JPanel();
-		pnlListe.setBounds(10, 45, 764, 495);
-		frmSvausweise.getContentPane().add(pnlListe);
-		pnlListe.setLayout(null);
-		pnlListe.setVisible(false);
-		
-		JPanel pnlListMenue = new JPanel();
-		pnlListMenue.setBounds(0, 0, 764, 34);
-		pnlListe.add(pnlListMenue);
-		pnlListMenue.setLayout(null);
-		
-		JButton btnListAlle = new JButton("A");
-		btnListAlle.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				String sqlQuery = "SELECT * FROM sv_schueler WHERE geloescht=0";
-				JTable t = dbDienste.resultSetToTable(sqlQuery);
-				scrollPane.setViewportView(t);
-			}
-		});
-		btnListAlle.setBounds(100, 0, 69, 34);
-		pnlListMenue.add(btnListAlle);
-		
-		JButton btnListSelektiert = new JButton("S");
-		btnListSelektiert.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				String sqlQuery = "SELECT * FROM sv_schueler WHERE selektiert=1";
-				JTable t = dbDienste.resultSetToTable(sqlQuery);
-				scrollPane.setViewportView(t);
-			}
-		});
-		btnListSelektiert.setBounds(0, 0, 69, 34);
-		pnlListMenue.add(btnListSelektiert);
-		
-		cboListKlasse = new JComboBox<String>();
-		cboListKlasse.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-            	if(cboListKlasse.getSelectedItem()!=null){
-            		String klasse = cboListKlasse.getSelectedItem().toString();
-            		if(!klasse.equals("")){
-                		String sqlQuery = "SELECT * FROM sv_schueler WHERE klasse='"+klasse+"'";
-                        JTable t = dbDienste.resultSetToTable(sqlQuery);
-        				scrollPane.setViewportView(t);
-                	}
-            	}
-            }
-        });
-		cboListKlasse.setBounds(175, 0, 69, 34);
-		pnlListMenue.add(cboListKlasse);
-		
-		txtSuche = new JTextField();
-		txtSuche.addKeyListener(new KeyAdapter() {
-			@Override
-			public void keyPressed(KeyEvent arg0) {
-				String suchText = dbDienste.suchText(txtSuche.getText(),arg0);
-				String sqlQuery = "SELECT * FROM sv_schueler WHERE name LIKE '%"+suchText+"%' OR vorname LIKE '%"+suchText+"%'";
-				JTable t = dbDienste.resultSetToTable(sqlQuery);
-				scrollPane.setViewportView(t);
-			}
-		});
-		txtSuche.setText("");
-		txtSuche.setBounds(250, 0, 139, 34);
-		pnlListMenue.add(txtSuche);
-		txtSuche.setColumns(10);
-		
-		JPanel pnlWaehlen = new JPanel();
-		pnlWaehlen.setBounds(450, 0, 305, 34);
-		pnlListMenue.add(pnlWaehlen);
-		pnlWaehlen.setLayout(null);
-		
-		JButton btnAuswaehlen = new JButton("Alle ausw\u00E4hlen");
-		btnAuswaehlen.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				dbDienste.alleAuswaehlen((JTable)scrollPane.getViewport().getComponent(0));
-			}
-		});
-		btnAuswaehlen.setBounds(0, 0, 150, 34);
-		pnlWaehlen.add(btnAuswaehlen);
-		
-		JButton btnAbwaehlen = new JButton("Alle abw\u00E4hlen");
-		btnAbwaehlen.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				dbDienste.alleAbwaehlen((JTable)scrollPane.getViewport().getComponent(0));
-			}
-		});
-		btnAbwaehlen.setBounds(155, 0, 150, 34);
-		pnlWaehlen.add(btnAbwaehlen);
-		
-		pnlListTable = new JPanel();
-		pnlListTable.setBounds(10, 44, 500, 440);
-		pnlListe.add(pnlListTable);
-		pnlListTable.setLayout(null);
-		
-		scrollPane = new JScrollPane();
-		scrollPane.setViewportBorder(null);
-		scrollPane.setBounds(0, 0, 500, 440);
-		pnlListTable.add(scrollPane);
-		dbDienste.addMenuePanel(pnlListe);
-		
-		JPanel pnlListInfo = new JPanel();
-		pnlListInfo.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
-		pnlListInfo.setBounds(520, 45, 234, 439);
-		pnlListe.add(pnlListInfo);
-		pnlListInfo.setLayout(null);
-		
-		JLabel lblInfoId = new JLabel("ID");
-		lblInfoId.setBounds(10, 10, 80, 19);
-		pnlListInfo.add(lblInfoId);
-		
-		JLabel lblInfoSchuelerId = new JLabel("Sch\u00FCler ID");
-		lblInfoSchuelerId.setBounds(10, 30, 80, 19);
-		pnlListInfo.add(lblInfoSchuelerId);
-		
-		JLabel lblInfoNameVorname = new JLabel("Name, Vorname");
-		lblInfoNameVorname.setBounds(10, 50, 80, 19);
-		pnlListInfo.add(lblInfoNameVorname);
-		
-		JLabel lblInfoGebDatum = new JLabel("Geburtsdatum");
-		lblInfoGebDatum.setBounds(10, 70, 80, 19);
-		pnlListInfo.add(lblInfoGebDatum);
-		
-		JLabel lblInfoGeschlecht = new JLabel("Geschlecht");
-		lblInfoGeschlecht.setBounds(10, 90, 80, 19);
-		pnlListInfo.add(lblInfoGeschlecht);
-		
-		JLabel lblInfoKlasse = new JLabel("Klasse");
-		lblInfoKlasse.setBounds(10, 110, 80, 19);
-		pnlListInfo.add(lblInfoKlasse);
-		
-		txtInfoId = new JTextField();
-		txtInfoId.setBounds(100, 10, 125, 19);
-		pnlListInfo.add(txtInfoId);
-		txtInfoId.setColumns(10);
-		
-		txtInfoSchuelerId = new JTextField();
-		txtInfoSchuelerId.setBounds(100, 30, 125, 19);
-		pnlListInfo.add(txtInfoSchuelerId);
-		txtInfoSchuelerId.setColumns(10);
-		
-		txtInfoNameVorname = new JTextField();
-		txtInfoNameVorname.setBounds(100, 50, 125, 19);
-		pnlListInfo.add(txtInfoNameVorname);
-		txtInfoNameVorname.setColumns(10);
-		
-		txtInfoGebDatum = new JTextField();
-		txtInfoGebDatum.setBounds(100, 70, 125, 19);
-		pnlListInfo.add(txtInfoGebDatum);
-		txtInfoGebDatum.setColumns(10);
-		
-		txtInfoGeschlecht = new JTextField();
-		txtInfoGeschlecht.setBounds(100, 90, 125, 19);
-		pnlListInfo.add(txtInfoGeschlecht);
-		txtInfoGeschlecht.setColumns(10);
-		
-		txtInfoKlasse = new JTextField();
-		txtInfoKlasse.setBounds(100, 110, 125, 19);
-		pnlListInfo.add(txtInfoKlasse);
-		txtInfoKlasse.setColumns(10);
-		
-		lblInfoImage = new JLabel("");
-		lblInfoImage.setBounds(10, 142, 215, 286);
-		pnlListInfo.add(lblInfoImage);
 		
 		JPanel pnlDB = new JPanel();
 		pnlDB.setBounds(10, 45, 764, 495);

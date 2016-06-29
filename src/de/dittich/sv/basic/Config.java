@@ -1,20 +1,28 @@
-package svt;
+package de.dittich.sv.basic;
 
 public class Config {
+	
+	private static final Config OBJ = new Config(); 
+	
+	private String filenameConfig = "config.ser.xml";
 	
 	private String dbIp = "localhost";
 	private int dbPort = 3306;
 	
 	private String dbName = "sv_ausweise";
-	
 	private String dbUser = "sv";
 	private String dbPassword = "sv";
 	
-	public Config()
-	{
-		
-	}
+	private Object changeCboKlassen = null;
 
+	private Config() { 
+        System.out.println("Config gebildet..."); 
+    } 
+         
+    public static Config getInstance() { 
+      return OBJ; 
+    }
+    
 	public String getDbIp() {
 		return dbIp;
 	}
@@ -53,5 +61,21 @@ public class Config {
 
 	public void setDbPassword(String dbPassword) {
 		this.dbPassword = dbPassword;
+	}
+
+	public String getFilenameConfig() {
+		return filenameConfig;
+	}
+
+	public void setFilenameConfig(String filenameConfig) {
+		this.filenameConfig = filenameConfig;
+	}
+
+	public Object getChangeCboKlassen() {
+		return changeCboKlassen;
+	}
+
+	public void setChangeCboKlassen(Object changeCboKlassen) {
+		this.changeCboKlassen = changeCboKlassen;
 	}
 }

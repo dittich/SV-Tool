@@ -1,4 +1,4 @@
-package sv.Gui;
+package de.dittich.sv.gui;
 
 /**
 THIS PROGRAM IS PROVIDED "AS IS" WITHOUT ANY WARRANTIES (OR CONDITIONS),
