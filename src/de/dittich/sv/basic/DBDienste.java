@@ -1,168 +1,28 @@
 package de.dittich.sv.basic;
 
-import gui.SvTableCellRenderer;
-
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.image.BufferedImage;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Vector;
-
-import javax.imageio.ImageIO;
-import javax.swing.ImageIcon;
-import javax.swing.JComboBox;
-import javax.swing.JTable;
-import javax.swing.table.DefaultTableModel;
-
-import de.dittich.sv.gui.Main;
 
 public class DBDienste {
+	
+	private static final DBDienste OBJ = new DBDienste();
 
 	private Connection connect = null;
 	private Statement statement = null;
 	private ResultSet resultSet = null;
-	private Main main;
-	private Config cfg;
 	
-	private String lastSql = "";
 	
-	public DBDienste(Main main){
-		this.main = main;
-		cfg = Config.getInstance();
+	private DBDienste(){
+		System.out.println("DB Dienste gestartet...");
+		boolean connected = this.connect();
+		System.out.println("DB Dienste: Datenbank connectet ... "+connected);
 	}
 	
-	public void fuelleCombobox(JComboBox<String> jcbBox, String sqlQuery)
-	{
-		jcbBox.removeAllItems();
-		ResultSet rs = this.sqlQuery(sqlQuery);
-		try {
-			while(rs.next()){
-				jcbBox.addItem(rs.getString(1));
-			}
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		Object cboSelect = cfg.getChangeCboKlassen();
-		if(cboSelect!=null){
-			jcbBox.setSelectedItem(cboSelect);
-		}
-	}
-	
-	/*
-	public JTable resultSetToTable(String sqlQuery){
-		ResultSet rs = this.sqlQuery(sqlQuery);
-		if(rs!=null) lastSql=sqlQuery;
-		JTable tbl = new JTable(resultSetToTableModel(rs));
-		
-		tbl.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mousePressed(MouseEvent e) {
-				int row = tbl.rowAtPoint(e.getPoint());
-				int spalte = tbl.columnAtPoint(e.getPoint());
-				int idIndex = (int)tbl.getModel().getValueAt(row, (tbl.getColumn("id").getModelIndex() ));
-				boolean newSelect = !(boolean) tbl.getModel().getValueAt(row, (tbl.getColumn("selektiert").getModelIndex() ));
-				
-				if(e.getButton() == MouseEvent.BUTTON1){
-					String sqlUpdate = "UPDATE sv_schueler SET selektiert="+newSelect+" WHERE id="+idIndex;
-					boolean result = this.sqlUpdate(sqlUpdate);
-					main.updateTable(sqlQuery);
-				}	    
-				else if(e.getButton() == MouseEvent.BUTTON2){
-					System.out.println("Detected Mouse Middle Click!");
-				}
-				else if(e.getButton() == MouseEvent.BUTTON3){
-					main.setTxtInfoId(idIndex);
-					
-					String sqlQuery = "SELECT schueler_id,name,vorname,gebdatum,geschlecht,klasse,bild FROM sv_schueler WHERE id="+idIndex;
-					ResultSet rs = svtool.sqlQuery(sqlQuery);
-
-					try {
-						while(rs.next()){
-							main.setTxtInfoSchuelerId(rs.getInt(1));
-							main.setTxtInfoNameVorname(rs.getString(2), rs.getString(3));
-							main.setTxtInfoGebDatum(rs.getString(4));
-							if(rs.getString(5).equals("m"))main.setTxtInfoGeschlecht("männlich");
-							else main.setTxtInfoGeschlecht("weiblich");
-							main.setTxtInfoKlasse(rs.getString(6));
-							BufferedImage im = ImageIO.read(rs.getBinaryStream(7));
-							ImageIcon image1 = new ImageIcon(im);
-							main.getLblInfoImage().setIcon(image1);
-						}
-					} catch (Exception e1) {
-						// TODO Auto-generated catch block
-						main.getLblInfoImage().setIcon(null);
-					}
-				}
-			}
-
-			private boolean sqlUpdate(String sqlUpdate) {
-				// TODO Auto-generated method stub
-				try {
-					statement.executeUpdate(sqlUpdate);
-					return true;
-				} catch (SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-					return false;
-				}
-			}
-		});
-		
-		tbl.setDefaultRenderer(Object.class, new SvTableCellRenderer());
-		
-		minCol(tbl,"id");
-		minCol(tbl,"geschlecht");
-		minCol(tbl,"geloescht");
-		minCol(tbl,"selektiert");
-		minCol(tbl,"bild");
-		minCol(tbl,"typ");
-		
-		return tbl;
-	}
-	*/
-	
-	public DefaultTableModel resultSetToTableModel(ResultSet rs) {
-        try {
-            ResultSetMetaData metaData = rs.getMetaData();
-            int numberOfColumns = metaData.getColumnCount();
-            Vector<String> columnNames = new Vector<String>();
-
-            // Get the column names
-            for (int column = 0; column < numberOfColumns; column++) {
-                columnNames.addElement(metaData.getColumnLabel(column + 1));
-            }
-
-            // Get all rows.
-            Vector<Vector<Object>> rows = new Vector<Vector<Object>>();
-
-            while (rs.next()) {
-                Vector<Object> newRow = new Vector<Object>();
-
-                for (int i = 1; i <= numberOfColumns; i++) {
-                    newRow.addElement(rs.getObject(i));
-                }
-
-                rows.addElement(newRow);
-            }
-
-            //return new SvTableModel(rows, columnNames);
-            return new DefaultTableModel(rows, columnNames);
-        } catch (Exception e) {
-            e.printStackTrace();
-
-            return null;
-        }
-    }
-	
-	private void minCol(JTable tbl, String name){
-		tbl.getColumn(name).setMinWidth(0);
-		tbl.getColumn(name).setMaxWidth(0);
+	public static DBDienste getInstance(){
+		return OBJ;
 	}
 	
 	public ResultSet sqlQuery(String query)
@@ -174,6 +34,32 @@ public class DBDienste {
 			resultSet = null;
 		}
 		return resultSet;
+	}
+	
+	public boolean sqlInsert(String query)
+	{
+		boolean result = false;
+		try {
+			statement.executeUpdate(query);
+			result = true;
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return result;
+	}
+	
+	public boolean sqlUpdate(String query)
+	{
+		boolean result = false;
+		try {
+			statement.executeUpdate(query);
+			result = true;
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return result;
 	}
 	
 	public boolean isConnected() {
@@ -225,5 +111,29 @@ public class DBDienste {
 		} catch (Exception e) {
 			return false;
 		}
+	}
+
+	public Connection getConnect() {
+		return connect;
+	}
+
+	public void setConnect(Connection connect) {
+		this.connect = connect;
+	}
+
+	public Statement getStatement() {
+		return statement;
+	}
+
+	public void setStatement(Statement statement) {
+		this.statement = statement;
+	}
+
+	public ResultSet getResultSet() {
+		return resultSet;
+	}
+
+	public void setResultSet(ResultSet resultSet) {
+		this.resultSet = resultSet;
 	}
 }

@@ -60,8 +60,7 @@ public class Main {
 	 * Create the application.
 	 */
 	public Main() {
-		dbd = new DBDienste(this);
-		dbd.connect();
+		DBDienste.getInstance();
 		initialize();
 	}
 
@@ -92,8 +91,6 @@ public class Main {
 		
 		JPanel pnlEinstellungen = new PnlEinstellungen();
 		tabMenue.addTab("Einstellungen", null, pnlEinstellungen, null);
-		
-		
 	}
 
 }
