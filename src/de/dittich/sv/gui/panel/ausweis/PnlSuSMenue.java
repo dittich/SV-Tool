@@ -11,13 +11,17 @@ import javax.swing.JTextField;
 
 import de.dittich.sv.fkzs.FKZS;
 
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+
 public class PnlSuSMenue extends JPanel {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-
+	
+	private ResultSet rs = null;
 	/**
 	 * Create the panel.
 	 */
@@ -31,8 +35,19 @@ public class PnlSuSMenue extends JPanel {
 		add(btnSuSSelektiert);
 		
 		JComboBox<String> cboSuSKlasse = new JComboBox<String>();
+		cboSuSKlasse.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if(cboSuSKlasse.getSelectedItem()!=null){
+					String klasse = cboSuSKlasse.getSelectedItem().toString();
+					if(!klasse.equals("")){
+						rs = FKZS.getInstance().sqlQuery("SELECT * FROM sv_schueler WHERE klasse='"+klasse+"'");
+						ScrollPaneTable.getInstance().showResultSet(rs);
+					}
+				}
+			}
+		});
 		cboSuSKlasse.removeAllItems();
-		ResultSet rs = FKZS.getInstance().sqlQuery("SELECT klasse FROM sv_schueler GROUP BY klasse ORDER BY klasse");
+		rs = FKZS.getInstance().sqlQuery("SELECT klasse FROM sv_schueler GROUP BY klasse ORDER BY klasse");
 		try {
 			while(rs.next()){
 				cboSuSKlasse.addItem(rs.getString("klasse"));
