@@ -19,6 +19,7 @@ import javax.swing.JComboBox;
 import de.dittich.sv.basic.Config;
 import de.dittich.sv.basic.DBDienste;
 import de.dittich.sv.dv.Dateimanager;
+import de.dittich.sv.fkzs.FKZS;
 import de.dittich.sv.gui.panel.ausweis.PnlAusweise;
 import de.dittich.sv.gui.panel.bilder.PnlBilder;
 import de.dittich.sv.gui.panel.einstellungen.PnlEinstellungen;
@@ -60,7 +61,9 @@ public class Main {
 	 * Create the application.
 	 */
 	public Main() {
+		Config.getInstance();
 		DBDienste.getInstance();
+		FKZS.getInstance();
 		initialize();
 	}
 
