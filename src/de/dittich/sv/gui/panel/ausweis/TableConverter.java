@@ -4,10 +4,13 @@ import gui.SvTableCellRenderer;
 
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.util.Vector;
 
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
@@ -54,29 +57,32 @@ public class TableConverter extends JTable{
 				}
 				else if(e.getButton() == MouseEvent.BUTTON3){
 					System.out.println("Detected Mouse Right Click!");
-					/*
-					main.setTxtInfoId(idIndex);
+					
+					PnlSuSInfo.getInstance().setTxtId(""+idIndex);
 					
 					String sqlQuery = "SELECT schueler_id,name,vorname,gebdatum,geschlecht,klasse,bild FROM sv_schueler WHERE id="+idIndex;
-					ResultSet rs = svtool.sqlQuery(sqlQuery);
+					ResultSet rs = FKZS.getInstance().sqlQuery(sqlQuery);
 
 					try {
 						while(rs.next()){
-							main.setTxtInfoSchuelerId(rs.getInt(1));
-							main.setTxtInfoNameVorname(rs.getString(2), rs.getString(3));
-							main.setTxtInfoGebDatum(rs.getString(4));
-							if(rs.getString(5).equals("m"))main.setTxtInfoGeschlecht("männlich");
-							else main.setTxtInfoGeschlecht("weiblich");
-							main.setTxtInfoKlasse(rs.getString(6));
-							BufferedImage im = ImageIO.read(rs.getBinaryStream(7));
-							ImageIcon image1 = new ImageIcon(im);
-							main.getLblInfoImage().setIcon(image1);
+							PnlSuSInfo.getInstance().setTxtSuSId(rs.getString("schueler_id"));
+							PnlSuSInfo.getInstance().setTxtName(rs.getString("name")+", "+rs.getString("vorname"));
+							PnlSuSInfo.getInstance().setTxtGeb(rs.getString("gebdatum"));
+							PnlSuSInfo.getInstance().setTxtGeschlecht(rs.getString("geschlecht"));
+							PnlSuSInfo.getInstance().setTxtKlasse(rs.getString("klasse"));
+							
+							BufferedImage buffImage = ImageIO.read(rs.getBinaryStream("bild"));
+							ImageIcon imageIcon = new ImageIcon(buffImage);
+							PnlSuSInfo.getInstance().getLblInfoImage().setIcon(imageIcon);
+							//BufferedImage im = ImageIO.read(rs.getBinaryStream(7));
+							//ImageIcon image1 = new ImageIcon(im);
+							//main.getLblInfoImage().setIcon(image1);
 						}
 					} catch (Exception e1) {
 						// TODO Auto-generated catch block
-						main.getLblInfoImage().setIcon(null);
+						//main.getLblInfoImage().setIcon(null);
 					}
-					*/
+					
 				}
 			}
 		});

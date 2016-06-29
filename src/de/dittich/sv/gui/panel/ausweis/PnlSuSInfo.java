@@ -3,25 +3,23 @@ package de.dittich.sv.gui.panel.ausweis;
 import javax.swing.JPanel;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
-import java.awt.FlowLayout;
-import java.awt.BorderLayout;
-import java.awt.GridBagLayout;
-import java.awt.GridBagConstraints;
-import java.awt.Insets;
 import java.awt.GridLayout;
 
 public class PnlSuSInfo extends JPanel {
+	
+	private static final PnlSuSInfo OBJ = new PnlSuSInfo();
+	
 	private JTextField txtId;
 	private JTextField txtSuSId;
 	private JTextField txtName;
 	private JTextField txtGeb;
 	private JTextField txtGeschlecht;
 	private JTextField txtKlasse;
+	
+	private JLabel lblInfoImage;
 
-	/**
-	 * Create the panel.
-	 */
-	public PnlSuSInfo() {
+	
+	private PnlSuSInfo() {
 		setLayout(new GridLayout(0, 1, 5, 5));
 		
 		JPanel pnlId = new JPanel();
@@ -80,8 +78,44 @@ public class PnlSuSInfo extends JPanel {
 		
 		JPanel pnlBild = new JPanel();
 		pnlBild.setLayout(new GridLayout(1, 1));
-		JLabel lblInfoImage = new JLabel("InfoImage");
+		lblInfoImage = new JLabel("InfoImage");
 		pnlBild.add(lblInfoImage);
 		add(pnlBild);
+	}
+	
+	public static PnlSuSInfo getInstance(){
+		return OBJ;
+	}
+
+	public JTextField getTxtId() {
+		return txtId;
+	}
+
+	public void setTxtId(String txtId) {
+		this.txtId.setText(txtId);
+	}
+
+	public void setTxtSuSId(String txtSuSId) {
+		this.txtSuSId.setText(txtSuSId);
+	}
+
+	public void setTxtName(String txtName) {
+		this.txtName.setText(txtName);
+	}
+
+	public void setTxtGeb(String txtGeb) {
+		this.txtGeb.setText(txtGeb);
+	}
+	
+	public void setTxtGeschlecht(String txtGeschlecht) {
+		this.txtGeschlecht.setText(txtGeschlecht);
+	}
+
+	public void setTxtKlasse(String txtKlasse) {
+		this.txtKlasse.setText(txtKlasse);
+	}
+
+	public JLabel getLblInfoImage() {
+		return lblInfoImage;
 	}
 }

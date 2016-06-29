@@ -15,7 +15,7 @@ public class PnlAusweise extends JPanel {
 		PnlSuSTable pnlTable = new PnlSuSTable();
 		add(pnlTable, BorderLayout.CENTER);
 		add(new PnlSuSMenue(), BorderLayout.NORTH);
-		add(new PnlSuSInfo(), BorderLayout.EAST);
+		add(PnlSuSInfo.getInstance(), BorderLayout.EAST);
 		add(new PnlSuSErstellen(), BorderLayout.SOUTH);
 	}
 

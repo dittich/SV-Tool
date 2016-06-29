@@ -40,7 +40,6 @@ public class PnlSuSMenue extends JPanel {
 				if(cboSuSKlasse.getSelectedItem()!=null){
 					String klasse = cboSuSKlasse.getSelectedItem().toString();
 					if(!klasse.equals("")){
-						//rs = FKZS.getInstance().sqlQuery("SELECT * FROM sv_schueler WHERE klasse='"+klasse+"'");
 						ScrollPaneTable.getInstance().showTable("SELECT * FROM sv_schueler WHERE klasse='"+klasse+"'");
 					}
 				}
