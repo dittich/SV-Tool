@@ -101,6 +101,15 @@ public class PnlSuSMenue extends JPanel {
 			}
 		});
 		add(btnSuSAusgewaehlteAbwaehlen);
+		
+		JButton btnSusOhneFoto = new JButton("SuS ohne Foto");
+		btnSusOhneFoto.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String sqlQuery = "SELECT * FROM sv_schueler WHERE bild is NULL AND klasse != ''";
+				ScrollPaneTable.getInstance().showTable(sqlQuery);
+			}
+		});
+		add(btnSusOhneFoto);
 	}
 	
 	private String suchText(String text, KeyEvent arg0){
