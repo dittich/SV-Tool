@@ -1,8 +1,10 @@
 package de.dittich.sv.gui.panel.bilder;
 
 import java.awt.BorderLayout;
+import java.awt.GridLayout;
 
 import javax.swing.JPanel;
+import javax.swing.JSplitPane;
 
 public class PnlBilder extends JPanel {
 
@@ -12,9 +14,21 @@ public class PnlBilder extends JPanel {
 	public PnlBilder() {
 		setLayout(new BorderLayout(0, 0));
 		
-		add(new PnlBilderName(), BorderLayout.WEST);
-		add(new PnlBilderDirectory(), BorderLayout.CENTER);
-		add(new PnlBilderFoto(), BorderLayout.EAST);
+		/*
+		JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
+		splitPane.setDividerLocation(getHeight()-300);
+		splitPane.setRightComponent(PnlBilderFoto.getInstance());
+		splitPane.setLeftComponent(new PnlBilderName());
+		add(splitPane, BorderLayout.CENTER);
+		add(new PnlBilderDirectory(), BorderLayout.NORTH);
+		add(new PnlBilderZuweisen(), BorderLayout.SOUTH);
+		*/
+		
+		add(PnlBilderFoto.getInstance(), BorderLayout.CENTER);
+		add(new PnlBilderName(), BorderLayout.EAST);
+		add(new PnlBilderDirectory(), BorderLayout.NORTH);
+		add(new PnlBilderZuweisen(), BorderLayout.SOUTH);
+		
 	}
 
 }

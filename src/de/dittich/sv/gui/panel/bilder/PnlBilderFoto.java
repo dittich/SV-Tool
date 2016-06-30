@@ -1,20 +1,14 @@
 package de.dittich.sv.gui.panel.bilder;
 
-import java.awt.BorderLayout;
+public class PnlBilderFoto extends DragPanel {
 
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-
-public class PnlBilderFoto extends JPanel {
-
-	/**
-	 * Create the panel.
-	 */
-	public PnlBilderFoto() {
-		setLayout(new BorderLayout(0, 0));
+	private static final PnlBilderFoto OBJ = new PnlBilderFoto();
+	
+	private PnlBilderFoto() {
 		
-		JLabel lblBilderFoto = new JLabel("Foto Infos");
-		add(lblBilderFoto);
 	}
-
+	
+	public static PnlBilderFoto getInstance(){
+		return OBJ;
+	}
 }
