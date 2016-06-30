@@ -46,6 +46,7 @@ public class DBDienste {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		System.out.println(query+" - "+result);
 		return result;
 	}
 	

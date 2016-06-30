@@ -19,6 +19,7 @@ import de.dittich.sv.fkzs.FKZS;
 public class TableConverter extends JTable{
 	
 	private static final TableConverter OBJ = new TableConverter(); 
+	private String oldSqlQuery = "";
 	
 	private ScrollPaneTable scrPane = null;
 	/**
@@ -36,7 +37,12 @@ public class TableConverter extends JTable{
 		return OBJ;
 	}
 	
+	public JTable showTable(){
+		return showTable(oldSqlQuery);
+	}
+	
 	public JTable showTable(String query){
+		this.oldSqlQuery = query;
 		JTable tbl = new JTable();
 		
 		tbl.addMouseListener(new MouseAdapter() {
@@ -149,5 +155,13 @@ public class TableConverter extends JTable{
 
 	public void setScrPane(ScrollPaneTable scrPane) {
 		this.scrPane = scrPane;
+	}
+
+	public String getOldSqlQuery() {
+		return oldSqlQuery;
+	}
+
+	public void setOldSqlQuery(String oldSqlQuery) {
+		this.oldSqlQuery = oldSqlQuery;
 	}
 }
