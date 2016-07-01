@@ -21,6 +21,7 @@ import de.dittich.sv.basic.DBDienste;
 import de.dittich.sv.dv.Dateimanager;
 import de.dittich.sv.fkzs.FKZS;
 import de.dittich.sv.gui.panel.ausweis.PnlAusweise;
+import de.dittich.sv.gui.panel.ausweis.PnlPDFView;
 import de.dittich.sv.gui.panel.bilder.PnlBilder;
 import de.dittich.sv.gui.panel.einstellungen.PnlEinstellungen;
 import de.dittich.sv.gui.panel.importexport.PnlImportExport;
@@ -82,6 +83,9 @@ public class Main {
 		
 		JPanel pnlAusweise = new PnlAusweise();
 		tabMenue.addTab("Ausweise erstellen", null, pnlAusweise, null);
+		
+		JPanel pnlPDFView = PnlPDFView.getInstance();
+		tabMenue.addTab("PDF-Viewer", null, pnlPDFView, null);
 		
 		JPanel pnlBilder = new PnlBilder();
 		tabMenue.addTab("Bilder zuweisen", null, pnlBilder, null);

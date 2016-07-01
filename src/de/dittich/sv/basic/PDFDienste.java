@@ -1,4 +1,4 @@
-package de.dittich.sv.gui.panel.ausweis;
+package de.dittich.sv.basic;
 
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
@@ -10,6 +10,8 @@ import com.itextpdf.text.Rectangle;
 import com.itextpdf.text.Utilities;
 import com.itextpdf.text.Image;
 import com.itextpdf.text.pdf.BarcodeEAN;
+
+import de.dittich.sv.fkzs.FKZS;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -32,8 +34,7 @@ public class PDFDienste {
 	private Utilities util;
 	private ResultSet rs;
 	
-	public PDFDienste(ResultSet rs){
-		this.rs = rs;
+	public PDFDienste(){
 		util = new Utilities();
 	}
 	
@@ -43,7 +44,7 @@ public class PDFDienste {
 			SwingController controller = new SwingController();
 			SwingViewBuilder factory = new SwingViewBuilder(controller);
 			JPanel viewerComponentPanel = factory.buildViewerPanel();
-			viewerComponentPanel.setPreferredSize(new Dimension(760, 460));;
+			//viewerComponentPanel.setPreferredSize(new Dimension(760, 460));;
 			pdfPanel.removeAll();
 			pdfPanel.add(viewerComponentPanel);
 			pdfPanel.revalidate();
@@ -54,10 +55,21 @@ public class PDFDienste {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
 	}
 	
-	public void makePDF(File pdfFile){
+	public void viewPDFBlanc(JPanel pdfPanel){
+		SwingController controller = new SwingController();
+		SwingViewBuilder factory = new SwingViewBuilder(controller);
+		JPanel viewerComponentPanel = factory.buildViewerPanel();
+		//viewerComponentPanel.setPreferredSize(new Dimension(760, 460));;
+		pdfPanel.removeAll();
+		pdfPanel.add(viewerComponentPanel);
+		pdfPanel.revalidate();
+		pdfPanel.repaint();
+	}
+	
+	public void makePDF(File pdfFile, String query){
+		ResultSet rs = FKZS.getInstance().sqlQuery(query);
 		Document document = new Document();
 		
 		BaseColor[] bc = {

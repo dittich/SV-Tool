@@ -10,6 +10,8 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 
 import javax.swing.JButton;
+import javax.swing.filechooser.FileFilter;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
@@ -29,7 +31,10 @@ public class PnlBilderDirectory extends JPanel {
 		JButton btnBildffnen = new JButton("Bild \u00F6ffnen");
 		btnBildffnen.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				JFileChooser chooser = new JFileChooser();
+				FileFilter filter = new FileNameExtensionFilter("Bilder", "gif", "png", "jpg"); 
+				JFileChooser chooser = new JFileChooser("c:");
+				//chooser.addChoosableFileFilter(filter);
+				chooser.setFileFilter(filter);
 				int rueckgabeWert = chooser.showOpenDialog(null);
 				if(rueckgabeWert == JFileChooser.APPROVE_OPTION)
 		        {
