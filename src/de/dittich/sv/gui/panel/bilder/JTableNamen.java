@@ -1,6 +1,5 @@
 package de.dittich.sv.gui.panel.bilder;
 
-import java.awt.Dimension;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.util.Vector;
@@ -13,10 +12,25 @@ import de.dittich.sv.fkzs.FKZS;
 
 public class JTableNamen extends JTable{
 	
-	public JTableNamen(String sqlQuery){
+	private static final JTableNamen OBJ = new JTableNamen();
+	
+	private JTableNamen(){
+		
+	}
+	
+	public static JTableNamen getInstance(){
+		return OBJ;
+	}
+	
+	public JTable getTable(String sqlQuery){
 		ResultSet rs = FKZS.getInstance().sqlQuery(sqlQuery);
 		setModel(resultSetToTableModel(rs));
 		setDefaultRenderer(Object.class, new DefaultTableCellRenderer());
+		return this;
+	}
+	
+	public JTable getTable(){
+		return this;
 	}
 	
 	public DefaultTableModel resultSetToTableModel(ResultSet rs) {

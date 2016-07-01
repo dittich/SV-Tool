@@ -10,6 +10,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.ScrollPaneConstants;
 
 import de.dittich.sv.fkzs.FKZS;
 import de.dittich.sv.gui.VerticalLayout;
@@ -27,13 +28,12 @@ public class PnlBilderName extends JPanel {
 	private JScrollPane scrPaneBilder;
 	
 	public PnlBilderName() {
-		setLayout(new VerticalLayout());
+		setLayout(new VerticalLayout(0,3));
+		//setLayout(new GridLayout(4,0));
 		
 		scrPaneBilder = new JScrollPane();
-		//setLayout(new GridLayout(0, 1, 0, 0));
 		
-		JLabel lblChopImage = new JLabel("Chop");
-		add(lblChopImage);
+		add(PnlChopImage.getInstance());
 		
 		JComboBox cboImgKlasse = new JComboBox();
 		cboImgKlasse.addActionListener(new ActionListener() {
@@ -41,8 +41,8 @@ public class PnlBilderName extends JPanel {
             	if(cboImgKlasse.getSelectedItem()!=null){
             		String klasse = cboImgKlasse.getSelectedItem().toString();
             		if(!klasse.equals("")){
-						String sqlQuery = "SELECT name, vorname FROM sv_schueler WHERE klasse='"+klasse+"'";
-						JTable tbl = new JTableNamen(sqlQuery);
+						String sqlQuery = "SELECT id, name, vorname FROM sv_schueler WHERE klasse='"+klasse+"'";
+						JTable tbl = JTableNamen.getInstance().getTable(sqlQuery);
 						scrPaneBilder.setViewportView(tbl);
 					}
             	}
@@ -63,9 +63,12 @@ public class PnlBilderName extends JPanel {
 		add(cboImgKlasse);
 		
 		add(scrPaneBilder);
-		
-		JButton btnZuweisen = new JButton("Zuweisen");
-		add(btnZuweisen);
+	}
+	
+	private void nameTable(String query){
+		JTable tbl = JTableNamen.getInstance().getTable(query);
+		scrPaneBilder = new JScrollPane(tbl);
+		scrPaneBilder.setViewportView(tbl);
 	}
 
 }
