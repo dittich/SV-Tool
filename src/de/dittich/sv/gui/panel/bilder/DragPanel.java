@@ -128,7 +128,7 @@ public class DragPanel extends JPanel {
         	BufferedImage img = dp.chop();
         	BufferedImage imgCut = new ImageScaler().scaleImage(img, new Dimension(210,270));
         	ImageIcon chopIcon = new ImageIcon(new ImageScaler().scaleImage(img, new Dimension(105,135)));
-        	PnlChopImage.getInstance().setChopIcon(chopIcon);
+        	PnlChopImage.getInstance().setChopImage(imgCut);
         	PnlChopImage.getInstance().getLblChopImage().setIcon(chopIcon);
         }
         public void mouseEntered(MouseEvent arg0) {}

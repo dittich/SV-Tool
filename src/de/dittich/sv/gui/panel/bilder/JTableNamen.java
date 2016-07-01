@@ -26,11 +26,17 @@ public class JTableNamen extends JTable{
 		ResultSet rs = FKZS.getInstance().sqlQuery(sqlQuery);
 		setModel(resultSetToTableModel(rs));
 		setDefaultRenderer(Object.class, new DefaultTableCellRenderer());
+		minCol(this,"id");
 		return this;
 	}
 	
 	public JTable getTable(){
 		return this;
+	}
+	
+	private void minCol(JTable tbl, String name){
+		tbl.getColumn(name).setMinWidth(0);
+		tbl.getColumn(name).setMaxWidth(0);
 	}
 	
 	public DefaultTableModel resultSetToTableModel(ResultSet rs) {

@@ -1,10 +1,15 @@
 package de.dittich.sv.basic;
 
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+
+import javax.imageio.ImageIO;
 
 public class DBDienste {
 	
@@ -61,6 +66,30 @@ public class DBDienste {
 			e.printStackTrace();
 		}
 		return result;
+	}
+	
+	public boolean sqlUpdateImg(int id, BufferedImage img)
+	{
+		try {
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			ImageIO.write(img, "jpeg", baos);
+			baos.flush();
+	        
+			PreparedStatement ps = connect.prepareStatement("UPDATE sv_schueler SET bild=?, typ=? WHERE id=?");
+	        ps.setBytes(1, baos.toByteArray());
+	        ps.setString(2, "image/jpeg");
+	        ps.setInt(3, id);
+	        
+	        ps.executeUpdate();
+	        
+	        ps.close();
+	        baos.close();
+	        return true;
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return false;
+		}
 	}
 	
 	public boolean isConnected() {

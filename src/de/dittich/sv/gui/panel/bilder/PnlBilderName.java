@@ -31,6 +31,16 @@ public class PnlBilderName extends JPanel {
 		setLayout(new VerticalLayout(0,3));
 		//setLayout(new GridLayout(4,0));
 		
+		JButton btnSelektierte = new JButton("Selektierte SuS");
+		btnSelektierte.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String sqlQuery = "SELECT id, klasse, name, vorname FROM sv_schueler WHERE selektiert='1'";
+				JTable tbl = JTableNamen.getInstance().getTable(sqlQuery);
+				scrPaneBilder.setViewportView(tbl);
+			}
+		});
+		add(btnSelektierte);
+		
 		scrPaneBilder = new JScrollPane();
 		
 		add(PnlChopImage.getInstance());
@@ -41,7 +51,7 @@ public class PnlBilderName extends JPanel {
             	if(cboImgKlasse.getSelectedItem()!=null){
             		String klasse = cboImgKlasse.getSelectedItem().toString();
             		if(!klasse.equals("")){
-						String sqlQuery = "SELECT id, name, vorname FROM sv_schueler WHERE klasse='"+klasse+"'";
+						String sqlQuery = "SELECT id, klasse, name, vorname FROM sv_schueler WHERE klasse='"+klasse+"'";
 						JTable tbl = JTableNamen.getInstance().getTable(sqlQuery);
 						scrPaneBilder.setViewportView(tbl);
 					}

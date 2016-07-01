@@ -1,5 +1,6 @@
 package de.dittich.sv.fkzs;
 
+import java.awt.image.BufferedImage;
 import java.sql.ResultSet;
 
 import de.dittich.sv.basic.DBDienste;
@@ -22,5 +23,9 @@ public class FKZS {
 	
 	public boolean sqlUpdate(String query){
 		return DBDienste.getInstance().sqlUpdate(query);
+	}
+	
+	public boolean sqlUpdateImg(int id, BufferedImage img){
+		return DBDienste.getInstance().sqlUpdateImg(id, img);
 	}
 }

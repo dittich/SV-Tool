@@ -1,12 +1,13 @@
 package de.dittich.sv.gui.panel.bilder;
 
-import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import javax.swing.JTable;
 
 import java.awt.GridLayout;
 
 import javax.swing.JButton;
+
+import de.dittich.sv.fkzs.FKZS;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
@@ -25,8 +26,9 @@ public class PnlBilderZuweisen extends JPanel {
 			public void actionPerformed(ActionEvent arg0) {
 				JTable tbl = JTableNamen.getInstance().getTable();
 				int idIndex = (int)tbl.getModel().getValueAt(tbl.getSelectedRow(),tbl.getColumn("id").getModelIndex());
-				ImageIcon imgIcon = PnlChopImage.getInstance().getChopIcon();
-				System.out.println(idIndex+" - "+imgIcon.toString());
+				BufferedImage buffImage = PnlChopImage.getInstance().getChopImage();
+				System.out.println(idIndex+" - "+buffImage.toString());
+				FKZS.getInstance().sqlUpdateImg(idIndex, buffImage);
 			}
 		});
 		add(btnZuweisen);

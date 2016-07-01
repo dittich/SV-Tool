@@ -1,12 +1,8 @@
 package de.dittich.sv.gui.panel.ausweis;
 
-import java.awt.FlowLayout;
 import java.awt.GridLayout;
-
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 
 public class PnlSuSTable extends JPanel {
 	/**
