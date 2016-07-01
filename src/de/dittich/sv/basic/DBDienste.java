@@ -2,12 +2,14 @@ package de.dittich.sv.basic;
 
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.StringTokenizer;
 
 import javax.imageio.ImageIO;
 
@@ -28,6 +30,86 @@ public class DBDienste {
 	
 	public static DBDienste getInstance(){
 		return OBJ;
+	}
+	
+	public boolean sqlImportBackup(File backupFile) {
+		File mysqlFile = new File(UserPreferences.getInstance().getSubNode("sv_mysql"));
+		File cmd = new File(UserPreferences.getInstance().getSubNode("sv_cmd"));
+		
+		String dbUser = Config.getInstance().getDbUser();
+		String dbPassword = Config.getInstance().getDbPassword();
+		String dbName = Config.getInstance().getDbName();
+		
+		boolean wert = false;
+		String mysqlPfad = prepareSpaces(mysqlFile.getParent())+"\\"+mysqlFile.getName();
+		String source = prepareSpaces(backupFile.getParent())+"\\"+backupFile.getName();
+		String[] executeCmd = new String[] {cmd.getName(), "/c", mysqlPfad+" -u "+dbUser+" -p"+dbPassword+" --max_allowed_packet=1G "+dbName+" < "+source};
+		
+		Process runtimeProcess;
+		try {
+			System.out.print("Starte Prozess SQL-Import...");
+			runtimeProcess = Runtime.getRuntime().exec(executeCmd);
+			int processComplete = runtimeProcess.waitFor();  
+			if (processComplete == 0) {
+				System.out.println("Backup restored successfully");  
+				wert = true;  
+			}
+			else{  
+				System.out.println("Could not restore the backup"); 
+			} 
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}  
+		return wert;
+	}
+	
+	public boolean sqlDump(File fbackup) {
+		File mysqldump = new File(UserPreferences.getInstance().getSubNode("sv_mysqldump"));
+		File cmd = new File(UserPreferences.getInstance().getSubNode("sv_cmd"));
+		String dbIp = Config.getInstance().getDbIp();
+		String dbUser = Config.getInstance().getDbUser();
+		String dbPassword = Config.getInstance().getDbPassword();
+		String dbName = Config.getInstance().getDbName();
+		
+		boolean wert = false;
+		String mysqldumpPfad = prepareSpaces(mysqldump.getParent())+"\\"+mysqldump.getName();
+		String source = prepareSpaces(fbackup.getParent())+"\\"+fbackup.getName();
+		
+		String[] executeCmd = new String[] {cmd.getName(), "/c", mysqldumpPfad+" -h "+dbIp+" --u "+dbUser+" -p"+dbPassword+" --hex-blob --max_allowed_packet=1G "+dbName+" > "+source};
+		
+		Process runtimeProcess;
+		try {
+			runtimeProcess = Runtime.getRuntime().exec(executeCmd);
+			int processComplete = runtimeProcess.waitFor();  
+			if (processComplete == 0) {
+				//System.out.println("Dump successfully");  
+				wert = true;  
+			}
+			else{  
+				//System.out.println("Could not dump"); 
+			} 
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			//e.printStackTrace();
+		}  
+		return wert;
+	}
+	
+	private String prepareSpaces(String kette){
+		String result = "";
+		StringTokenizer tko = new StringTokenizer(kette,"\\");
+		while(tko.hasMoreTokens()){
+			String part = tko.nextToken();
+			if(part.indexOf(' ')!=0){
+				part = "\""+part+"\"";
+			}
+			result+=part;
+			if(tko.hasMoreTokens()){
+				result+="\\";
+			}
+		}
+		return result;
 	}
 	
 	public ResultSet sqlQuery(String query)

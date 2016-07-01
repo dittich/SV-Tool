@@ -7,6 +7,8 @@ import java.awt.GridLayout;
 
 import javax.swing.JButton;
 
+import de.dittich.sv.basic.DBDienste;
+
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.io.File;
@@ -27,10 +29,10 @@ public class PnlImportExportMenue extends JPanel {
 		        
 		        if(rueckgabeWert == JFileChooser.APPROVE_OPTION)
 		        {
-		        	String userdir = System.getProperty("user.dir");
-		        	System.out.println((new File(userdir)).getAbsolutePath());
-		            System.out.println("Die zu öffnende Datei ist: " +
-		                  chooser.getSelectedFile().getAbsolutePath());
+		        	//String userdir = System.getProperty("user.dir");
+		        	String importDatei = chooser.getSelectedFile().getAbsolutePath();
+		            boolean check = DBDienste.getInstance().sqlImportBackup(new File(importDatei));
+		            System.out.println(importDatei+" --> "+check);
 		        }
 			}
 		});
@@ -44,8 +46,9 @@ public class PnlImportExportMenue extends JPanel {
 		        
 		        if(rueckgabeWert == JFileChooser.APPROVE_OPTION)
 		        {
-		            System.out.println("Die zu speichernde Datei ist: " +
-		                  chooser.getSelectedFile().getAbsolutePath());
+		            String exportDatei = chooser.getSelectedFile().getAbsolutePath()+".sql";
+		            boolean check = DBDienste.getInstance().sqlDump(new File(exportDatei));
+		            System.out.println(exportDatei+" --> "+check);
 		        }
 			}
 		});

@@ -14,6 +14,8 @@ import java.util.Vector;
 
 import javax.imageio.ImageIO;
 
+import de.dittich.sv.basic.Config;
+
 public class Datenverwaltung {
 	
 	
