@@ -18,6 +18,7 @@ import javax.swing.JComboBox;
 
 import de.dittich.sv.basic.Config;
 import de.dittich.sv.basic.DBDienste;
+import de.dittich.sv.basic.UserPreferences;
 import de.dittich.sv.dv.Dateimanager;
 import de.dittich.sv.fkzs.FKZS;
 import de.dittich.sv.gui.panel.ausweis.PnlAusweise;
@@ -65,6 +66,7 @@ public class Main {
 		Config.getInstance();
 		DBDienste.getInstance();
 		FKZS.getInstance();
+		UserPreferences.getInstance();
 		initialize();
 	}
 
