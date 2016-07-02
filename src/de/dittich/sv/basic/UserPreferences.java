@@ -2,6 +2,7 @@ package de.dittich.sv.basic;
 
 import java.util.prefs.Preferences;
 
+import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 
 public class UserPreferences {
@@ -25,7 +26,9 @@ public class UserPreferences {
 		if(!isSetSubNode("sv_mysqlimport")){
 			setSubNode("sv_mysqlimport", getFile("mysqlimport.exe"));
 		}
-		
+		if(!isSetSubNode("sv_orderby")){
+			setSubNode("sv_orderby", "name");
+		}
 	}
 	
 	public static UserPreferences getInstance(){

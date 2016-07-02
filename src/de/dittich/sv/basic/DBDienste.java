@@ -10,6 +10,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.StringTokenizer;
+import java.util.Vector;
 
 import javax.imageio.ImageIO;
 
@@ -172,6 +173,79 @@ public class DBDienste {
 			e.printStackTrace();
 			return false;
 		}
+	}
+	
+	public boolean sqlUpdate(int schueler_id, Vector vec)
+	{
+		boolean result = false;
+		try {
+			String sql = "update sv_schueler SET name = ?, vorname = ?, gebdatum = ?, geschlecht = ?, geloescht = ?, klasse = ? where schueler_id = ?";
+			PreparedStatement stmt = connect.prepareStatement(sql);
+			
+			stmt.setString(1, (String)vec.get(1));
+			stmt.setString(2, (String)vec.get(2));
+			stmt.setString(3, (String)vec.get(3));
+			stmt.setString(4, (String)vec.get(4));
+			boolean boolGeloescht = false;
+			if(((String)vec.get(5)).equals("Ja"))boolGeloescht=true;
+			stmt.setBoolean(5, boolGeloescht);
+			stmt.setString(6, (String)vec.get(6));
+			stmt.setInt(7, schueler_id);
+			stmt.executeUpdate();
+			
+			result = true;
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return result;
+	}
+	
+	public boolean sqlInsert(int schueler_id, Vector vec){
+		boolean result = false;
+		String query = " insert into sv_schueler (schueler_id, name, vorname, gebdatum, geschlecht, geloescht, selektiert, klasse)"
+		        + " values (?, ?, ?, ?, ?, ?, ?, ?)";
+		boolean boolGeloescht = false;
+		if(((String)vec.get(5)).equals("Ja"))boolGeloescht=true;
+		
+		try {
+			PreparedStatement preparedStmt = connect.prepareStatement(query);
+			preparedStmt.setInt (1, schueler_id);
+			preparedStmt.setString (2, (String)vec.get(1));
+			preparedStmt.setString (3, (String)vec.get(2));
+			preparedStmt.setString (4, (String)vec.get(3));
+			preparedStmt.setString (5, (String)vec.get(4));
+			preparedStmt.setBoolean(6, boolGeloescht);
+			preparedStmt.setBoolean(7, false);
+			preparedStmt.setString (8, (String)vec.get(6));
+			
+			// execute the preparedstatement
+			preparedStmt.execute();
+			
+			result = true;
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
+	public boolean isId(int susId){
+		boolean check = false;
+		String query = "SELECT count(*) FROM sv_schueler WHERE schueler_id="+susId;
+		ResultSet rs = sqlQuery(query);
+		try {
+			while (rs.next()) {
+				if(rs.getInt(1)==1){
+					check=true;
+				}
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return check;
 	}
 	
 	public boolean isConnected() {

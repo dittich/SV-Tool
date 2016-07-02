@@ -15,6 +15,7 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
+import de.dittich.sv.basic.UserPreferences;
 import de.dittich.sv.fkzs.FKZS;
 
 public class TableConverter extends JTable{
@@ -58,6 +59,7 @@ public class TableConverter extends JTable{
 					System.out.println(sqlUpdate);
 					FKZS.getInstance().sqlUpdate(sqlUpdate);
 					refreshTable(tbl, query);
+					//refreshTable(tbl);
 				}	    
 				else if(e.getButton() == MouseEvent.BUTTON2){
 					System.out.println("Detected Mouse Middle Click!");
@@ -81,9 +83,6 @@ public class TableConverter extends JTable{
 							BufferedImage buffImage = ImageIO.read(rs.getBinaryStream("bild"));
 							ImageIcon imageIcon = new ImageIcon(buffImage);
 							PnlSuSInfo.getInstance().getLblInfoImage().setIcon(imageIcon);
-							//BufferedImage im = ImageIO.read(rs.getBinaryStream(7));
-							//ImageIcon image1 = new ImageIcon(im);
-							//main.getLblInfoImage().setIcon(image1);
 						}
 					} catch (Exception e1) {
 						// TODO Auto-generated catch block
@@ -93,6 +92,8 @@ public class TableConverter extends JTable{
 				}
 			}
 		});
+		
+		headerListener(tbl);
 		
 		refreshTable(tbl, query);
 		
@@ -110,6 +111,21 @@ public class TableConverter extends JTable{
 		minCol(tbl,"selektiert");
 		minCol(tbl,"bild");
 		minCol(tbl,"typ");
+	}
+	
+	private void headerListener(JTable tbl){
+		System.out.println("Header Listener implements");
+		tbl.getTableHeader().addMouseListener(new MouseAdapter() {
+		    @Override
+		    public void mouseClicked(MouseEvent e) {
+		        int col = tbl.columnAtPoint(e.getPoint());
+		        String name = tbl.getColumnName(col);
+		        System.out.println("Column index selected " + col + " " + name);
+		        UserPreferences.getInstance().setSubNode("sv_orderby", name);
+		        showTable();
+		        
+		    }
+		});
 	}
 	
 	public DefaultTableModel resultSetToTableModel(ResultSet rs) {

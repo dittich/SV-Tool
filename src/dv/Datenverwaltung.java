@@ -186,51 +186,6 @@ public class Datenverwaltung {
 			stmt.setInt(7, schueler_id);
 			stmt.executeUpdate();
 			
-			/*
-			String query = "update sv_schueler set ? = ? where schueler_id = ?";
-			PreparedStatement preparedStmt = connect.prepareStatement(query);
-			
-			preparedStmt.setString(1, "name");
-			preparedStmt.setString(2, (String)vec.get(1));
-			preparedStmt.setInt(3, schueler_id);
-			preparedStmt.addBatch();
-			
-			preparedStmt.setString(1, "vorname");
-			preparedStmt.setString(2, (String)vec.get(2));
-			preparedStmt.setInt(3, schueler_id);
-			preparedStmt.addBatch();
-			
-			preparedStmt.setString(1, "gebdatum");
-			preparedStmt.setString(2, (String)vec.get(3));
-			preparedStmt.setInt(3, schueler_id);
-			preparedStmt.addBatch();
-			
-			preparedStmt.setString(1, "geschlecht");
-			preparedStmt.setString(2, (String)vec.get(4));
-			preparedStmt.setInt(3, schueler_id);
-			preparedStmt.addBatch();
-			
-			boolean boolGeloescht = false;
-			if(((String)vec.get(5)).equals("Ja"))boolGeloescht=true;
-			preparedStmt.setString(1, "geloescht");
-			preparedStmt.setBoolean(2, boolGeloescht);
-			preparedStmt.setInt(3, schueler_id);
-			preparedStmt.addBatch();
-			
-			preparedStmt.setString(1, "klasse");
-			preparedStmt.setString(2, (String)vec.get(6));
-			preparedStmt.setInt(3, schueler_id);
-			preparedStmt.addBatch();
-			
-			int [] numUpdates=preparedStmt.executeBatch();
-			for (int i=0; i < numUpdates.length; i++) {
-				if (numUpdates[i] == -2)
-					System.out.println("Execution " + i + ": unknown number of rows updated");
-				else
-					System.out.println("Execution " + i + "successful: " + numUpdates[i] + " rows updated");
-			}
-			*/
-			
 			result = true;
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block

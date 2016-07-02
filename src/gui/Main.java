@@ -125,6 +125,57 @@ public class Main{
 		
 		UIManager.put("FileChooser.readOnly", Boolean.TRUE);
 		
+		JPanel pnlCSV = new JPanel();
+		pnlCSV.setBounds(10, 45, 764, 495);
+		frmSvausweise.getContentPane().add(pnlCSV);
+		pnlCSV.setLayout(null);
+		pnlCSV.setVisible(false);
+		dbDienste.addMenuePanel(pnlCSV);
+		
+		JPanel pnlXLSImport = new JPanel();
+		pnlXLSImport.setBounds(0, 0, 254, 155);
+		pnlCSV.add(pnlXLSImport);
+		pnlXLSImport.setLayout(null);
+		
+		JLabel lblXlSImport = new JLabel("XLS-Datei");
+		lblXlSImport.setFont(new Font("Tahoma", Font.BOLD, 16));
+		lblXlSImport.setBounds(10, 10, 150, 19);
+		pnlXLSImport.add(lblXlSImport);
+		
+		txtXLSImport = new JTextField();
+		txtXLSImport.setBounds(10, 40, 220, 19);
+		pnlXLSImport.add(txtXLSImport);
+		txtXLSImport.setColumns(10);
+		
+		JButton btnXLSImport = new JButton("Ausw\u00E4hlen");
+		btnXLSImport.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				//FilenameFilter filter = 
+				new FilenameFilter() {
+			        public boolean accept(File directory, String fileName) {
+			            return fileName.endsWith(".xls");
+			        }
+		        };
+				
+				File xlsFile = SwingUtil.getFileChoice(new JDialog(), "c:", null, "XLS-Import Datei");
+				txtXLSImport.setText(xlsFile.toString());
+				svtool.setXlsFile(xlsFile);
+			}
+		});
+		btnXLSImport.setBounds(10, 60, 220, 19);
+		pnlXLSImport.add(btnXLSImport);
+		
+		JButton btnImportStarten = new JButton("Import starten");
+		btnImportStarten.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				XLSDienste xls = new XLSDienste(svtool);
+				String xlsDateiName = svtool.getXlsFile().toString();
+				xls.susSqlImport(xlsDateiName);
+			}
+		});
+		btnImportStarten.setBounds(10, 90, 220, 19);
+		pnlXLSImport.add(btnImportStarten);
+		
 		JPanel pnlBilder = new JPanel();
 		pnlBilder.setBounds(10, 45, 764, 495);
 		frmSvausweise.getContentPane().add(pnlBilder);
@@ -741,57 +792,6 @@ public class Main{
 			}
 		});
 		dbDienste.addMenuePanel(pnlDB);
-		
-		JPanel pnlCSV = new JPanel();
-		pnlCSV.setBounds(10, 45, 764, 495);
-		frmSvausweise.getContentPane().add(pnlCSV);
-		pnlCSV.setLayout(null);
-		pnlCSV.setVisible(false);
-		dbDienste.addMenuePanel(pnlCSV);
-		
-		JPanel pnlXLSImport = new JPanel();
-		pnlXLSImport.setBounds(0, 0, 254, 155);
-		pnlCSV.add(pnlXLSImport);
-		pnlXLSImport.setLayout(null);
-		
-		JLabel lblXlSImport = new JLabel("XLS-Datei");
-		lblXlSImport.setFont(new Font("Tahoma", Font.BOLD, 16));
-		lblXlSImport.setBounds(10, 10, 150, 19);
-		pnlXLSImport.add(lblXlSImport);
-		
-		txtXLSImport = new JTextField();
-		txtXLSImport.setBounds(10, 40, 220, 19);
-		pnlXLSImport.add(txtXLSImport);
-		txtXLSImport.setColumns(10);
-		
-		JButton btnXLSImport = new JButton("Ausw\u00E4hlen");
-		btnXLSImport.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				//FilenameFilter filter = 
-				new FilenameFilter() {
-			        public boolean accept(File directory, String fileName) {
-			            return fileName.endsWith(".xls");
-			        }
-		        };
-				
-				File xlsFile = SwingUtil.getFileChoice(new JDialog(), "c:", null, "XLS-Import Datei");
-				txtXLSImport.setText(xlsFile.toString());
-				svtool.setXlsFile(xlsFile);
-			}
-		});
-		btnXLSImport.setBounds(10, 60, 220, 19);
-		pnlXLSImport.add(btnXLSImport);
-		
-		JButton btnImportStarten = new JButton("Import starten");
-		btnImportStarten.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				XLSDienste xls = new XLSDienste(svtool);
-				String xlsDateiName = svtool.getXlsFile().toString();
-				xls.susSqlImport(xlsDateiName);
-			}
-		});
-		btnImportStarten.setBounds(10, 90, 220, 19);
-		pnlXLSImport.add(btnImportStarten);
 		
 		JPanel pnlImport = new JPanel();
 		pnlImport.setBounds(10, 45, 764, 495);

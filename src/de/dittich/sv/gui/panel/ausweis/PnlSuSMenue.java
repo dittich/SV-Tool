@@ -9,6 +9,7 @@ import javax.swing.JPanel;
 import javax.swing.JButton;
 import javax.swing.JTextField;
 
+import de.dittich.sv.basic.UserPreferences;
 import de.dittich.sv.fkzs.FKZS;
 
 import java.awt.event.ActionListener;
@@ -34,6 +35,7 @@ public class PnlSuSMenue extends JPanel {
 		btnSuSAlle.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				String sqlQuery = "SELECT * FROM sv_schueler WHERE geloescht=0";
+				sqlQuery += " ORDER BY "+UserPreferences.getInstance().getSubNode("sv_orderby");
 				ScrollPaneTable.getInstance().showTable(sqlQuery);
 			}
 		});
@@ -43,6 +45,7 @@ public class PnlSuSMenue extends JPanel {
 		btnSuSSelektiert.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				String sqlQuery = "SELECT * FROM sv_schueler WHERE selektiert=1";
+				sqlQuery += " ORDER BY "+UserPreferences.getInstance().getSubNode("sv_orderby");
 				ScrollPaneTable.getInstance().showTable(sqlQuery);
 			}
 		});
@@ -55,6 +58,7 @@ public class PnlSuSMenue extends JPanel {
 					String klasse = cboSuSKlasse.getSelectedItem().toString();
 					if(!klasse.equals("")){
 						String sqlQuery = "SELECT * FROM sv_schueler WHERE klasse='"+klasse+"'";
+						sqlQuery += " ORDER BY "+UserPreferences.getInstance().getSubNode("sv_orderby");
 						ScrollPaneTable.getInstance().showTable(sqlQuery);
 					}
 				}
@@ -80,6 +84,7 @@ public class PnlSuSMenue extends JPanel {
 			public void keyPressed(KeyEvent arg0) {
 				String suchText = suchText(txtSuSSearchname.getText(),arg0);
 				String sqlQuery = "SELECT * FROM sv_schueler WHERE name LIKE '%"+suchText+"%' OR vorname LIKE '%"+suchText+"%'";
+				sqlQuery += " ORDER BY "+UserPreferences.getInstance().getSubNode("sv_orderby");
 				ScrollPaneTable.getInstance().showTable(sqlQuery);
 			}
 		});
@@ -106,6 +111,7 @@ public class PnlSuSMenue extends JPanel {
 		btnSusOhneFoto.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				String sqlQuery = "SELECT * FROM sv_schueler WHERE bild is NULL AND klasse != ''";
+				sqlQuery += " ORDER BY "+UserPreferences.getInstance().getSubNode("sv_orderby");
 				ScrollPaneTable.getInstance().showTable(sqlQuery);
 			}
 		});

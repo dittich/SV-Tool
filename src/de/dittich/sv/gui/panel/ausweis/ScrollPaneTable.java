@@ -1,5 +1,7 @@
 package de.dittich.sv.gui.panel.ausweis;
 
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.sql.ResultSet;
 
 import javax.swing.JScrollPane;
@@ -23,7 +25,12 @@ public class ScrollPaneTable extends JScrollPane{
 	
 	public void showTable(String query){
 		JTable tbl = TableConverter.getInstance().showTable(query);
-		setViewportView(tbl);
+		zeigeTabelle(tbl);
+	}
+	
+	public void showTable(){
+		JTable tbl = TableConverter.getInstance().showTable();
+		zeigeTabelle(tbl);
 	}
 	
 	public void selectAllTable(){
@@ -31,7 +38,7 @@ public class ScrollPaneTable extends JScrollPane{
 		JTable tbl = TableConverter.getInstance().showTable(query);
 		this.alleSelektieren(tbl, true);
 		tbl = TableConverter.getInstance().showTable(query);
-		setViewportView(tbl);
+		zeigeTabelle(tbl);
 	}
 	
 	public void deSelectAllTable(){
@@ -39,7 +46,7 @@ public class ScrollPaneTable extends JScrollPane{
 		JTable tbl = TableConverter.getInstance().showTable(query);
 		this.alleSelektieren(tbl, false);
 		tbl = TableConverter.getInstance().showTable(query);
-		setViewportView(tbl);
+		zeigeTabelle(tbl);
 	}
 	
 	private void alleSelektieren(JTable tbl, boolean select){
@@ -50,6 +57,10 @@ public class ScrollPaneTable extends JScrollPane{
 			DBDienste.getInstance().sqlUpdate(sqlUpdate);
 		}
 		tbl = TableConverter.getInstance().showTable();
+		zeigeTabelle(tbl);
+	}
+	
+	private void zeigeTabelle(JTable tbl){
 		setViewportView(tbl);
 	}
 }
