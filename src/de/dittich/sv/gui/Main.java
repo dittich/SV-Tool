@@ -24,6 +24,7 @@ import de.dittich.sv.fkzs.FKZS;
 import de.dittich.sv.gui.panel.ausweis.PnlAusweise;
 import de.dittich.sv.gui.panel.ausweis.PnlPDFView;
 import de.dittich.sv.gui.panel.bilder.PnlBilder;
+import de.dittich.sv.gui.panel.daten.PnlDaten;
 import de.dittich.sv.gui.panel.einstellungen.PnlEinstellungen;
 import de.dittich.sv.gui.panel.importexport.PnlImportExport;
 import de.dittich.sv.gui.panel.schild.PnlSchild;
@@ -92,11 +93,17 @@ public class Main {
 		JPanel pnlBilder = new PnlBilder();
 		tabMenue.addTab("Bilder zuweisen", null, pnlBilder, null);
 		
+		JPanel pnlDaten = new PnlDaten();
+		tabMenue.addTab("Daten", null, pnlDaten, null);
+		
+		/*
 		JPanel pnlSchild = new PnlSchild();
 		tabMenue.addTab("Schülerdaten aktualisieren", null, pnlSchild, null);
 		
 		JPanel pnlImportExport = new PnlImportExport();
 		tabMenue.addTab("Daten-Backup", null, pnlImportExport, null);
+		*/
+		
 		
 		JPanel pnlEinstellungen = new PnlEinstellungen();
 		tabMenue.addTab("Einstellungen", null, pnlEinstellungen, null);

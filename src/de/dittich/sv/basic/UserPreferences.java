@@ -29,6 +29,9 @@ public class UserPreferences {
 		if(!isSetSubNode("sv_orderby")){
 			setSubNode("sv_orderby", "name");
 		}
+		if(!isSetSubNode("sv_imagepath")){
+			setSubNode("sv_imagepath", "c:");
+		}
 	}
 	
 	public static UserPreferences getInstance(){

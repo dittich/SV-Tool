@@ -13,6 +13,8 @@ import javax.swing.JButton;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
+import de.dittich.sv.basic.UserPreferences;
+
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.image.BufferedImage;
@@ -32,7 +34,7 @@ public class PnlBilderDirectory extends JPanel {
 		btnBildffnen.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				FileFilter filter = new FileNameExtensionFilter("Bilder", "gif", "png", "jpg"); 
-				JFileChooser chooser = new JFileChooser("c:");
+				JFileChooser chooser = new JFileChooser(new File(UserPreferences.getInstance().getSubNode("sv_imagepath")));
 				//chooser.addChoosableFileFilter(filter);
 				chooser.setFileFilter(filter);
 				int rueckgabeWert = chooser.showOpenDialog(null);
@@ -40,8 +42,10 @@ public class PnlBilderDirectory extends JPanel {
 		        {
 		             // Ausgabe der ausgewaehlten Datei
 		            System.out.println("Die zu öffnende Datei ist: " +
-		                  chooser.getSelectedFile().getName());
+		                  chooser.getSelectedFile().getParent());
 		            File selectedFile = chooser.getSelectedFile();
+		            UserPreferences.getInstance().setSubNode("sv_imagepath", selectedFile.getParent());
+		            
 					BufferedImage image;
 					try {
 						image = ImageIO.read(new File(selectedFile.getParent()+"\\"+selectedFile.getName()));
