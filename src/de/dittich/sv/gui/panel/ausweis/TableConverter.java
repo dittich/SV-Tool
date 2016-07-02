@@ -93,14 +93,13 @@ public class TableConverter extends JTable{
 			}
 		});
 		
-		headerListener(tbl);
-		
 		refreshTable(tbl, query);
 		
 		return tbl;
 	}
 	
 	private void refreshTable(JTable tbl, String query){
+		query += " ORDER BY "+UserPreferences.getInstance().getSubNode("sv_orderby");
 		ResultSet rs = FKZS.getInstance().sqlQuery(query);
 		tbl.setModel(resultSetToTableModel(rs));
 		tbl.setDefaultRenderer(Object.class, new SvTableCellRenderer());
@@ -122,8 +121,6 @@ public class TableConverter extends JTable{
 		        String name = tbl.getColumnName(col);
 		        System.out.println("Column index selected " + col + " " + name);
 		        UserPreferences.getInstance().setSubNode("sv_orderby", name);
-		        showTable();
-		        
 		    }
 		});
 	}

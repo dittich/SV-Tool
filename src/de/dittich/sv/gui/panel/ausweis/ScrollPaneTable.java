@@ -8,6 +8,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 
 import de.dittich.sv.basic.DBDienste;
+import de.dittich.sv.basic.UserPreferences;
 
 public class ScrollPaneTable extends JScrollPane{
 	
@@ -61,6 +62,20 @@ public class ScrollPaneTable extends JScrollPane{
 	}
 	
 	private void zeigeTabelle(JTable tbl){
+		headerListener(tbl);
 		setViewportView(tbl);
+	}
+	
+	private void headerListener(JTable tbl){
+		tbl.getTableHeader().addMouseListener(new MouseAdapter() {
+		    @Override
+		    public void mouseClicked(MouseEvent e) {
+		        int col = tbl.columnAtPoint(e.getPoint());
+		        String name = tbl.getColumnName(col);
+		        System.out.println("Column index selected " + col + " " + name);
+		        UserPreferences.getInstance().setSubNode("sv_orderby", name);
+		        showTable();
+		    }
+		});
 	}
 }
